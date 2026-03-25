@@ -29,6 +29,7 @@ BTN_NO_JIASHI_BASE = (1182, 776)  # 不加时按钮
 BTN_YES_JIASHI_BASE = (1398, 776)  # 加时按钮
 
 OPEN_FISH_BUCKET_BIT_BASE = -200  # 打开鱼桶鼠标移动
+BUCKET_OPENED_REGION_BASE = (2145, 408, 34, 36)  # 桶以打开
 BUCKET_FULL_REGION_BASE = (1184, 443, 36, 38)  # 鱼桶满了(满)
 BUCKET_LEFT_NUM_REGION_BASE = (2148, 457, 2215, 478)  # 鱼桶已装(48)
 BUCKET_EMPTY_REGION_BASE = (2111, 909, 33, 34)  # 鱼桶一条鱼也没有(空)
@@ -57,6 +58,7 @@ star_template = None
 f1_template = None
 f2_template = None
 fishing_template = None
+bucket_opened_template = None
 lock_template = None
 over_time_template = None
 bucket_full_template = None
@@ -73,6 +75,7 @@ def load_templates():
     load_f2_template()
     load_fishing_template()
     load_over_time_template()
+    load_bucket_opened_template()
     load_lock_template()
     load_bucket_full_template()
     load_bucket_empty_template()
@@ -130,6 +133,12 @@ def load_over_time_template():
     global over_time_template
     over_time_template = load("chang_grayscale.png")
     return over_time_template
+
+
+def load_bucket_opened_template():
+    global bucket_opened_template
+    bucket_opened_template = load("bucket_opened_grayscale.png")
+    return bucket_opened_template
 
 
 def load_lock_template():
@@ -236,6 +245,12 @@ def fishing_matched():
 def overtime_matched():
     global OVERTIME_REGION_BASE, over_time_template
     return match(OVERTIME_REGION_BASE, over_time_template)
+
+
+# 桶是否已打开
+def bucket_opened_matched():
+    global BUCKET_OPENED_REGION_BASE, bucket_opened_template
+    return match(BUCKET_OPENED_REGION_BASE, bucket_opened_template)
 
 
 # 鱼是否已经锁住

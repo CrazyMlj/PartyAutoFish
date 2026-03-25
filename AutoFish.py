@@ -117,7 +117,7 @@ def auto_fish():
 
 
 def toggle_run_auto_fish():
-    global reel_rod_times, previous_result,run_event
+    global reel_rod_times, previous_result, run_event
     with param_lock:
         global_config.auto_fish_thread_event = run_event
     if run_event.is_set():
@@ -150,7 +150,7 @@ def toggle_run_auto_fish():
                         temp_scr.close()
                     except:
                         pass
-                scr = None
+                global_config.scr = None
         else:
             run_event.set()
             print("▶️  [状态] 钓鱼脚本继续运行")
