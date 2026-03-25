@@ -22,77 +22,78 @@ discard_level = 1  # 默认不丢弃
 discard_count = None
 
 param_lock = threading.Lock()
-begin_event = threading.Event()
 run_event = threading.Event()
 
 
 def auto_fish_discard():
-    global is_auto_fish_discard, discard_level, begin_event, run_event, discard_count
-    while not begin_event.is_set():
-        if run_event.is_set():
+    global is_auto_fish_discard, discard_level, run_event, discard_count
+    if run_event.is_set():
+        # 确保 mouse 对象已初始化
+        if global_config.mouse is None:
+            global_config.mouse = HumanLikeMouse()
+            global_config.mouse.set_speed(global_config.params['auto_discard_speed'])
+
+        if global_config.scr is None:
             global_config.scr = mss.mss()
-            with param_lock:
-                is_auto_fish_discard = global_config.params['is_auto_fish_discard']
-                discard_level = global_config.params['discard_level']
 
-            if not is_auto_fish_discard:
-                print("🌊🐟️ [自动放生] 自动放生开关未打开... 若需要使用此功能，请手动开启开关...")
+        with param_lock:
+            is_auto_fish_discard = global_config.params['is_auto_fish_discard']
+            discard_level = global_config.params['discard_level']
+
+        if not is_auto_fish_discard:
+            print("🌊🐟️ [自动放生] 自动放生开关未打开... 若需要使用此功能，请手动开启开关...")
+            run_event.clear()
+
+        if discard_level == 1:
+            print("🌊🐟️ [自动放生] 当前保留普通及以上鱼种，无需丢弃...")
+            run_event.clear()
+
+        try:
+            # if not bucket_full_matched():
+            #     print("🌊🐟️ [自动放生] 当前桶未满^_^未达到自动放生条件...")
+            #     run_event.clear()
+
+            open_fish_bucket()
+            time.sleep(1)
+
+            if bucket_empty_matched():
+                print("🌊🐟️ [自动放生] 鱼桶中没有鱼...")
                 run_event.clear()
 
-            if discard_level == 1:
-                print("🌊🐟️ [自动放生] 当前保留普通及以上鱼种,无需丢弃...")
-                run_event.clear()
+            while not bucket_48_matched():
+                if locked_fish_matched():
+                    print("🌊🐟️ [自动放生] 当前没有鱼可以放生...")
+                    close_fish_bucket()
+                    break
 
-            try:
-                global_config.scr = mss.mss()
-                global_config.mouse = HumanLikeMouse()
-                global_config.mouse.set_speed(global_config.params['auto_discard_speed'])
-                # if not bucket_full_matched():
-                #     print("🌊🐟️ [自动放生] 当前桶未满^_^未达到自动放生条件...")
-                #     run_event.clear()
-
-                open_fish_bucket()
-                time.sleep(1)
-
-                if bucket_empty_matched():
-                    print("🌊🐟️ [自动放生] 鱼桶中没有鱼...")
-                    run_event.clear()
-
-                while not bucket_48_matched():
-                    if locked_fish_matched():
-                        print("🌊🐟️ [自动放生] 当前没有鱼可以放生...")
-                        close_fish_bucket()
-                        break
-
-                    level = recognize_fish_quality(50)
-                    if level is None:
-                        print("🌊🐟️ [自动放生] 未识别出桶中第一条鱼的质量...")
-                    with param_lock:
-                        discard_level = global_config.params['discard_level']
-                    if level >= global_config.params['discard_level']:
-                        lock_fish()
-                        time.sleep(1)
-                    else:
-                        discard_fish()
-                        discard_count[level - 1] = discard_count[level - 1] - 1
-                        time.sleep(1)
-            except Exception as e:
-                print(f"❌ [错误] 自动放生脚本主循环异常: {e}")
-            finally:
-                # 确保mss资源被正确释放
-                if global_config.scr is not None:
-                    try:
-                        global_config.scr.close()
-                    except:
-                        pass
-                    global_config.scr = None
-        time.sleep(0.2)
+                level = recognize_fish_quality(50)
+                if level is None:
+                    print("🌊🐟️ [自动放生] 未识别出桶中第一条鱼的质量...")
+                with param_lock:
+                    discard_level = global_config.params['discard_level']
+                if level >= global_config.params['discard_level']:
+                    lock_fish()
+                    time.sleep(1)
+                else:
+                    discard_fish()
+                    discard_count[level - 1] = discard_count[level - 1] - 1
+                    time.sleep(1)
+        except Exception as e:
+            print(f"❌ [错误] 自动放生脚本主循环异常：{e}")
+        finally:
+            # 确保 mss 资源被正确释放
+            if global_config.scr is not None:
+                try:
+                    global_config.scr.close()
+                except:
+                    pass
+                global_config.scr = None
 
 
 def count_discard_fish():
     global discard_count
     print(f"🌊🐟️ [自动放生] 本次放鱼结束..共释放如下")
-    for i in range(4) :
+    for i in range(4):
         emoji = QUALITY_COLORS.get(QUALITY_LEVELS[i])
         print(f"🌊🐟️ {emoji} {QUALITY_LEVELS[i]}: 释放{discard_count[i]}条")
     return 0

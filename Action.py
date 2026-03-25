@@ -1,4 +1,4 @@
-import ctypes
+﻿import ctypes
 import os
 
 import cv2
@@ -12,7 +12,6 @@ from ScreenAdapt import screen_adaptation, capture_region_gary, screen_adaptatio
 
 template_folder_path = os.path.join('.', 'resources')
 user32 = ctypes.WinDLL("user32")
-mouse = global_config.mouse
 
 # 位置信息(基准"2k")
 BAIT_REGION_BASE = (2318, 1296, 2348, 1318)  # 鱼饵数量区域
@@ -286,7 +285,7 @@ def recognize_fish_quality(tolerance):
 def overtime_y():
     global BTN_YES_JIASHI_BASE
     x, y = screen_adaptation_2(*BTN_YES_JIASHI_BASE)
-    mouse.move(x, y)
+    global_config.mouse.move(x, y)
     hold_mouse_left_button(0.1)
 
 
@@ -294,7 +293,7 @@ def overtime_y():
 def overtime_n():
     global BTN_NO_JIASHI_BASE
     x, y = screen_adaptation_2(*BTN_NO_JIASHI_BASE)
-    mouse.move(x, y)
+    global_config.mouse.move(x, y)
     hold_mouse_left_button(0.1)
 
 
@@ -305,7 +304,7 @@ def open_fish_bucket():
     key_press(67, 1, True)
     point = POINT()
     user32.GetCursorPos(ctypes.byref(point))
-    mouse.move(point.x + screen_adaptation_3(OPEN_FISH_BUCKET_BIT_BASE), point.y)
+    global_config.mouse.move(point.x + screen_adaptation_3(OPEN_FISH_BUCKET_BIT_BASE), point.y)
     key_release(67)
 
 
@@ -314,7 +313,7 @@ def close_fish_bucket():
     global CLOSE_BUTTON_LOCATION
     x, y = screen_adaptation_2(*CLOSE_BUTTON_LOCATION)
     # 移动鼠标至关闭图标按钮
-    mouse.move(x, y)
+    global_config.mouse.move(x, y)
     hold_mouse_left_button(0.1)
 
 
@@ -324,12 +323,12 @@ def lock_fish():
     x, y = screen_adaptation_2(*FIRST_FISH_LOCATION)
     x1, y1 = screen_adaptation_2(*FISH_LOCKED_LOCATION)
     # 移动鼠标到第一条鱼上 单击鼠标右键 移动鼠标至"锁定" 单击鼠标左键
-    mouse.move(x, y)
+    global_config.mouse.move(x, y)
     hold_mouse_right_button(0.1)
-    mouse.move(x1, y1)
+    global_config.mouse.move(x1, y1)
     hold_mouse_left_button(0.1)
     # 鼠标复位
-    mouse.move(x, y)
+    global_config.mouse.move(x, y)
 
 
 # 放生鱼
@@ -338,9 +337,9 @@ def discard_fish():
     x, y = screen_adaptation_2(*FIRST_FISH_LOCATION)
     x1, y1 = screen_adaptation_2(*FISH_DISCARD_LOCATION)
     # 移动鼠标到第一条鱼上 单击鼠标右键 移动鼠标至"放生" 单击鼠标左键
-    mouse.move(x, y)
+    global_config.mouse.move(x, y)
     hold_mouse_right_button(0.1)
-    mouse.move(x1, y1)
+    global_config.mouse.move(x1, y1)
     hold_mouse_left_button(0.1)
     # 鼠标复位
-    mouse.move(x, y)
+    global_config.mouse.move(x, y)

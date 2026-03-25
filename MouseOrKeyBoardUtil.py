@@ -32,6 +32,7 @@ class HumanLikeMouse:
     # 模拟人类鼠标移动，包含速度变化和抖动
     def move(self, dest_x, dest_y):
         ensure_mouse_left_up()
+        ensure_mouse_right_up()
         # 获取当前位置
         point = POINT()
         user32.GetCursorPos(ctypes.byref(point))

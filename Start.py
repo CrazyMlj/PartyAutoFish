@@ -19,29 +19,25 @@ from MouseOrKeyBoardUtil import HumanLikeMouse
 listener_f2 = None  # 监听
 listener_f3 = None  # 监听
 
-auto_fish_thread_event = None
-auto_fish_discard_thread_event = None
 
 
 def on_press_f2(key):
-    global auto_fish_discard_thread_event
     time.sleep(0.02)
-    auto_fish_discard_thread_event = global_config.auto_fish_discard_thread_event
     if key == keyboard.Key.f2:
-        if auto_fish_discard_thread_event is not None and auto_fish_discard_thread_event.is_set():
-            toggle_run_auto_fish_discard()  # 暂停
+        if global_config.auto_fish_discard_thread_event is not None:
+            if global_config.auto_fish_discard_thread_event.is_set():
+                toggle_run_auto_fish_discard()  # 暂停
         # 暂停或恢复程序
         toggle_run_auto_fish()
     return
 
 
 def on_press_f3(key):
-    global auto_fish_thread_event
     time.sleep(0.02)
-    auto_fish_thread_event = global_config.auto_fish_thread_event
     if key == keyboard.Key.f3:
-        if auto_fish_discard_thread_event is not None and auto_fish_thread_event.is_set():
-            toggle_run_auto_fish()  # 暂停
+        if global_config.auto_fish_thread_event is not None:
+            if global_config.auto_fish_thread_event.is_set():
+                toggle_run_auto_fish()  # 暂停
         # 暂停或恢复程序
         toggle_run_auto_fish_discard()
         return
@@ -64,14 +60,14 @@ if __name__ == "__main__":
     print()
     print("╔" + "═" * 50 + "╗")
     print("║" + " " * 50 + "║")
-    print("║     🎣  PartyFish 自动钓鱼助手  v2.0            ║")
+    print("║     🎣  PartyFish 自动钓鱼助手  v2.0               ║")
     print("║" + " " * 50 + "║")
     print("╠" + "═" * 50 + "╣")
     print(
         f"║  📺 当前分辨率: {global_config.params['custom_width']} × {global_config.params['custom_height']}".ljust(
-            51) + "║")
-    print("║  ⌨️  快捷键: F2 启动/暂停脚本                     ║")
-    print("║  🔧 开发者: Crazy                            ║")
+            47) + "║")
+    print("║  ⌨️ 快捷键: F2 启动/暂停脚本                        ║")
+    print("║  🔧 开发者: Crazy                                 ║")
     print("╚" + "═" * 50 + "╝")
     print()
 
@@ -96,7 +92,7 @@ if __name__ == "__main__":
 
     print()
     print("┌" + "─" * 48 + "┐")
-    print("│  🚀 程序已就绪，按 F2 开始自动钓鱼！            │")
+    print("│  🚀 程序已就绪，按 F2 开始自动钓鱼!                 │")
     print("└" + "─" * 48 + "┘")
     print()
 
