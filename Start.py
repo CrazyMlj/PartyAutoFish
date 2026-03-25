@@ -66,7 +66,8 @@ if __name__ == "__main__":
     print(
         f"║  📺 当前分辨率: {global_config.params['custom_width']} × {global_config.params['custom_height']}".ljust(
             47) + "║")
-    print("║  ⌨️ 快捷键: F2 启动/暂停脚本                        ║")
+    print("║  ⌨️ 快捷键: F2 启动/暂停钓鱼脚本                     ║")
+    print("║  ⌨️ 快捷键: F3 启动/暂停放鱼脚本                     ║")
     print("║  🔧 开发者: Crazy                                 ║")
     print("╚" + "═" * 50 + "╝")
     print()
@@ -91,9 +92,9 @@ if __name__ == "__main__":
     print("✅ [初始化] 热键监听已启动")
 
     print()
-    print("┌" + "─" * 48 + "┐")
-    print("│  🚀 程序已就绪，按 F2 开始自动钓鱼!                 │")
-    print("└" + "─" * 48 + "┘")
+    print("┌" + "─" * 63 + "┐")
+    print("│  🚀 程序已就绪，按 F2 开始自动钓鱼! 按 F3 开始自动丢鱼!               │")
+    print("└" + "─" * 63 + "┘")
     print()
 
     # 将auto_fish()放在后台线程运行（daemon=True确保主线程退出时自动结束）
