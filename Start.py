@@ -10,7 +10,7 @@ from pynput import keyboard
 
 from Action import load_templates
 from AutoFish import toggle_run_auto_fish, auto_fish
-from AutoFishDiscard import toggle_run_auto_fish_discard, auto_fish_discard
+from AutoFishDiscard import auto_fish_discard, toggle_run_auto_fish_discard
 from FishRecord import load_all_fish_records
 from GUI import create_gui
 from GlobalConfig import global_config

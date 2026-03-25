@@ -88,7 +88,7 @@ class HumanLikeMouse:
             time.sleep(random.uniform(0.02, 0.05))
             user32.SetCursorPos(dest_x, dest_y)
 
-    def set_speed(self, speed_factor=1.0):
+    def set_speed(self, speed_factor=0.8):
         # 调整整体速度
         self.base_speed = int(10 * speed_factor)
         self.jitter = 2 / speed_factor
@@ -161,3 +161,6 @@ def key_press(vk_code, duration, is_hold=False):
 
 def key_release(vk_code):
     user32.keybd_event(vk_code, 0, 0x0002, 0)
+
+# 创建全局实例
+_default_mouse = HumanLikeMouse()

@@ -2,16 +2,20 @@
 import os
 
 import cv2
+import mss
 import numpy as np
 from PIL import Image
 
 from GlobalConfig import global_config
-from MouseOrKeyBoardUtil import hold_mouse_left_button, key_press, POINT, HumanLikeMouse, key_release, \
-    hold_mouse_right_button
-from ScreenAdapt import screen_adaptation, capture_region_gary, screen_adaptation_3, screen_adaptation_2, capture_region
+from MouseOrKeyBoardUtil import hold_mouse_left_button, key_press, POINT, key_release, \
+    hold_mouse_right_button, _default_mouse
+from ScreenAdapt import screen_adaptation, capture_region_gary, screen_adaptation_3, screen_adaptation_2, \
+    capture_region, capture_region_rgb
 
 template_folder_path = os.path.join('.', 'resources')
 user32 = ctypes.WinDLL("user32")
+mouse = _default_mouse
+scr = mss.mss()
 
 # 位置信息(基准"2k")
 BAIT_REGION_BASE = (2318, 1296, 2348, 1318)  # 鱼饵数量区域
@@ -27,7 +31,7 @@ BTN_YES_JIASHI_BASE = (1398, 776)  # 加时按钮
 OPEN_FISH_BUCKET_BIT_BASE = -200  # 打开鱼桶鼠标移动
 BUCKET_FULL_REGION_BASE = (1184, 443, 36, 38)  # 鱼桶满了(满)
 BUCKET_LEFT_NUM_REGION_BASE = (2148, 457, 2215, 478)  # 鱼桶已装(48)
-BUCKET_EMPTY_REGION_BASE = (2111, 909, 32, 34)  # 鱼桶一条鱼也没有(空)
+BUCKET_EMPTY_REGION_BASE = (2111, 909, 33, 34)  # 鱼桶一条鱼也没有(空)
 FISH_COLOR_INFO_REGION_BASE = (1924, 640, 1, 1)  # 鱼桶中第一条鱼位置
 FISH_IS_LOCKED_REGION_BASE = (1924, 588, 23, 29)  # 鱼上锁
 FIRST_FISH_LOCATION = (1924, 640)  # 第一条鱼坐标
@@ -196,7 +200,7 @@ def match_digit_template(image):
 
 
 # ========================
-# 识别
+# 识别c
 # ========================
 # 基本识别方法
 def match(region_base, template):
@@ -269,8 +273,7 @@ def bucket_48_matched():
 # 识别鱼品质
 def recognize_fish_quality(tolerance):
     global FISH_COLOR_INFO_REGION_BASE
-    FISH_COLOR_INFO_REGION_BASE = capture_region(*FISH_COLOR_INFO_REGION_BASE, cv2.COLOR_BGRA2RGB)
-    img = global_config.scr.grab(FISH_COLOR_INFO_REGION_BASE)
+    img = capture_region_rgb(*FISH_COLOR_INFO_REGION_BASE)
     for QUALITY_COLOR in QUALITY_COLORS.items():
         distance = sum((img[0][0][i] - QUALITY_COLOR[1][i]) for i in range(3))
         if distance <= tolerance:
@@ -285,7 +288,7 @@ def recognize_fish_quality(tolerance):
 def overtime_y():
     global BTN_YES_JIASHI_BASE
     x, y = screen_adaptation_2(*BTN_YES_JIASHI_BASE)
-    global_config.mouse.move(x, y)
+    mouse.move(x, y)
     hold_mouse_left_button(0.1)
 
 
@@ -293,7 +296,7 @@ def overtime_y():
 def overtime_n():
     global BTN_NO_JIASHI_BASE
     x, y = screen_adaptation_2(*BTN_NO_JIASHI_BASE)
-    global_config.mouse.move(x, y)
+    mouse.move(x, y)
     hold_mouse_left_button(0.1)
 
 
@@ -304,7 +307,7 @@ def open_fish_bucket():
     key_press(67, 1, True)
     point = POINT()
     user32.GetCursorPos(ctypes.byref(point))
-    global_config.mouse.move(point.x + screen_adaptation_3(OPEN_FISH_BUCKET_BIT_BASE), point.y)
+    mouse.move(point.x + screen_adaptation_3(OPEN_FISH_BUCKET_BIT_BASE), point.y)
     key_release(67)
 
 
@@ -313,7 +316,7 @@ def close_fish_bucket():
     global CLOSE_BUTTON_LOCATION
     x, y = screen_adaptation_2(*CLOSE_BUTTON_LOCATION)
     # 移动鼠标至关闭图标按钮
-    global_config.mouse.move(x, y)
+    mouse.move(x, y)
     hold_mouse_left_button(0.1)
 
 
@@ -323,12 +326,12 @@ def lock_fish():
     x, y = screen_adaptation_2(*FIRST_FISH_LOCATION)
     x1, y1 = screen_adaptation_2(*FISH_LOCKED_LOCATION)
     # 移动鼠标到第一条鱼上 单击鼠标右键 移动鼠标至"锁定" 单击鼠标左键
-    global_config.mouse.move(x, y)
+    mouse.move(x, y)
     hold_mouse_right_button(0.1)
-    global_config.mouse.move(x1, y1)
+    mouse.move(x1, y1)
     hold_mouse_left_button(0.1)
     # 鼠标复位
-    global_config.mouse.move(x, y)
+    mouse.move(x, y)
 
 
 # 放生鱼
@@ -337,9 +340,9 @@ def discard_fish():
     x, y = screen_adaptation_2(*FIRST_FISH_LOCATION)
     x1, y1 = screen_adaptation_2(*FISH_DISCARD_LOCATION)
     # 移动鼠标到第一条鱼上 单击鼠标右键 移动鼠标至"放生" 单击鼠标左键
-    global_config.mouse.move(x, y)
+    mouse.move(x, y)
     hold_mouse_right_button(0.1)
-    global_config.mouse.move(x1, y1)
+    mouse.move(x1, y1)
     hold_mouse_left_button(0.1)
     # 鼠标复位
-    global_config.mouse.move(x, y)
+    mouse.move(x, y)

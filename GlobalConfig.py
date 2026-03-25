@@ -30,7 +30,6 @@ QUALITY_LEVEL_MAP = {
 scale_x = 1.0
 scale_y = 1.0
 scr = None
-mouse = None
 gui_fish_update_callback = None  # GUI更新回调（将在create_gui中设置）
 bait_count_val = None  # 鱼饵数量
 auto_fish_thread_event = None
@@ -58,7 +57,6 @@ class GlobalConfig:
         self.scale_y = scale_y
         self.scr = scr
         self.gui_fish_update_callback = gui_fish_update_callback
-        self.mouse = mouse
         self.bait_count_val = bait_count_val
         self.auto_fish_thread_event = auto_fish_thread_event
         self.auto_fish_discard_thread_event = auto_fish_discard_thread_event
