@@ -104,7 +104,7 @@ def auto_fish():
                     # continue会在finally中关闭scr
 
             except Exception as e:
-                print(f"❌ [错误] 主循环异常: {e}")
+                print(f"❌ [错误] 钓鱼脚本主循环异常: {e}")
             finally:
                 # 确保mss资源被正确释放
                 if global_config.scr is not None:
@@ -117,7 +117,9 @@ def auto_fish():
 
 
 def toggle_run_auto_fish():
-    global reel_rod_times, previous_result
+    global reel_rod_times, previous_result,run_event
+    with param_lock:
+        global_config.auto_fish_thread_event = run_event
     if run_event.is_set():
         run_event.clear()  # 暂停
         reel_rod_times = 0
@@ -141,7 +143,7 @@ def toggle_run_auto_fish():
                     time.sleep(0.1)
                     print("⚠️  [警告] 未识别到鱼饵，请确保游戏界面正确")
             except Exception as e:
-                print(f"❌ [错误] 初始化失败: {e}")
+                print(f"❌ [错误] 钓鱼脚本初始化失败: {e}")
             finally:
                 if temp_scr is not None:
                     try:

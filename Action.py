@@ -8,7 +8,7 @@ from PIL import Image
 from GlobalConfig import global_config
 from MouseOrKeyBoardUtil import hold_mouse_left_button, key_press, POINT, HumanLikeMouse, key_release, \
     hold_mouse_right_button
-from ScreenAdapt import screen_adaptation, capture_region_gary, screen_adaptation_3, screen_adaptation_2
+from ScreenAdapt import screen_adaptation, capture_region_gary, screen_adaptation_3, screen_adaptation_2, capture_region
 
 template_folder_path = os.path.join('.', 'resources')
 user32 = ctypes.WinDLL("user32")
@@ -26,15 +26,23 @@ BTN_NO_JIASHI_BASE = (1182, 776)  # 不加时按钮
 BTN_YES_JIASHI_BASE = (1398, 776)  # 加时按钮
 
 OPEN_FISH_BUCKET_BIT_BASE = -200  # 打开鱼桶鼠标移动
-BUCKET_FULL_REGION_BASE = (1105, 432, 349, 38)  # 鱼桶满了(满)todo 缩小范围
-BUCKET_LEFT_NUM_REGION_BASE = (1105, 432, 349, 38)  # 鱼桶已装(48)todo 缩小范围
-BUCKET_EMPTY_REGION_BASE = (2111, 909, 142, 36)  # 鱼桶一条鱼也没有(空)todo 缩小范围
+BUCKET_FULL_REGION_BASE = (1184, 443, 36, 38)  # 鱼桶满了(满)
+BUCKET_LEFT_NUM_REGION_BASE = (2148, 457, 2215, 478)  # 鱼桶已装(48)
+BUCKET_EMPTY_REGION_BASE = (2111, 909, 32, 34)  # 鱼桶一条鱼也没有(空)
 FISH_COLOR_INFO_REGION_BASE = (1924, 640, 1, 1)  # 鱼桶中第一条鱼位置
 FISH_IS_LOCKED_REGION_BASE = (1924, 588, 23, 29)  # 鱼上锁
 FIRST_FISH_LOCATION = (1924, 640)  # 第一条鱼坐标
 CLOSE_BUTTON_LOCATION = (2461, 445)  # 关闭鱼桶坐标
 FISH_DISCARD_LOCATION = (1964, 800)  # 丢弃鱼坐标
 FISH_LOCKED_LOCATION = (1964, 860)  # 锁定鱼坐标
+
+QUALITY_COLORS = {
+    1: [181, 185, 190],  # 标准
+    2: [140, 196, 85],  # 非凡
+    3: [110, 172, 241],  # 稀有
+    4: [169, 102, 249],  # 史诗
+    5: [250, 198, 59]  # 传奇
+}
 
 # 数字模板
 bait_ten = 0
@@ -48,10 +56,8 @@ f2_template = None
 fishing_template = None
 lock_template = None
 over_time_template = None
-bucket_full_template = None  # todo 缺少图片模板
-bucket_48_template = None  # todo 缺少图片模板
-bucket_empty_template = None  # todo 缺少图片模板
-
+bucket_full_template = None
+bucket_empty_template = None
 
 
 # ========================
@@ -65,9 +71,8 @@ def load_templates():
     load_fishing_template()
     load_over_time_template()
     load_lock_template()
-    #load_bucket_full_template()
-    #load_bucket_48_template()
-    #load_bucket_empty_template()
+    load_bucket_full_template()
+    load_bucket_empty_template()
 
 
 # 加载模板（0.png到9.png）
@@ -140,12 +145,6 @@ def load_bucket_empty_template():
     global bucket_empty_template
     bucket_empty_template = load("bucket_empty_grayscale.png")
     return bucket_empty_template
-
-
-def load_bucket_48_template():
-    global bucket_48_template
-    bucket_48_template = load("bucket_48_grayscale.png")
-    return bucket_48_template
 
 
 # ========================
@@ -248,16 +247,36 @@ def bucket_full_matched():
     return match(BUCKET_FULL_REGION_BASE, bucket_full_template)
 
 
-# 桶是否有48条鱼
-def bucket_48_matched():
-    global BUCKET_LEFT_NUM_REGION_BASE, bucket_48_template
-    return match(BUCKET_LEFT_NUM_REGION_BASE, bucket_48_template)
-
-
 # 桶是否为空
 def bucket_empty_matched():
     global BUCKET_EMPTY_REGION_BASE, bucket_empty_template
     return match(BUCKET_EMPTY_REGION_BASE, bucket_empty_template)
+
+
+# 桶是否有48条鱼
+def bucket_48_matched():
+    global BUCKET_LEFT_NUM_REGION_BASE
+    BUCKET_LEFT_NUM_REGION_BASE = screen_adaptation(*BUCKET_LEFT_NUM_REGION_BASE)
+    match_frame = global_config.scr.grab(BUCKET_LEFT_NUM_REGION_BASE)
+    if match_frame is not None:
+        img = np.array(match_frame)
+        gray_img = cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
+        region1 = gray_img[0:28, 0:21]  # 获取区域1的图像
+        region2 = gray_img[9:37, 0:21]  # 获取区域2的图像
+        return cv2.minMaxLoc(cv2.matchTemplate(region1, region2, cv2.TM_CCOEFF_NORMED))[1] > 0.95
+    return False
+
+
+# 识别鱼品质
+def recognize_fish_quality(tolerance):
+    global FISH_COLOR_INFO_REGION_BASE
+    FISH_COLOR_INFO_REGION_BASE = capture_region(*FISH_COLOR_INFO_REGION_BASE, cv2.COLOR_BGRA2RGB)
+    img = global_config.scr.grab(FISH_COLOR_INFO_REGION_BASE)
+    for QUALITY_COLOR in QUALITY_COLORS.items():
+        distance = sum((img[0][0][i] - QUALITY_COLOR[1][i]) for i in range(3))
+        if distance <= tolerance:
+            return QUALITY_COLOR[0]
+    return None
 
 
 # ========================
@@ -277,6 +296,7 @@ def overtime_n():
     x, y = screen_adaptation_2(*BTN_NO_JIASHI_BASE)
     mouse.move(x, y)
     hold_mouse_left_button(0.1)
+
 
 # 打开鱼桶界面
 def open_fish_bucket():

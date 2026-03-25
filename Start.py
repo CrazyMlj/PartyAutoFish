@@ -10,37 +10,53 @@ from pynput import keyboard
 
 from Action import load_templates
 from AutoFish import toggle_run_auto_fish, auto_fish
+from AutoFishDiscard import toggle_run_auto_fish_discard, auto_fish_discard
 from FishRecord import load_all_fish_records
 from GUI import create_gui
 from GlobalConfig import global_config
 from MouseOrKeyBoardUtil import HumanLikeMouse
 
 listener_f2 = None  # 监听
+listener_f3 = None  # 监听
+
+auto_fish_thread_event = None
+auto_fish_discard_thread_event = None
 
 
 def on_press_f2(key):
+    global auto_fish_discard_thread_event
     time.sleep(0.02)
+    auto_fish_discard_thread_event = global_config.auto_fish_discard_thread_event
     if key == keyboard.Key.f2:
+        if auto_fish_discard_thread_event is not None and auto_fish_discard_thread_event.is_set():
+            toggle_run_auto_fish_discard()  # 暂停
         # 暂停或恢复程序
         toggle_run_auto_fish()
     return
 
 
 def on_press_f3(key):
+    global auto_fish_thread_event
     time.sleep(0.02)
+    auto_fish_thread_event = global_config.auto_fish_thread_event
     if key == keyboard.Key.f3:
+        if auto_fish_discard_thread_event is not None and auto_fish_thread_event.is_set():
+            toggle_run_auto_fish()  # 暂停
         # 暂停或恢复程序
+        toggle_run_auto_fish_discard()
         return
 
 
 def start_hotkey_listener():
-    global listener_f2
+    global listener_f2, listener_f3
     if listener_f2 is None or not listener_f2.running:
         listener_f2 = keyboard.Listener(on_press=on_press_f2)
-        listener_f3 = keyboard.Listener(on_press=on_press_f3)
         listener_f2.daemon = True
-        listener_f3.daemon = True
         listener_f2.start()
+
+    if listener_f3 is None or not listener_f3.running:
+        listener_f3 = keyboard.Listener(on_press=on_press_f3)
+        listener_f3.daemon = True
         listener_f3.start()
 
 
@@ -87,6 +103,9 @@ if __name__ == "__main__":
     # 将auto_fish()放在后台线程运行（daemon=True确保主线程退出时自动结束）
     auto_fish_thread = threading.Thread(target=auto_fish, daemon=True)
     auto_fish_thread.start()
+
+    auto_fish_discard_thread = threading.Thread(target=auto_fish_discard, daemon=True)
+    auto_fish_discard_thread.start()
 
     # GUI必须在主线程运行（Tkinter要求）
     # 这样可以确保GUI正常工作且不会崩溃
