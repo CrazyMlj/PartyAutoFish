@@ -111,7 +111,7 @@ def end_current_session():
 
 
 # 截取鱼信息区域的图像
-def capture_fish_info_region(src):
+def capture_fish_info_region():
     scr = global_config.scr
     if scr is None:
         return None

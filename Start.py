@@ -18,7 +18,7 @@ from MouseOrKeyBoardUtil import HumanLikeMouse
 listener_f2 = None  # 监听
 
 
-def on_press(key):
+def on_press_f2(key):
     time.sleep(0.02)
     if key == keyboard.Key.f2:
         # 暂停或恢复程序
@@ -36,7 +36,7 @@ def on_press_f3(key):
 def start_hotkey_listener():
     global listener_f2
     if listener_f2 is None or not listener_f2.running:
-        listener_f2 = keyboard.Listener(on_press=on_press)
+        listener_f2 = keyboard.Listener(on_press=on_press_f2)
         listener_f3 = keyboard.Listener(on_press=on_press_f3)
         listener_f2.daemon = True
         listener_f3.daemon = True

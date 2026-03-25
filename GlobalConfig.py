@@ -32,6 +32,7 @@ scale_y = 1.0
 scr = None
 mouse = None
 gui_fish_update_callback = None  # GUI更新回调（将在create_gui中设置）
+bait_count_val = None # 鱼饵数量
 
 # 参数文件路径
 PARAMETER_FILE = "./parameters.json"
@@ -56,6 +57,7 @@ class GlobalConfig:
         self.scr = scr
         self.gui_fish_update_callback = gui_fish_update_callback
         self.mouse = mouse
+        self.bait_count_val = bait_count_val
         self.params = {
             "interval": 0.4,
             "mouse_left_hold_time": 1.8,
@@ -132,6 +134,7 @@ class GlobalConfig:
         except Exception as e:
             print(f"❌ [错误] 更新参数失败: {e}")
             return False
+
 
 # 全局配置
 global_config = GlobalConfig()

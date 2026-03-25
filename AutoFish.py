@@ -13,7 +13,6 @@ run_event = threading.Event()
 begin_event = threading.Event()
 
 param_lock = threading.Lock()
-result_val_is = None  # 当前识别的结果
 previous_result = None  # 上次识别的结果
 current_result = 0  # 当前识别的数字
 reel_rod_times = 0  # 当前收杆次数
@@ -32,7 +31,7 @@ def compare_results():
 
 
 def auto_fish():
-    global param_lock, run_event, begin_event, previous_result, result_val_is, current_result, reel_rod_times
+    global param_lock, run_event, begin_event, previous_result, current_result, reel_rod_times
     while not begin_event.is_set():
         if run_event.is_set():
             global_config.scr = None
@@ -59,17 +58,17 @@ def auto_fish():
                     if overtime_matched():
                         overtime_y()
                         if bait_math_val():
-                            previous_result = result_val_is
+                            previous_result = global_config.bait_count_val
                 elif current_overtime_val == 1:
                     if overtime_matched():
                         overtime_n()
                         if bait_math_val():
-                            previous_result = result_val_is
+                            previous_result = global_config.bait_count_val
                 time.sleep(0.05)
 
                 # 获取当前结果
                 if bait_math_val():
-                    current_result = result_val_is
+                    current_result = global_config.bait_count_val
                 else:
                     current_result = previous_result  # 将当前数字设为上次的数字
                     time.sleep(0.1)
@@ -135,7 +134,7 @@ def toggle_run_auto_fish():
                 global_config.scr = temp_scr  # 临时赋值供bait_math_val使用
                 bait_result = bait_math_val()
                 if bait_result or bait_result == 0:
-                    previous_result = result_val_is
+                    previous_result = global_config.bait_count_val
                     run_event.set()  # 恢复运行
                     print("▶️  [状态] 钓鱼脚本开始运行")
                 else:

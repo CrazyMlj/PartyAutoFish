@@ -52,8 +52,6 @@ bucket_full_template = None  # todo 缺少图片模板
 bucket_48_template = None  # todo 缺少图片模板
 bucket_empty_template = None  # todo 缺少图片模板
 
-# 局部常量
-bait_count_val = None  # 鱼饵数量
 
 
 # ========================
@@ -67,9 +65,9 @@ def load_templates():
     load_fishing_template()
     load_over_time_template()
     load_lock_template()
-    load_bucket_full_template()
-    load_bucket_48_template()
-    load_bucket_empty_template()
+    #load_bucket_full_template()
+    #load_bucket_48_template()
+    #load_bucket_empty_template()
 
 
 # 加载模板（0.png到9.png）
@@ -88,7 +86,7 @@ def load_num_templates():
 # 加载模板
 def load(template: str):
     global template_folder_path
-    if template is None:
+    if template is not None:
         template_path = os.path.join(template_folder_path, template)
         img = Image.open(template_path)
         template_img_arr = np.array(img)
@@ -154,13 +152,13 @@ def load_bucket_48_template():
 # 识别数字
 # ========================
 def bait_math_val():
-    global bait_ten, bait_one, bait_count_val
+    global bait_ten, bait_one
     # 使用缩放后的坐标
     region = screen_adaptation(*BAIT_REGION_BASE)
     math_frame = global_config.scr.grab(region)
     # 将 mss 截取的图像转换为 NumPy 数组 (height, width, 4)，即 RGBA 图像
     if math_frame is None:
-        bait_count_val = None
+        global_config.bait_count_val = None
         return None
     else:
         img = np.array(math_frame)  # screenshot 是 ScreenShot 类型，转换为 NumPy 数组
@@ -178,12 +176,12 @@ def bait_math_val():
             best_match1_val = best_match1[0]  # 提取区域1的数字索引
             best_match2_val = best_match2[0]  # 提取区域2的数字索引
             # 拼接两个匹配的数字，转换为整数
-            bait_count_val = int(f"{best_match1_val}{best_match2_val}")
+            global_config.bait_count_val = int(f"{best_match1_val}{best_match2_val}")
         elif best_match3:
-            bait_count_val = int(f'{best_match3[0]}')
+            global_config.bait_count_val = int(f'{best_match3[0]}')
         else:
-            bait_count_val = None
-        return bait_count_val
+            global_config.bait_count_val = None
+        return global_config.bait_count_val
 
 
 def match_digit_template(image):
