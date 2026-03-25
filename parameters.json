@@ -1,0 +1,16 @@
+{
+  "interval": 0.4,
+  "mouse_left_hold_time": 1.8,
+  "mouse_left_release_time": 0.7,
+  "cycle_times": 20.0,
+  "casting_time": 1.65,
+  "is_overtime": 1,
+  "is_auto_fish_discard": 1,
+  "auto_discard_speed": 0.4,
+  "discard_level": 4,
+  "resolution": "2K",
+  "custom_width": 2560,
+  "custom_height": 1440,
+  "base_width": 2560,
+  "base_height": 1440
+}
