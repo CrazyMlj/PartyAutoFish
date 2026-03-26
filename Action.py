@@ -48,10 +48,6 @@ QUALITY_COLORS = {
     5: [250, 198, 59]  # 传奇
 }
 
-# 数字模板
-bait_ten = 0
-bait_one = 0
-
 
 class Location:
     # 全局配置单例
@@ -190,10 +186,7 @@ png_template = Template()
 # 识别数字
 # ========================
 def bait_math_val():
-    global bait_ten, bait_one
-    # 使用缩放后的坐标
-    region_base = screen_adaptation_rectangle(*BAIT_REGION_BASE)
-    gray_img = capture_region_gary(*region_base)
+    gray_img = capture_region_gary(*location.bait_region_base)
     # 截取并处理区域1
     bait_ten = gray_img[0:22, 0:15]  # 获取区域1的图像 15 * 22
     best_match1 = match_digit_template(bait_ten)
@@ -216,10 +209,9 @@ def bait_math_val():
 
 
 def match_digit_template(image):
-    global num_templates
     best_match = None  # 最佳匹配信息
     best_val = 0  # 存储最佳匹配度
-    for i, template in enumerate(num_templates):
+    for i, template in enumerate(png_template.num_templates):
         res = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
         if max_val > 0.8 and max_val > best_val:  # 找到最佳匹配
@@ -233,7 +225,6 @@ def match_digit_template(image):
 # ========================
 # 基本识别方法
 def match(region_base, template):
-    region_base = screen_adaptation_rectangle(*region_base)
     # 获取区域坐标并捕获灰度图
     region_gray = capture_region_gary(*region_base)
     if region_gray is None:
@@ -311,15 +302,13 @@ def recognize_fish_quality(tolerance):
 # ========================
 # 加时
 def overtime_y():
-    x, y = screen_adaptation_point(*location.btn_yes_jiashi_base)
-    mouse.move(x, y)
+    mouse.move(*location.btn_yes_jiashi_base)
     hold_mouse_left_button(0.1)
 
 
 # 不加时
 def overtime_n():
-    x, y = screen_adaptation_point(*location.btn_no_jiashi_base)
-    mouse.move(x, y)
+    mouse.move(*location.btn_no_jiashi_base)
     hold_mouse_left_button(0.1)
 
 
@@ -335,33 +324,28 @@ def open_fish_bucket():
 
 # 关闭鱼桶界面
 def close_fish_bucket():
-    x, y = screen_adaptation_point(*location.close_button_location)
     # 移动鼠标至关闭图标按钮
-    mouse.move(x, y)
+    mouse.move(*location.close_button_location)
     hold_mouse_left_button(0.1)
 
 
 # 锁定鱼
 def lock_fish():
-    x, y = screen_adaptation_point(*location.first_fish_location)
-    x1, y1 = screen_adaptation_point(*location.fish_locked_location)
     # 移动鼠标到第一条鱼上 单击鼠标右键 移动鼠标至"锁定" 单击鼠标左键
-    mouse.move(x, y)
+    mouse.move(*location.first_fish_location)
     hold_mouse_right_button(0.1)
-    mouse.move(x1, y1)
+    mouse.move(*location.fish_locked_location)
     hold_mouse_left_button(0.1)
     # 鼠标复位
-    mouse.move(x, y)
+    mouse.move(*location.first_fish_location)
 
 
 # 放生鱼
 def discard_fish():
-    x, y = screen_adaptation_point(*location.first_fish_location)
-    x1, y1 = screen_adaptation_point(*location.fish_discard_location)
     # 移动鼠标到第一条鱼上 单击鼠标右键 移动鼠标至"放生" 单击鼠标左键
-    mouse.move(x, y)
+    mouse.move(*location.first_fish_location)
     hold_mouse_right_button(0.1)
-    mouse.move(x1, y1)
+    mouse.move(*location.fish_discard_location)
     hold_mouse_left_button(0.1)
     # 鼠标复位
     mouse.move(x, y)
