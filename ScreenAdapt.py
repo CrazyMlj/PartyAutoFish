@@ -5,18 +5,18 @@ from GlobalConfig import global_config
 
 
 # 分辨率适配
-def screen_adaptation(x, y, w, h):
+def screen_adaptation_rectangle(x, y, w, h):
     return int(x * global_config.scale_x), int(y * global_config.scale_y), int(w * global_config.scale_x), int(
         h + global_config.scale_y)
 
 
 # 分辨率适配
-def screen_adaptation_2(x, y):
+def screen_adaptation_point(x, y):
     return int(x * global_config.scale_x), int(y * global_config.scale_y)
 
 
 # 分辨率适配
-def screen_adaptation_3(x):
+def screen_adaptation_x(x):
     return int(x * global_config.scale_x)
 
 

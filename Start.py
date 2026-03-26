@@ -8,7 +8,7 @@ import keyboard
 import mss
 from pynput import keyboard
 
-from Action import load_templates
+from Action import png_template
 from AutoFish import toggle_run_auto_fish, auto_fish
 from AutoFishDiscard import auto_fish_discard, toggle_run_auto_fish_discard
 from FishRecord import load_all_fish_records
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     load_all_fish_records()
 
     print("🖼️  [初始化] 正在加载图像模板...")
-    load_templates()
+    png_template.load_templates()
     print("✅ [初始化] 模板加载完成")
 
     # 启动热键监听

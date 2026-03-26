@@ -9,7 +9,7 @@ from PIL import Image
 from GlobalConfig import global_config
 from MouseOrKeyBoardUtil import hold_mouse_left_button, key_press, POINT, key_release, \
     hold_mouse_right_button, _default_mouse
-from ScreenAdapt import screen_adaptation, capture_region_gary, screen_adaptation_3, screen_adaptation_2, \
+from ScreenAdapt import screen_adaptation_rectangle, capture_region_gary, screen_adaptation_x, screen_adaptation_point, \
     capture_region, capture_region_rgb
 
 template_folder_path = os.path.join('.', 'resources')
@@ -52,49 +52,44 @@ QUALITY_COLORS = {
 bait_ten = 0
 bait_one = 0
 
-# 图片模板
-num_templates = None
-star_template = None
-f1_template = None
-f2_template = None
-fishing_template = None
-bucket_opened_template = None
-lock_template = None
-over_time_template = None
-bucket_full_template = None
-bucket_empty_template = None
+
+class Location:
+    # 全局配置单例
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            if cls._instance is None:
+                cls._instance = super().__new__(cls)
+                cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self):
+        self.bait_region_base = BAIT_REGION_BASE
+        self.fish_star_region_base = FISH_STAR_REGION_BASE
+        self.f_1_region_base = F_1_REGION_BASE
+        self.f_2_region_base = F_2_REGION_BASE
+        self.fishing_region_base = FISHING_REGION_BASE
+        self.overtime_region_base = OVERTIME_REGION_BASE
+        self.btn_no_jiashi_base = BTN_NO_JIASHI_BASE
+        self.btn_yes_jiashi_base = BTN_YES_JIASHI_BASE
+        self.open_fish_bucket_bit_base = OPEN_FISH_BUCKET_BIT_BASE
+        self.bucket_opened_region_base = BUCKET_OPENED_REGION_BASE
+        self.bucket_full_region_base = BUCKET_FULL_REGION_BASE
+        self.bucket_left_num_region_base = BUCKET_LEFT_NUM_REGION_BASE
+        self.bucket_empty_region_base = BUCKET_EMPTY_REGION_BASE
+        self.fish_color_info_region_base = FISH_COLOR_INFO_REGION_BASE
+        self.fish_is_locked_region_base = FISH_IS_LOCKED_REGION_BASE
+        self.first_fish_location = FIRST_FISH_LOCATION
+        self.close_button_location = CLOSE_BUTTON_LOCATION
+        self.fish_discard_location = FISH_DISCARD_LOCATION
+        self.fish_locked_location = FISH_LOCKED_LOCATION
+
+    #todo 更新位置信息(基于分辨率变化)
+
+location = Location()
 
 
-# ========================
-# 模板加载
-# ========================
-def load_templates():
-    load_num_templates()
-    load_star_template()
-    load_f1_template()
-    load_f2_template()
-    load_fishing_template()
-    load_over_time_template()
-    load_bucket_opened_template()
-    load_lock_template()
-    load_bucket_full_template()
-    load_bucket_empty_template()
-
-
-# 加载模板（0.png到9.png）
-def load_num_templates():
-    global num_templates, template_folder_path
-    if num_templates is None:
-        num_templates = []
-        for i in range(10):
-            template_path = os.path.join(template_folder_path, f"{i}_grayscale.png")
-            img = Image.open(template_path)
-            template = np.array(img)
-            num_templates.append(template)
-    return num_templates
-
-
-# 加载模板
 def load(template: str):
     global template_folder_path
     if template is not None:
@@ -105,58 +100,90 @@ def load(template: str):
     return None
 
 
-def load_star_template():
-    global star_template
-    star_template = load("star_grayscale.png")
-    return star_template
+class Template:
+    _instance = None
 
+    def __new__(cls):
+        if cls._instance is None:
+            if cls._instance is None:
+                cls._instance = super().__new__(cls)
+                cls._instance._initialized = False
+        return cls._instance
 
-def load_f1_template():
-    global f1_template
-    f1_template = load("F1_grayscale.png")
-    return f1_template
+    def __init__(self):
+        self.num_templates = None
+        self.star_template = None
+        self.f1_template = None
+        self.f2_template = None
+        self.fishing_template = None
+        self.bucket_opened_template = None
+        self.lock_template = None
+        self.over_time_template = None
+        self.bucket_full_template = None
+        self.bucket_empty_template = None
 
+    # 模板加载
+    def load_templates(self):
+        self.load_num_templates()
+        self.load_star_template()
+        self.load_f1_template()
+        self.load_f2_template()
+        self.load_fishing_template()
+        self.load_over_time_template()
+        self.load_bucket_opened_template()
+        self.load_lock_template()
+        self.load_bucket_full_template()
+        self.load_bucket_empty_template()
 
-def load_f2_template():
-    global f2_template
-    f2_template = load("F2_grayscale.png")
-    return f2_template
+    def load_star_template(self):
+        self.star_template = load("star_grayscale.png")
+        return self.star_template
 
+    def load_f1_template(self):
+        self.f1_template = load("F1_grayscale.png")
+        return self.f1_template
 
-def load_fishing_template():
-    global fishing_template
-    fishing_template = load("shangyu_grayscale.png")
-    return fishing_template
+    def load_f2_template(self):
+        self.f2_template = load("F2_grayscale.png")
+        return self.f2_template
 
+    def load_fishing_template(self):
+        self.fishing_template = load("shangyu_grayscale.png")
+        return self.fishing_template
 
-def load_over_time_template():
-    global over_time_template
-    over_time_template = load("chang_grayscale.png")
-    return over_time_template
+    def load_over_time_template(self):
+        self.over_time_template = load("chang_grayscale.png")
+        return self.over_time_template
 
+    def load_bucket_opened_template(self):
+        self.bucket_opened_template = load("bucket_opened_grayscale.png")
+        return self.bucket_opened_template
 
-def load_bucket_opened_template():
-    global bucket_opened_template
-    bucket_opened_template = load("bucket_opened_grayscale.png")
-    return bucket_opened_template
+    def load_lock_template(self):
+        self.lock_template = load("lock_grayscale.png")
+        return self.lock_template
 
+    def load_bucket_full_template(self):
+        self.bucket_full_template = load("bucket_full_grayscale.png")
+        return self.bucket_full_template
 
-def load_lock_template():
-    global lock_template
-    lock_template = load("lock_grayscale.png")
-    return lock_template
+    def load_bucket_empty_template(self):
+        self.bucket_empty_template = load("bucket_empty_grayscale.png")
+        return self.bucket_empty_template
 
+    # 加载模板（0.png到9.png）
+    def load_num_templates(self):
+        global template_folder_path
+        if self.num_templates is None:
+            self.num_templates = []
+            for i in range(10):
+                template_path = os.path.join(template_folder_path, f"{i}_grayscale.png")
+                img = Image.open(template_path)
+                template = np.array(img)
+                self.num_templates.append(template)
+        return self.num_templates
 
-def load_bucket_full_template():
-    global bucket_full_template
-    bucket_full_template = load("bucket_full_grayscale.png")
-    return bucket_full_template
-
-
-def load_bucket_empty_template():
-    global bucket_empty_template
-    bucket_empty_template = load("bucket_empty_grayscale.png")
-    return bucket_empty_template
+png_template = Template()
 
 
 # ========================
@@ -165,7 +192,7 @@ def load_bucket_empty_template():
 def bait_math_val():
     global bait_ten, bait_one
     # 使用缩放后的坐标
-    region_base = screen_adaptation(*BAIT_REGION_BASE)
+    region_base = screen_adaptation_rectangle(*BAIT_REGION_BASE)
     gray_img = capture_region_gary(*region_base)
     # 截取并处理区域1
     bait_ten = gray_img[0:22, 0:15]  # 获取区域1的图像 15 * 22
@@ -202,11 +229,11 @@ def match_digit_template(image):
 
 
 # ========================
-# 识别c
+# 识别
 # ========================
 # 基本识别方法
 def match(region_base, template):
-    region_base = screen_adaptation(*region_base)
+    region_base = screen_adaptation_rectangle(*region_base)
     # 获取区域坐标并捕获灰度图
     region_gray = capture_region_gary(*region_base)
     if region_gray is None:
@@ -216,59 +243,50 @@ def match(region_base, template):
 
 
 def fished_match():
-    global FISH_STAR_REGION_BASE, star_template
-    return match(FISH_STAR_REGION_BASE, star_template)
+    return match(location.fish_star_region_base, png_template.star_template)
 
 
 def f1_matched():
-    global F_1_REGION_BASE, f1_template
-    return match(F_1_REGION_BASE, f1_template)
+    return match(location.f_1_region_base, png_template.f1_template)
 
 
 def f2_matched():
-    global F_2_REGION_BASE, f2_template
-    return match(F_2_REGION_BASE, f2_template)
+    return match(location.f_2_region_base, png_template.f2_template)
 
 
 def fishing_matched():
-    global FISHING_REGION_BASE, fishing_template
-    return match(FISHING_REGION_BASE, fishing_template)
+    return match(location.fishing_region_base, png_template.fishing_template)
 
 
 def overtime_matched():
-    global OVERTIME_REGION_BASE, over_time_template
-    return match(OVERTIME_REGION_BASE, over_time_template)
+    return match(location.overtime_region_base, png_template.over_time_template)
 
 
 # 桶是否已打开
 def bucket_opened_matched():
-    global BUCKET_OPENED_REGION_BASE, bucket_opened_template
-    return match(BUCKET_OPENED_REGION_BASE, bucket_opened_template)
+    return match(location.bucket_opened_region_base, png_template.bucket_opened_template)
 
 
 # 鱼是否已经锁住
 def locked_fish_matched():
-    global FISH_IS_LOCKED_REGION_BASE, lock_template
-    return match(FISH_IS_LOCKED_REGION_BASE, lock_template)
+    return match(location.fish_is_locked_region_base, png_template.lock_template)
 
 
 # 桶是否已满(提示词"鱼桶已满")
 def bucket_full_matched():
-    global BUCKET_FULL_REGION_BASE, bucket_full_template
-    return match(BUCKET_FULL_REGION_BASE, bucket_full_template)
+    return match(location.bucket_full_region_base, png_template.bucket_full_template)
 
 
 # 桶是否为空
 def bucket_empty_matched():
-    global BUCKET_EMPTY_REGION_BASE, bucket_empty_template
-    return match(BUCKET_EMPTY_REGION_BASE, bucket_empty_template)
+    return match(location.bucket_empty_region_base, png_template.bucket_empty_template)
 
 
 # 桶是否有48条鱼
 def bucket_48_matched():
     global BUCKET_LEFT_NUM_REGION_BASE
-    BUCKET_LEFT_NUM_REGION_BASE = screen_adaptation(*BUCKET_LEFT_NUM_REGION_BASE)
-    match_frame = global_config.scr.grab(BUCKET_LEFT_NUM_REGION_BASE)
+    BUCKET_LEFT_NUM_REGION_BASE = screen_adaptation_rectangle(*BUCKET_LEFT_NUM_REGION_BASE)
+    match_frame = global_config.scr.grab(location.bucket_left_num_region_base)
     if match_frame is not None:
         img = np.array(match_frame)
         gray_img = cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
@@ -280,8 +298,7 @@ def bucket_48_matched():
 
 # 识别鱼品质
 def recognize_fish_quality(tolerance):
-    global FISH_COLOR_INFO_REGION_BASE
-    img = capture_region_rgb(*FISH_COLOR_INFO_REGION_BASE)
+    img = capture_region_rgb(*location.fish_color_info_region_base)
     for QUALITY_COLOR in QUALITY_COLORS.items():
         distance = sum((img[0][0][i] - QUALITY_COLOR[1][i]) for i in range(3))
         if distance <= tolerance:
@@ -294,35 +311,31 @@ def recognize_fish_quality(tolerance):
 # ========================
 # 加时
 def overtime_y():
-    global BTN_YES_JIASHI_BASE
-    x, y = screen_adaptation_2(*BTN_YES_JIASHI_BASE)
+    x, y = screen_adaptation_point(*location.btn_yes_jiashi_base)
     mouse.move(x, y)
     hold_mouse_left_button(0.1)
 
 
 # 不加时
 def overtime_n():
-    global BTN_NO_JIASHI_BASE
-    x, y = screen_adaptation_2(*BTN_NO_JIASHI_BASE)
+    x, y = screen_adaptation_point(*location.btn_no_jiashi_base)
     mouse.move(x, y)
     hold_mouse_left_button(0.1)
 
 
 # 打开鱼桶界面
 def open_fish_bucket():
-    global OPEN_FISH_BUCKET_BIT_BASE
     # 长按按c键打开 移动鼠标到鱼桶图标 释放c键打开鱼桶
     key_press(67, 1, True)
     point = POINT()
     user32.GetCursorPos(ctypes.byref(point))
-    mouse.move(point.x + screen_adaptation_3(OPEN_FISH_BUCKET_BIT_BASE), point.y)
+    mouse.move(point.x + screen_adaptation_x(location.open_fish_bucket_bit_base), point.y)
     key_release(67)
 
 
 # 关闭鱼桶界面
 def close_fish_bucket():
-    global CLOSE_BUTTON_LOCATION
-    x, y = screen_adaptation_2(*CLOSE_BUTTON_LOCATION)
+    x, y = screen_adaptation_point(*location.close_button_location)
     # 移动鼠标至关闭图标按钮
     mouse.move(x, y)
     hold_mouse_left_button(0.1)
@@ -330,9 +343,8 @@ def close_fish_bucket():
 
 # 锁定鱼
 def lock_fish():
-    global FIRST_FISH_LOCATION, FISH_LOCKED_LOCATION
-    x, y = screen_adaptation_2(*FIRST_FISH_LOCATION)
-    x1, y1 = screen_adaptation_2(*FISH_LOCKED_LOCATION)
+    x, y = screen_adaptation_point(*location.first_fish_location)
+    x1, y1 = screen_adaptation_point(*location.fish_locked_location)
     # 移动鼠标到第一条鱼上 单击鼠标右键 移动鼠标至"锁定" 单击鼠标左键
     mouse.move(x, y)
     hold_mouse_right_button(0.1)
@@ -344,9 +356,8 @@ def lock_fish():
 
 # 放生鱼
 def discard_fish():
-    global FIRST_FISH_LOCATION, FISH_DISCARD_LOCATION
-    x, y = screen_adaptation_2(*FIRST_FISH_LOCATION)
-    x1, y1 = screen_adaptation_2(*FISH_DISCARD_LOCATION)
+    x, y = screen_adaptation_point(*location.first_fish_location)
+    x1, y1 = screen_adaptation_point(*location.fish_discard_location)
     # 移动鼠标到第一条鱼上 单击鼠标右键 移动鼠标至"放生" 单击鼠标左键
     mouse.move(x, y)
     hold_mouse_right_button(0.1)

@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 
 from GlobalConfig import global_config, gui_fish_update_callback
-from ScreenAdapt import screen_adaptation
+from ScreenAdapt import screen_adaptation_rectangle
 
 # 鱼信息识别区域（2K分辨率基准值）
 FISH_INFO_REGION_BASE = (915, 75, 1640, 225)
@@ -116,7 +116,7 @@ def capture_fish_info_region():
     if scr is None:
         return None
 
-    region = screen_adaptation(*FISH_INFO_REGION_BASE)
+    region = screen_adaptation_rectangle(*FISH_INFO_REGION_BASE)
 
     try:
         frame = scr.grab(region)
