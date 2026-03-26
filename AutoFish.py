@@ -4,7 +4,8 @@ import time
 import mss
 
 from Action import f1_matched, f2_matched, fishing_matched, overtime_matched, overtime_y, bait_math_val, overtime_n, \
-    fished_match
+    fished_match, bucket_full_matched
+from AutoFishDiscard import auto_fish_discard_sync
 from FishRecord import record_caught_fish, end_current_session, start_new_session
 from GlobalConfig import global_config
 from MouseOrKeyBoardUtil import hold_mouse_left_button, press_and_release_mouse_button, ensure_mouse_left_up
@@ -41,6 +42,11 @@ def auto_fish():
                 # 检测F1/F2抛竿
                 if f1_matched():
                     hold_mouse_left_button(global_config.params['casting_time'])
+                    if bucket_full_matched():
+                        ensure_mouse_left_up()
+                        print("🌊🐟️ [自动放生] 桶已钓满...")
+                        auto_fish_discard_sync(run_event)
+                        continue
                     time.sleep(0.15)
                 elif f2_matched():
                     hold_mouse_left_button(global_config.params['casting_time'])

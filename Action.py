@@ -30,7 +30,7 @@ BTN_YES_JIASHI_BASE = (1398, 776)  # 加时按钮
 
 OPEN_FISH_BUCKET_BIT_BASE = -200  # 打开鱼桶鼠标移动
 BUCKET_OPENED_REGION_BASE = (2145, 408, 34, 36)  # 桶以打开
-BUCKET_FULL_REGION_BASE = (1184, 443, 36, 38)  # 鱼桶满了(满)
+BUCKET_FULL_REGION_BASE = (1184, 434, 36, 38)  # 鱼桶满了(满)
 BUCKET_LEFT_NUM_REGION_BASE = (2148, 457, 2215, 478)  # 鱼桶已装(48)
 BUCKET_EMPTY_REGION_BASE = (2111, 909, 33, 34)  # 鱼桶一条鱼也没有(空)
 FISH_COLOR_INFO_REGION_BASE = (1924, 640, 1, 1)  # 鱼桶中第一条鱼位置
@@ -290,7 +290,7 @@ def recognize_fish_quality(tolerance):
     global FISH_COLOR_INFO_REGION_BASE
     img = capture_region_rgb(*FISH_COLOR_INFO_REGION_BASE)
     for QUALITY_COLOR in QUALITY_COLORS.items():
-        distance = sum((img[0][0][i] - QUALITY_COLOR[1][i]) for i in range(3))
+        distance = sum((int(img[0][0]) - QUALITY_COLOR[1][i]) for i in range(3))
         if distance <= tolerance:
             return QUALITY_COLOR[0]
     return None
