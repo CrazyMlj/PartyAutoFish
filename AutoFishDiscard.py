@@ -51,7 +51,7 @@ def auto_fish_discard_sync(event):
     try:
         if not bucket_opened_matched():
             open_fish_bucket()
-            time.sleep(1)
+            time.sleep(2)
 
         if bucket_empty_matched():
             print("🌊🐟️ [自动放生] 鱼桶中没有鱼...")
@@ -72,7 +72,7 @@ def auto_fish_discard_sync(event):
             level = recognize_fish_quality(50)
             if level is None:
                 print("🌊🐟️ [自动放生] 未识别出桶中第一条鱼的质量...")
-                break
+                continue
             with param_lock:
                 discard_level = global_config.params['discard_level']
 
