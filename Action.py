@@ -19,6 +19,9 @@ scr = mss.mss()
 
 # 位置信息(基准"2k")
 BAIT_REGION_BASE = (2318, 1296, 30, 22)  # 鱼饵数量区域
+BAIT_TEN = (0, 22, 0, 15)  # 十位
+BAIT_ONE = (0, 22, 15, 30)  # 个位
+BAIT_MID = (0, 22, 7, 15)  # 中间位
 FISH_STAR_REGION_BASE = (1172, 165, 34, 34)  # 上鱼星星
 F_1_REGION_BASE = (1100, 1329, 10, 19)  # F1位置
 F_2_REGION_BASE = (1212, 1329, 10, 19)  # F2位置
@@ -62,6 +65,9 @@ class Location:
 
     def __init__(self):
         self.bait_region_base = BAIT_REGION_BASE
+        self.bait_ten = BAIT_TEN
+        self.bait_one = BAIT_ONE
+        self.bait_mid = BAIT_MID
         self.fish_star_region_base = FISH_STAR_REGION_BASE
         self.f_1_region_base = F_1_REGION_BASE
         self.f_2_region_base = F_2_REGION_BASE
@@ -81,7 +87,8 @@ class Location:
         self.fish_discard_location = FISH_DISCARD_LOCATION
         self.fish_locked_location = FISH_LOCKED_LOCATION
 
-    #todo 更新位置信息(基于分辨率变化)
+    # todo 更新位置信息(基于分辨率变化)
+
 
 location = Location()
 
@@ -179,21 +186,25 @@ class Template:
                 self.num_templates.append(template)
         return self.num_templates
 
+
 png_template = Template()
 
 
 # ========================
 # 识别数字
 # ========================
-def bait_math_val():
+def bait_match_val():
     gray_img = capture_region_gary(*location.bait_region_base)
     # 截取并处理区域1
-    bait_ten = gray_img[0:22, 0:15]  # 获取区域1的图像 15 * 22
+    bait_ten = gray_img[
+        location.bait_ten[0]:location.bait_ten[1], location.bait_ten[2]:location.bait_ten[3]]  # 获取区域1的图像 15 * 22
     best_match1 = match_digit_template(bait_ten)
     # 截取并处理区域2
-    bait_one = gray_img[0:22, 15:30]  # 获取区域2的图像 15 * 22
+    bait_one = gray_img[
+        location.bait_one[0]:location.bait_one[1], location.bait_one[2]:location.bait_one[3]]  # 获取区域2的图像 15 * 22
     best_match2 = match_digit_template(bait_one)
-    region3 = gray_img[0:22, 7:22]  # 获取区域3的图像 15 * 22
+    region3 = gray_img[
+        location.bait_mid[0]:location.bait_mid[1], location.bait_mid[2]:location.bait_mid[3]]  # 获取区域3的图像 15 * 22
     best_match3 = match_digit_template(region3)
     if best_match1 and best_match2:
         # 从best_match中提取数字索引（i），并拼接成整数
@@ -273,10 +284,8 @@ def bucket_empty_matched():
     return match(location.bucket_empty_region_base, png_template.bucket_empty_template)
 
 
-# 桶是否有48条鱼
+# 桶是否有48条鱼 todo 匹配灰度图片
 def bucket_48_matched():
-    global BUCKET_LEFT_NUM_REGION_BASE
-    BUCKET_LEFT_NUM_REGION_BASE = screen_adaptation_rectangle(*BUCKET_LEFT_NUM_REGION_BASE)
     match_frame = global_config.scr.grab(location.bucket_left_num_region_base)
     if match_frame is not None:
         img = np.array(match_frame)
@@ -318,7 +327,7 @@ def open_fish_bucket():
     key_press(67, 1, True)
     point = POINT()
     user32.GetCursorPos(ctypes.byref(point))
-    mouse.move(point.x + screen_adaptation_x(location.open_fish_bucket_bit_base), point.y)
+    mouse.move(point.x + location.open_fish_bucket_bit_base, point.y)
     key_release(67)
 
 

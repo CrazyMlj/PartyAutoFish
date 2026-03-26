@@ -3,7 +3,7 @@ import time
 
 import mss
 
-from Action import f1_matched, f2_matched, fishing_matched, overtime_matched, overtime_y, bait_math_val, overtime_n, \
+from Action import f1_matched, f2_matched, fishing_matched, overtime_matched, overtime_y, bait_match_val, overtime_n, \
     fished_match, bucket_full_matched
 from AutoFishDiscard import auto_fish_discard_sync
 from FishRecord import record_caught_fish, end_current_session, start_new_session
@@ -63,17 +63,17 @@ def auto_fish():
                 if current_overtime_val == 0:
                     if overtime_matched():
                         overtime_y()
-                        if bait_math_val():
+                        if bait_match_val():
                             previous_result = global_config.bait_count_val
                 elif current_overtime_val == 1:
                     if overtime_matched():
                         overtime_n()
-                        if bait_math_val():
+                        if bait_match_val():
                             previous_result = global_config.bait_count_val
                 time.sleep(0.05)
 
                 # 获取当前结果
-                if bait_math_val():
+                if bait_match_val():
                     current_result = global_config.bait_count_val
                 else:
                     current_result = previous_result  # 将当前数字设为上次的数字
@@ -140,7 +140,7 @@ def toggle_run_auto_fish():
             try:
                 temp_scr = mss.mss()
                 global_config.scr = temp_scr  # 临时赋值供bait_math_val使用
-                bait_result = bait_math_val()
+                bait_result = bait_match_val()
                 if bait_result or bait_result == 0:
                     previous_result = global_config.bait_count_val
                     run_event.set()  # 恢复运行
