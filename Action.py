@@ -348,4 +348,4 @@ def discard_fish():
     mouse.move(*location.fish_discard_location)
     hold_mouse_left_button(0.1)
     # 鼠标复位
-    mouse.move(x, y)
+    mouse.move(*location.first_fish_location)
