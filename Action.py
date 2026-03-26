@@ -18,7 +18,7 @@ mouse = _default_mouse
 scr = mss.mss()
 
 # 位置信息(基准"2k")
-BAIT_REGION_BASE = (2318, 1296, 2348, 1318)  # 鱼饵数量区域
+BAIT_REGION_BASE = (2318, 1296, 30, 22)  # 鱼饵数量区域
 FISH_STAR_REGION_BASE = (1172, 165, 34, 34)  # 上鱼星星
 F_1_REGION_BASE = (1100, 1329, 10, 19)  # F1位置
 F_2_REGION_BASE = (1212, 1329, 10, 19)  # F2位置
@@ -165,34 +165,27 @@ def load_bucket_empty_template():
 def bait_math_val():
     global bait_ten, bait_one
     # 使用缩放后的坐标
-    region = screen_adaptation(*BAIT_REGION_BASE)
-    math_frame = global_config.scr.grab(region)
-    # 将 mss 截取的图像转换为 NumPy 数组 (height, width, 4)，即 RGBA 图像
-    if math_frame is None:
-        global_config.bait_count_val = None
-        return None
+    region_base = screen_adaptation(*BAIT_REGION_BASE)
+    gray_img = capture_region_gary(*region_base)
+    # 截取并处理区域1
+    bait_ten = gray_img[0:22, 0:15]  # 获取区域1的图像 15 * 22
+    best_match1 = match_digit_template(bait_ten)
+    # 截取并处理区域2
+    bait_one = gray_img[0:22, 15:30]  # 获取区域2的图像 15 * 22
+    best_match2 = match_digit_template(bait_one)
+    region3 = gray_img[0:22, 7:22]  # 获取区域3的图像 15 * 22
+    best_match3 = match_digit_template(region3)
+    if best_match1 and best_match2:
+        # 从best_match中提取数字索引（i），并拼接成整数
+        best_match1_val = best_match1[0]  # 提取区域1的数字索引
+        best_match2_val = best_match2[0]  # 提取区域2的数字索引
+        # 拼接两个匹配的数字，转换为整数
+        global_config.bait_count_val = int(f"{best_match1_val}{best_match2_val}")
+    elif best_match3:
+        global_config.bait_count_val = int(f'{best_match3[0]}')
     else:
-        img = np.array(math_frame)  # screenshot 是 ScreenShot 类型，转换为 NumPy 数组
-        gray_img = cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
-        # 截取并处理区域1
-        bait_ten = gray_img[0:22, 0:15]  # 获取区域1的图像
-        best_match1 = match_digit_template(bait_ten)
-        # 截取并处理区域2
-        bait_one = gray_img[0:22, 15:30]  # 获取区域2的图像
-        best_match2 = match_digit_template(bait_one)
-        region3 = gray_img[0:22, 7:22]
-        best_match3 = match_digit_template(region3)
-        if best_match1 and best_match2:
-            # 从best_match中提取数字索引（i），并拼接成整数
-            best_match1_val = best_match1[0]  # 提取区域1的数字索引
-            best_match2_val = best_match2[0]  # 提取区域2的数字索引
-            # 拼接两个匹配的数字，转换为整数
-            global_config.bait_count_val = int(f"{best_match1_val}{best_match2_val}")
-        elif best_match3:
-            global_config.bait_count_val = int(f'{best_match3[0]}')
-        else:
-            global_config.bait_count_val = None
-        return global_config.bait_count_val
+        global_config.bait_count_val = None
+    return global_config.bait_count_val
 
 
 def match_digit_template(image):

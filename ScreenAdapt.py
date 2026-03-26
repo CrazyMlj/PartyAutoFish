@@ -27,7 +27,7 @@ def capture_region(x, y, w, h, tp):
     if frame is None:
         return None
     img_arr = np.array(frame)  # screenshot �?ScreenShot 类型，转换为 NumPy 数组
-    img = cv2.cvtColor(img_arr, tp)  # cv2.COLOR_BGRA2RGB
+    img = cv2.cvtColor(img_arr, tp)
     return img
 
 # 灰度截取
