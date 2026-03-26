@@ -26,7 +26,7 @@ def capture_region(x, y, w, h, tp):
     frame = global_config.scr.grab(region)
     if frame is None:
         return None
-    img_arr = np.array(frame)  # screenshot �?ScreenShot 类型，转换为 NumPy 数组
+    img_arr = np.array(frame)
     img = cv2.cvtColor(img_arr, tp)
     return img
 

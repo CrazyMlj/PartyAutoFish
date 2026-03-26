@@ -7,41 +7,16 @@ import numpy as np
 from PIL import Image
 
 from GlobalConfig import global_config
+from Location import location
 from MouseOrKeyBoardUtil import hold_mouse_left_button, key_press, POINT, key_release, \
     hold_mouse_right_button, _default_mouse
-from ScreenAdapt import screen_adaptation_rectangle, capture_region_gary, screen_adaptation_x, screen_adaptation_point, \
-    capture_region, capture_region_rgb
+from ScreenAdapt import capture_region_gary, capture_region_rgb
 
 template_folder_path = os.path.join('.', 'resources')
 user32 = ctypes.WinDLL("user32")
 mouse = _default_mouse
 scr = mss.mss()
 
-# 位置信息(基准"2k")
-BAIT_REGION_BASE = (2318, 1296, 30, 22)  # 鱼饵数量区域
-BAIT_TEN = (0, 22, 0, 15)  # 十位
-BAIT_ONE = (0, 22, 15, 30)  # 个位
-BAIT_MID = (0, 22, 7, 15)  # 中间位
-FISH_STAR_REGION_BASE = (1172, 165, 34, 34)  # 上鱼星星
-F_1_REGION_BASE = (1100, 1329, 10, 19)  # F1位置
-F_2_REGION_BASE = (1212, 1329, 10, 19)  # F2位置
-FISHING_REGION_BASE = (1146, 1316, 17, 21)  # 上鱼右键
-
-OVERTIME_REGION_BASE = (1245, 675, 26, 27)  # 加时界面检测区域
-BTN_NO_JIASHI_BASE = (1182, 776)  # 不加时按钮
-BTN_YES_JIASHI_BASE = (1398, 776)  # 加时按钮
-
-OPEN_FISH_BUCKET_BIT_BASE = -200  # 打开鱼桶鼠标移动
-BUCKET_OPENED_REGION_BASE = (2145, 408, 34, 36)  # 桶以打开
-BUCKET_FULL_REGION_BASE = (1184, 434, 36, 38)  # 鱼桶满了(满)
-BUCKET_LEFT_NUM_REGION_BASE = (2148, 457, 2215, 478)  # 鱼桶已装(48)
-BUCKET_EMPTY_REGION_BASE = (2111, 909, 33, 34)  # 鱼桶一条鱼也没有(空)
-FISH_COLOR_INFO_REGION_BASE = (1924, 640, 1, 1)  # 鱼桶中第一条鱼位置
-FISH_IS_LOCKED_REGION_BASE = (1924, 588, 23, 29)  # 鱼上锁
-FIRST_FISH_LOCATION = (1924, 640)  # 第一条鱼坐标
-CLOSE_BUTTON_LOCATION = (2461, 445)  # 关闭鱼桶坐标
-FISH_DISCARD_LOCATION = (1964, 800)  # 丢弃鱼坐标
-FISH_LOCKED_LOCATION = (1964, 860)  # 锁定鱼坐标
 
 QUALITY_COLORS = {
     1: [181, 185, 190],  # 标准
@@ -52,45 +27,6 @@ QUALITY_COLORS = {
 }
 
 
-class Location:
-    # 全局配置单例
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            if cls._instance is None:
-                cls._instance = super().__new__(cls)
-                cls._instance._initialized = False
-        return cls._instance
-
-    def __init__(self):
-        self.bait_region_base = BAIT_REGION_BASE
-        self.bait_ten = BAIT_TEN
-        self.bait_one = BAIT_ONE
-        self.bait_mid = BAIT_MID
-        self.fish_star_region_base = FISH_STAR_REGION_BASE
-        self.f_1_region_base = F_1_REGION_BASE
-        self.f_2_region_base = F_2_REGION_BASE
-        self.fishing_region_base = FISHING_REGION_BASE
-        self.overtime_region_base = OVERTIME_REGION_BASE
-        self.btn_no_jiashi_base = BTN_NO_JIASHI_BASE
-        self.btn_yes_jiashi_base = BTN_YES_JIASHI_BASE
-        self.open_fish_bucket_bit_base = OPEN_FISH_BUCKET_BIT_BASE
-        self.bucket_opened_region_base = BUCKET_OPENED_REGION_BASE
-        self.bucket_full_region_base = BUCKET_FULL_REGION_BASE
-        self.bucket_left_num_region_base = BUCKET_LEFT_NUM_REGION_BASE
-        self.bucket_empty_region_base = BUCKET_EMPTY_REGION_BASE
-        self.fish_color_info_region_base = FISH_COLOR_INFO_REGION_BASE
-        self.fish_is_locked_region_base = FISH_IS_LOCKED_REGION_BASE
-        self.first_fish_location = FIRST_FISH_LOCATION
-        self.close_button_location = CLOSE_BUTTON_LOCATION
-        self.fish_discard_location = FISH_DISCARD_LOCATION
-        self.fish_locked_location = FISH_LOCKED_LOCATION
-
-    # todo 更新位置信息(基于分辨率变化)
-
-
-location = Location()
 
 
 def load(template: str):
@@ -298,7 +234,7 @@ def bucket_48_matched():
 
 # 识别鱼品质
 def recognize_fish_quality(tolerance):
-    img = capture_region_rgb(*location.fish_color_info_region_base)
+    img = capture_region_rgb(location.fish_color_info_location[0], location.fish_color_info_location[1], 1, 1)
     for QUALITY_COLOR in QUALITY_COLORS.items():
         distance = sum((img[0][0][i] - QUALITY_COLOR[1][i]) for i in range(3))
         if distance <= tolerance:

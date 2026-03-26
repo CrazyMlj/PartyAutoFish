@@ -7,7 +7,7 @@ import time
 import cv2
 import numpy as np
 
-from GlobalConfig import global_config, gui_fish_update_callback
+from GlobalConfig import global_config
 from ScreenAdapt import screen_adaptation_rectangle
 
 # 鱼信息识别区域（2K分辨率基准值）
@@ -263,7 +263,7 @@ def record_caught_fish():
     # 通知GUI更新
     if global_config.gui_fish_update_callback:
         try:
-            gui_fish_update_callback()
+            global_config.gui_fish_update_callback()
         except:
             pass
 

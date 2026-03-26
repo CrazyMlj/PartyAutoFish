@@ -1,22 +1,6 @@
 import json
 import threading
 
-# 初始参数
-interval = 0.4
-mouse_left_hold_time = 1.8
-mouse_left_release_time = 0.7
-cycle_times = 20
-casting_time = 1.65
-is_overtime = 1
-is_auto_fish_discard = 0
-auto_discard_speed = 0.4
-discard_level = 4
-resolution = "2K"
-custom_width = 2560
-custom_height = 1440
-base_width = 2560
-base_height = 1440
-
 QUALITY_LEVEL = ["标准", "非凡", "稀有", "史诗", "传奇"]
 QUALITY_LEVEL_MAP = {
     "标准": 1,
@@ -25,15 +9,6 @@ QUALITY_LEVEL_MAP = {
     "史诗": 4,
     "传奇": 5
 }
-
-# 全局变量
-scale_x = 1.0
-scale_y = 1.0
-scr = None
-gui_fish_update_callback = None  # GUI更新回调（将在create_gui中设置）
-bait_count_val = None  # 鱼饵数量
-auto_fish_thread_event = None
-auto_fish_discard_thread_event = None
 
 # 参数文件路径
 PARAMETER_FILE = "./parameters.json"
@@ -53,13 +28,15 @@ class GlobalConfig:
         return cls._instance
 
     def __init__(self):
-        self.scale_x = scale_x
-        self.scale_y = scale_y
-        self.scr = scr
-        self.gui_fish_update_callback = gui_fish_update_callback
-        self.bait_count_val = bait_count_val
-        self.auto_fish_thread_event = auto_fish_thread_event
-        self.auto_fish_discard_thread_event = auto_fish_discard_thread_event
+        self.scale_x = 1.0
+        self.scale_y = 1.0
+        self.off_x = 0
+        self.off_y = 0
+        self.scr = None
+        self.gui_fish_update_callback = None
+        self.bait_count_val = None
+        self.auto_fish_thread_event = None
+        self.auto_fish_discard_thread_event = None
         self.params = {
             "interval": 0.4,
             "mouse_left_hold_time": 1.8,
@@ -80,21 +57,20 @@ class GlobalConfig:
         # 线程锁
         self._param_lock = threading.Lock()
 
-        # 加载保存的参数
-        self.load_parameters()
-
     def update(self, **kwargs):
         # 批量更新参数
         for key, value in kwargs.items():
             if key in self.params:
                 self.params[key] = value
         self.save_parameters()
+        self.calculate_offset()
 
     def save_parameters(self):
-        global QUALITY_LEVEL_MAP, scale_x, scale_y
+        global QUALITY_LEVEL_MAP
         data = self.params.copy()
-        scale_x = self.scale_x = data.get('custom_width') / base_width
-        scale_y = self.scale_y = data.get('custom_height') / base_height
+        self.scale_x = data.get('custom_width') / data.get('base_width')
+        self.scale_y = data.get('custom_height') / data.get('base_height')
+        self.calculate_offset()
         with open(PARAMETER_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
             print("💾 [保存] 参数已成功保存到文件")
@@ -109,11 +85,11 @@ class GlobalConfig:
                 f"│  {'✅' if data.get('is_auto_fish_discard') else '❌'} 丢鱼: {'是' if data.get('is_auto_fish_discard') else '否'}    🐟️ 丢鱼品质: {QUALITY_LEVEL[data.get('discard_level') - 1]}以下品质全丢({QUALITY_LEVEL[data.get('discard_level') - 1]}保留)")
             print(
                 f"│  🖥️  分辨率: {data.get('resolution')} ({data.get('custom_width')}×{data.get('custom_height')})")
-            print(f"│  📐 缩放比例: X={scale_x:.2f}  Y={scale_y:.2f}")
+            print(f"│  📐 缩放比例: X={self.scale_x:.2f}  Y={self.scale_y:.2f}")
             print("└" + "─" * 48 + "┘")
+            screen_adapt()
 
     def load_parameters(self):
-        global scale_x, scale_y
         try:
             with open(PARAMETER_FILE, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -123,12 +99,14 @@ class GlobalConfig:
                         self.params[key] = value
 
                 # 更新分辨率
-                if "custom_width" in data:
-                    self.params["custom_width"] = data["custom_width"]
-                    self.scale_x = self.params["custom_width"] / self.params["base_width"]
-                if "custom_height" in data:
-                    self.params["custom_height"] = data["custom_height"]
-                    self.scale_y = self.params["custom_height"] / self.params["base_height"]
+                if 'custom_width' in data:
+                    self.params['custom_width'] = data['custom_width']
+                    self.scale_x = self.params['custom_width'] / self.params['base_width']
+                if 'custom_height' in data:
+                    self.params['custom_height'] = data['custom_height']
+                    self.scale_y = self.params['custom_height'] / self.params['base_height']
+                self.calculate_offset()
+                screen_adapt()
             return True
         except FileNotFoundError:
             print("📄 [信息] 未找到参数文件，使用默认值")
@@ -137,6 +115,20 @@ class GlobalConfig:
             print(f"❌ [错误] 更新参数失败: {e}")
             return False
 
+    def calculate_offset(self):
+        self.off_x = self.params['custom_width'] - self.params['base_width']
+        self.off_y = self.params['custom_height'] - self.params['base_height']
+
 
 # 全局配置
 global_config = GlobalConfig()
+
+
+def screen_adapt():
+    from Location import location
+    if global_config.scale_x == global_config.scale_y:
+        if global_config.scale_x == 1.0:
+            return
+        location.update_location_percentage_not_change()
+    else:
+        location.update_location_percentage_change()

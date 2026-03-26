@@ -74,6 +74,7 @@ if __name__ == "__main__":
 
     # 加载参数和模板
     print("📦 [初始化] 正在加载配置...")
+    global_config.load_parameters()
     global_config.scr = mss.mss()
     global_config.mouse = HumanLikeMouse()
     global_config.mouse.set_speed(global_config.params['auto_discard_speed'])
