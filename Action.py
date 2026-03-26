@@ -290,7 +290,7 @@ def recognize_fish_quality(tolerance):
     global FISH_COLOR_INFO_REGION_BASE
     img = capture_region_rgb(*FISH_COLOR_INFO_REGION_BASE)
     for QUALITY_COLOR in QUALITY_COLORS.items():
-        distance = sum((int(img[0][0]) - QUALITY_COLOR[1][i]) for i in range(3))
+        distance = sum((img[0][0][i] - QUALITY_COLOR[1][i]) for i in range(3))
         if distance <= tolerance:
             return QUALITY_COLOR[0]
     return None

@@ -51,7 +51,7 @@ def auto_fish_discard_sync(event):
     try:
         if not bucket_opened_matched():
             open_fish_bucket()
-            time.sleep(2)
+            time.sleep(1)
 
         if bucket_empty_matched():
             print("🌊🐟️ [自动放生] 鱼桶中没有鱼...")
@@ -79,11 +79,10 @@ def auto_fish_discard_sync(event):
             if level < global_config.params['discard_level']:
                 discard_fish()
                 discard_count[level - 1] = discard_count[level - 1] + 1
-                time.sleep(1)
             else:
                 lock_fish()
-                time.sleep(1)
         count_discard_fish()
+        time.sleep(1)
     except Exception as e:
         print(f"❌ [错误] 自动放生脚本主循环异常：{e}")
     finally:
