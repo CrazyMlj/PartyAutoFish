@@ -122,8 +122,11 @@ def scale_template(template):
     if global_config.scale_uniform == 1:
         return template
 
-    new_width = int(template.shape[1] * global_config.scale_x)
-    new_height = int(template.shape[0] * global_config.scale_y)
+    new_width = int(template.shape[1] * global_config.scale_uniform)
+    new_height = int(template.shape[0] * global_config.scale_uniform)
 
-    scaled_template = cv2.resize(template, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+    if global_config.scale_uniform > 1.0:
+        scaled_template = cv2.resize(template, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+    else:
+        scaled_template = cv2.resize(template, (new_width, new_height), interpolation=cv2.INTER_AREA)
     return scaled_template
