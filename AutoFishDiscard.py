@@ -158,7 +158,7 @@ def auto_fish_discard():
                         run_event.clear()
                         break
 
-                    level = recognize_fish_quality(50)
+                    level = recognize_fish_quality(20)
                     if level is None:
                         print("🌊🐟️ [自动放生] 未识别出桶中第一条鱼的质量...")
                         run_event.clear()
