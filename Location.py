@@ -2,12 +2,12 @@ from AnchorType import AnchorType
 from ScreenAdapt import scale_point_anchored, scale_corner_anchored, scale_cords_by_percentage, scale_cords_x
 
 # 位置信息(基准"2k")
-BAIT_REGION_BASE = (2318, 1296, 30, 22, 'br')  # 鱼饵数量区域  3440*1440(3198, 1296) 右下角锚定
+BAIT_REGION_BASE = (2318, 1296, 30, 22, 'br')  # 鱼饵数量区域  3440*1440(3198, 1296) 右下角锚定 1k(1739,972)
 BAIT_TEN = (0, 22, 0, 15)  # 十位
 BAIT_ONE = (0, 22, 15, 30)  # 个位
 BAIT_MID = (0, 22, 7, 15)  # 中间位
-FISH_STAR_REGION_BASE = (1172, 165, 34, 34, 'tc')  # 上鱼星星 3440*1440(1613, 165)
-F_1_REGION_BASE = (1100, 1329, 10, 19, 'bc')  # F1位置 3440*1440(1539, 1296)
+FISH_STAR_REGION_BASE = (1172, 165, 34, 34, 'tc')  # 上鱼星星 3440*1440(1613, 165) 1K(879 122)
+F_1_REGION_BASE = (1100, 1329, 10, 19, 'bc')  # F1位置 3440*1440(1539, 1296) 1K(823,995)
 F_2_REGION_BASE = (1212, 1329, 10, 19, 'bc')  # F2位置
 FISHING_REGION_BASE = (1146, 1316, 17, 21, 'bc')  # 上鱼右键
 
@@ -16,14 +16,14 @@ BTN_NO_JIASHI_BASE = (1182, 776, 'c')  # 不加时按钮
 BTN_YES_JIASHI_BASE = (1398, 776, 'c')  # 加时按钮
 
 OPEN_FISH_BUCKET_BIT_BASE = -200  # 打开鱼桶鼠标移动
-BUCKET_OPENED_REGION_BASE = (2145, 408, 34, 36, 'tr')  # 桶以打开 3440*1440(3021, 408)
+BUCKET_OPENED_REGION_BASE = (2145, 408, 34, 36, 'tr')  # 桶以打开 3440*1440(3021, 408) 1K(1605,306)
 BUCKET_FULL_REGION_BASE = (1184, 434, 36, 38, 'tc')  # 鱼桶满了(满)
 BUCKET_LEFT_NUM_REGION_BASE = (2148, 457, 21, 28, 'bc')  # 鱼桶已装(48)
 BUCKET_EMPTY_REGION_BASE = (2111, 909, 33, 34, 'br')  # 鱼桶一条鱼也没有(空)
 FISH_COLOR_INFO_LOCATION = (1924, 640, 'tr')  # 鱼桶中第一条鱼位置
 FISH_IS_LOCKED_REGION_BASE = (1924, 588, 23, 29, 'tr')  # 鱼上锁
-FIRST_FISH_LOCATION = (1924, 640, 'tr')  # 第一条鱼坐标
-CLOSE_BUTTON_LOCATION = (2461, 445, 'tr')  # 关闭鱼桶坐标
+FIRST_FISH_LOCATION = (1924, 640, 'tr')  # 第一条鱼坐标 1k(1444,480)
+CLOSE_BUTTON_LOCATION = (2461, 445, 'tr')  # 关闭鱼桶坐标 1K(1844,333)
 FISH_DISCARD_LOCATION = (1964, 800, 'tr')  # 丢弃鱼坐标 屏幕位置与FIRST_FISH_LOCATION保持一致
 FISH_LOCKED_LOCATION = (1964, 860, 'tr')  # 锁定鱼坐标 屏幕位置与FIRST_FISH_LOCATION保持一致
 

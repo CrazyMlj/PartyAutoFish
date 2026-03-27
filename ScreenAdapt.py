@@ -6,8 +6,8 @@ from GlobalConfig import global_config
 
 # 根据分辨率缩放坐标（保持比例）
 def scale_cords_by_percentage(x, y, w, h):
-    return int(x * global_config.scale_x), int(y * global_config.scale_y), int(w * global_config.scale_x), int(
-        h * global_config.scale_y)
+    return int(x * global_config.scale_uniform), int(y * global_config.scale_uniform), int(
+        w * global_config.scale_uniform), int(h * global_config.scale_uniform)
 
 
 def scale_cords_x(x):
@@ -18,6 +18,10 @@ def scale_cords_x(x):
 # 适用于居中UI元素（如加时按钮）
 def scale_point_anchored(x, y, screen_location):
     new_x, new_y = x, y
+    if global_config.scale_x == global_config.scale_y:
+        new_x = x * global_config.scale_uniform
+        new_y = y * global_config.scale_uniform
+        return int(new_x), int(new_y), screen_location
 
     if AnchorType.from_string(screen_location) == AnchorType.CENTER:
         # 计算相对偏移
@@ -41,6 +45,14 @@ def scale_point_anchored(x, y, screen_location):
 # 缩放坐标
 def scale_corner_anchored(x, y, w, h, screen_location):
     new_x, new_y, new_w, new_h = x, y, w, h
+    if global_config.scale_x == global_config.scale_y:
+        new_x = x * global_config.scale_uniform
+        new_y = y * global_config.scale_uniform
+        new_w = w * global_config.scale_uniform
+        new_h = h * global_config.scale_uniform
+
+        return int(new_x), int(new_y), int(new_w), int(new_h), screen_location
+
     if AnchorType.from_string(screen_location) is AnchorType.TOP_LEFT:
         new_x = x * global_config.scale_x
         new_y = y * global_config.scale_y
