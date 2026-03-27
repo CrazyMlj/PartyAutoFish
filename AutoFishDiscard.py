@@ -3,7 +3,7 @@ import time
 
 import mss
 
-from Action import bucket_full_matched, open_fish_bucket, bucket_48_matched, locked_fish_matched, close_fish_bucket, \
+from Action import open_fish_bucket, locked_fish_matched, close_fish_bucket, \
     recognize_fish_quality, lock_fish, discard_fish, bucket_empty_matched, bucket_opened_matched
 from GlobalConfig import global_config
 from MouseOrKeyBoardUtil import ensure_mouse_left_up, ensure_mouse_right_up, _default_mouse
@@ -167,14 +167,12 @@ def auto_fish_discard():
                     with global_config._params_lock:
                         discard_level = global_config.params['discard_level']
 
-                    if level < global_config.params['discard_level']:
+                    if level < discard_level:
                         discard_fish()
                         discard_count[level - 1] = discard_count[level - 1] + 1
-                        time.sleep(1)
                     else:
                         lock_fish()
-                        time.sleep(1)
-
+                time.sleep(1)
                 count_discard_fish()
             except Exception as e:
                 print("❌ [错误] 自动放生脚本主循环异常：{}".format(e))

@@ -51,7 +51,7 @@ def auto_fish():
                 # 创建独立的 mss 实例
                 if local_scr is None:
                     local_scr = mss.mss()
-                global_config.set_scr(local_scr)
+                    global_config.set_scr(local_scr)
                 # 检测 F1/F2 抛竿
                 if f1_matched():
                     hold_mouse_left_button(global_config.get_param('casting_time'))
@@ -163,6 +163,7 @@ def toggle_run_auto_fish():
             temp_scr = None
             try:
                 temp_scr = mss.mss()
+                global_config.set_scr(temp_scr)
                 bait_result = bait_match_val()
                 if bait_result is not None and bait_result >= 0:
                     previous_result = global_config.get_bait_count()

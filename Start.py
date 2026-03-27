@@ -75,9 +75,6 @@ if __name__ == "__main__":
     print("📦 [初始化] 正在加载配置...")
     global_config.load_parameters()
     global_config.set_scr(mss.mss())
-    mouse = HumanLikeMouse()
-    mouse.set_speed(global_config.params['auto_discard_speed'])
-    global_config.mouse = mouse
 
     # 加载历史钓鱼记录
     print("📊 [初始化] 正在加载钓鱼记录...")
