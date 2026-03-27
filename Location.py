@@ -27,7 +27,7 @@ CLOSE_BUTTON_LOCATION = (2461, 445, 'tr')  # 关闭鱼桶坐标
 FISH_DISCARD_LOCATION = (1964, 800, 'tr')  # 丢弃鱼坐标 屏幕位置与FIRST_FISH_LOCATION保持一致
 FISH_LOCKED_LOCATION = (1964, 860, 'tr')  # 锁定鱼坐标 屏幕位置与FIRST_FISH_LOCATION保持一致
 
-FISH_INFO_REGION_BASE = (915, 75, -725, -150, 'tc')  # 鱼信息识别区域（2K分辨率基准值）
+FISH_INFO_REGION_BASE = (915, 75, 725, 150, 'tc')  # 鱼信息识别区域（2K分辨率基准值）
 
 
 class Location:

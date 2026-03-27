@@ -243,7 +243,8 @@ def recognize_fish_quality(tolerance):
 
 # 截取鱼信息区域的图像
 def capture_fish_info_region():
-    capture_region_rgb(*location.fish_info_region_base)
+    return capture_region_rgb(location.fish_info_region_base[0], location.fish_info_region_base[1],
+                       location.fish_info_region_base[2], location.fish_info_region_base[3])
 
 
 # 截取屏幕区域
@@ -257,7 +258,7 @@ def capture_region(x, y, w, h, tp):
         img = cv2.cvtColor(img_arr, tp)
         return img
     except Exception as e:
-        print(f"❌ [错误] 截取鱼信息区域失败: {e}")
+        print(f"❌ [错误] 截取屏幕失败: {e}")
         return None
 
 
@@ -276,13 +277,13 @@ def capture_region_gary(x, y, w, h):
 # ========================
 # 加时
 def overtime_y():
-    mouse.move(*location.btn_yes_jiashi_base)
+    mouse.move(location.btn_yes_jiashi_base[0], location.btn_yes_jiashi_base[1])
     hold_mouse_left_button(0.1)
 
 
 # 不加时
 def overtime_n():
-    mouse.move(*location.btn_no_jiashi_base)
+    mouse.move(location.btn_no_jiashi_base[0], location.btn_no_jiashi_base[1])
     hold_mouse_left_button(0.1)
 
 
@@ -299,27 +300,27 @@ def open_fish_bucket():
 # 关闭鱼桶界面
 def close_fish_bucket():
     # 移动鼠标至关闭图标按钮
-    mouse.move(*location.close_button_location)
+    mouse.move(location.close_button_location[0], location.close_button_location[1])
     hold_mouse_left_button(0.1)
 
 
 # 锁定鱼
 def lock_fish():
     # 移动鼠标到第一条鱼上 单击鼠标右键 移动鼠标至"锁定" 单击鼠标左键
-    mouse.move(*location.first_fish_location)
+    mouse.move(location.first_fish_location[0], location.first_fish_location[1])
     hold_mouse_right_button(0.1)
-    mouse.move(*location.fish_locked_location)
+    mouse.move(location.fish_locked_location[0], location.fish_locked_location[1])
     hold_mouse_left_button(0.1)
     # 鼠标复位
-    mouse.move(*location.first_fish_location)
+    mouse.move(location.first_fish_location[0], location.first_fish_location[1])
 
 
 # 放生鱼
 def discard_fish():
     # 移动鼠标到第一条鱼上 单击鼠标右键 移动鼠标至"放生" 单击鼠标左键
-    mouse.move(*location.first_fish_location)
+    mouse.move(location.first_fish_location[0], location.first_fish_location[1])
     hold_mouse_right_button(0.1)
-    mouse.move(*location.fish_discard_location)
+    mouse.move(location.fish_discard_location[0], location.fish_discard_location[1])
     hold_mouse_left_button(0.1)
     # 鼠标复位
-    mouse.move(*location.first_fish_location)
+    mouse.move(location.first_fish_location[0], location.first_fish_location[1])

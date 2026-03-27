@@ -433,12 +433,12 @@ def create_gui():
     tree_scroll.pack(side=RIGHT, fill=Y)
 
     # 配置品质颜色标签（背景色和前景色）
-    # 标准-白色背景黑色字体, 非凡-绿色, 稀有-蓝色, 史诗-紫色, 传说-橙色
+    # 标准-白色背景黑色字体, 非凡-绿色, 稀有-蓝色, 史诗-紫色, 传奇-橙色
     fish_tree.tag_configure("标准", background="#FFFFFF", foreground="#000000")
     fish_tree.tag_configure("非凡", background="#2ECC71", foreground="#000000")
     fish_tree.tag_configure("稀有", background="#3498DB", foreground="#FFFFFF")
     fish_tree.tag_configure("史诗", background="#9B59B6", foreground="#FFFFFF")
-    fish_tree.tag_configure("传说", background="#E67E22", foreground="#000000")
+    fish_tree.tag_configure("传奇", background="#E67E22", foreground="#000000")
 
     # 绑定鼠标滚轮到Treeview
     def on_tree_mousewheel(event):
@@ -480,7 +480,7 @@ def create_gui():
             time_display = record.timestamp if record.timestamp else "未知时间"
 
             # 根据品质确定标签（用于显示颜色）
-            quality_tag = record.quality if record.quality in ["标准", "非凡", "稀有", "史诗", "传说"] else "标准"
+            quality_tag = record.quality if record.quality in ["标准", "非凡", "稀有", "史诗", "传奇"] else "标准"
 
             fish_tree.insert("", "end", values=(
                 time_display,

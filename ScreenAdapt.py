@@ -107,6 +107,8 @@ def scale_template(template):
 
     if global_config.scale_x == 1 and global_config.scale_y == 1:
         return template
+    if global_config.scale_uniform == 1:
+        return template
 
     new_width = int(template.shape[1] * global_config.scale_x)
     new_height = int(template.shape[0] * global_config.scale_y)

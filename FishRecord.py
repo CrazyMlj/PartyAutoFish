@@ -4,9 +4,6 @@ import re
 import threading
 import time
 
-import cv2
-import numpy as np
-
 from Action import capture_fish_info_region
 from GlobalConfig import global_config
 
