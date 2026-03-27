@@ -4,7 +4,7 @@ import time
 import mss
 
 from Action import open_fish_bucket, locked_fish_matched, close_fish_bucket, \
-    recognize_fish_quality, lock_fish, discard_fish, bucket_empty_matched, bucket_opened_matched
+    recognize_fish_quality, lock_fish, discard_fish, bucket_empty_matched, bucket_opened_matched, mouse_move_safe
 from GlobalConfig import global_config
 from MouseOrKeyBoardUtil import ensure_mouse_left_up, ensure_mouse_right_up, _default_mouse
 
@@ -73,6 +73,9 @@ def auto_fish_discard_sync(event):
                 print("🌊🐟️ [自动放生] 当前没有鱼可以放生...")
                 close_fish_bucket()
                 break
+
+            # 将鼠标移走排除鱼品质判断干扰
+            mouse_move_safe()
 
             level = recognize_fish_quality(50)
             if level is None:
@@ -157,6 +160,9 @@ def auto_fish_discard():
                         close_fish_bucket()
                         run_event.clear()
                         break
+
+                    # 将鼠标移走排除鱼品质判断干扰
+                    mouse_move_safe()
 
                     level = recognize_fish_quality(20)
                     if level is None:

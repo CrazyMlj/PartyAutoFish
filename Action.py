@@ -244,7 +244,7 @@ def recognize_fish_quality(tolerance):
 # 截取鱼信息区域的图像
 def capture_fish_info_region():
     return capture_region_rgb(location.fish_info_region_base[0], location.fish_info_region_base[1],
-                       location.fish_info_region_base[2], location.fish_info_region_base[3])
+                              location.fish_info_region_base[2], location.fish_info_region_base[3])
 
 
 # 截取屏幕区域
@@ -324,3 +324,8 @@ def discard_fish():
     hold_mouse_left_button(0.1)
     # 鼠标复位
     mouse.move(location.first_fish_location[0], location.first_fish_location[1])
+
+
+# 移动鼠标到安全位置
+def mouse_move_safe():
+    mouse.move(location.mouse_safe_bit_base[0], location.mouse_safe_bit_base[1])

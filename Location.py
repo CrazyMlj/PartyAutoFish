@@ -21,6 +21,7 @@ BUCKET_FULL_REGION_BASE = (1184, 434, 40, 40, 'tc')  # 鱼桶满了(满)
 BUCKET_LEFT_NUM_REGION_BASE = (2148, 457, 25, 30, 'bc')  # 鱼桶已装(48)
 BUCKET_EMPTY_REGION_BASE = (2111, 909, 40, 40, 'br')  # 鱼桶一条鱼也没有(空)
 FISH_COLOR_INFO_LOCATION = (1924, 640, 'tr')  # 鱼桶中第一条鱼位置
+MOUSE_SAFE_BIT_BASE = -80 # 鼠标移动安全位置 排除对鱼品质识别干扰
 FISH_IS_LOCKED_REGION_BASE = (1924, 588, 25, 30, 'tr')  # 鱼上锁
 FIRST_FISH_LOCATION = (1924, 640, 'tr')  # 第一条鱼坐标 1k(1444,480)
 CLOSE_BUTTON_LOCATION = (2461, 445, 'tr')  # 关闭鱼桶坐标 1K(1844,333)
@@ -65,6 +66,7 @@ class Location:
         self.fish_discard_location = FISH_DISCARD_LOCATION
         self.fish_locked_location = FISH_LOCKED_LOCATION
         self.fish_info_region_base = FISH_INFO_REGION_BASE
+        self.mouse_safe_bit_base = MOUSE_SAFE_BIT_BASE
 
     # 更新位置信息
     def update_location(self):
@@ -91,6 +93,7 @@ class Location:
         self.fish_discard_location = scale_point_anchored(*FISH_DISCARD_LOCATION)
         self.fish_locked_location = scale_point_anchored(*FISH_LOCKED_LOCATION)
         self.fish_info_region_base = scale_corner_anchored(*FISH_INFO_REGION_BASE)
+        self.mouse_safe_bit_base = scale_cords_x(MOUSE_SAFE_BIT_BASE)
 
     # 重新加载
     def reload_base_date(self):
@@ -117,6 +120,7 @@ class Location:
         self.fish_discard_location = FISH_DISCARD_LOCATION
         self.fish_locked_location = FISH_LOCKED_LOCATION
         self.fish_info_region_base = FISH_INFO_REGION_BASE
+        self.mouse_safe_bit_base = scale_cords_x(MOUSE_SAFE_BIT_BASE)
 
 
 location = Location()
