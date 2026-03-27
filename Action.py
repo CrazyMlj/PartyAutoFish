@@ -251,7 +251,7 @@ def capture_fish_info_region():
 def capture_region(x, y, w, h, tp):
     region = (x, y, x + w, y + h)
     try:
-        frame = global_config.scr.grab(region)
+        frame = global_config.get_scr().grab(region)
         if frame is None:
             return None
         img_arr = np.array(frame)

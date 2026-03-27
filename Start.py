@@ -20,7 +20,6 @@ listener_f2 = None  # 监听
 listener_f3 = None  # 监听
 
 
-
 def on_press_f2(key):
     time.sleep(0.02)
     if key == keyboard.Key.f2:
@@ -75,9 +74,10 @@ if __name__ == "__main__":
     # 加载参数和模板
     print("📦 [初始化] 正在加载配置...")
     global_config.load_parameters()
-    global_config.scr = mss.mss()
-    global_config.mouse = HumanLikeMouse()
-    global_config.mouse.set_speed(global_config.params['auto_discard_speed'])
+    global_config.set_scr(mss.mss())
+    mouse = HumanLikeMouse()
+    mouse.set_speed(global_config.params['auto_discard_speed'])
+    global_config.mouse = mouse
 
     # 加载历史钓鱼记录
     print("📊 [初始化] 正在加载钓鱼记录...")
