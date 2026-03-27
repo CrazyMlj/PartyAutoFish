@@ -188,7 +188,7 @@ def create_gui():
 
     ttkb.Radiobutton(
         overtime_btn_frame,
-        text="✅ 开启加时",
+        text="✅ 开启",
         variable=overtime_var_option,
         value=1,
         bootstyle="success-outline-toolbutton",
@@ -197,7 +197,7 @@ def create_gui():
 
     ttkb.Radiobutton(
         overtime_btn_frame,
-        text="❌ 关闭加时",
+        text="❌ 关闭",
         variable=overtime_var_option,
         value=0,
         bootstyle="danger-outline-toolbutton",
@@ -226,7 +226,7 @@ def create_gui():
 
     ttkb.Radiobutton(
         discard_btn_frame,
-        text="是",
+        text="开启",
         variable=discard_option_var,
         value=1,
         bootstyle="success-outline-toolbutton",
@@ -235,7 +235,7 @@ def create_gui():
 
     ttkb.Radiobutton(
         discard_btn_frame,
-        text="否",
+        text="关闭",
         variable=discard_option_var,
         value=0,
         bootstyle="danger-outline-toolbutton",
