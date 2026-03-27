@@ -92,5 +92,31 @@ class Location:
         self.fish_locked_location = scale_point_anchored(*FISH_LOCKED_LOCATION)
         self.fish_info_region_base = scale_corner_anchored(*FISH_INFO_REGION_BASE)
 
+    # 重新加载
+    def reload_base_date(self):
+        self.bait_region_base = BAIT_REGION_BASE
+        self.bait_ten = BAIT_TEN
+        self.bait_one = BAIT_ONE
+        self.bait_mid = BAIT_MID
+        self.fish_star_region_base = FISH_STAR_REGION_BASE
+        self.f_1_region_base = F_1_REGION_BASE
+        self.f_2_region_base = F_2_REGION_BASE
+        self.fishing_region_base = FISHING_REGION_BASE
+        self.overtime_region_base = OVERTIME_REGION_BASE
+        self.btn_no_jiashi_base = BTN_NO_JIASHI_BASE
+        self.btn_yes_jiashi_base = BTN_YES_JIASHI_BASE
+        self.open_fish_bucket_bit_base = OPEN_FISH_BUCKET_BIT_BASE
+        self.bucket_opened_region_base = BUCKET_OPENED_REGION_BASE
+        self.bucket_full_region_base = BUCKET_FULL_REGION_BASE
+        self.bucket_left_num_region_base = BUCKET_LEFT_NUM_REGION_BASE
+        self.bucket_empty_region_base = BUCKET_EMPTY_REGION_BASE
+        self.fish_color_info_location = FISH_COLOR_INFO_LOCATION
+        self.fish_is_locked_region_base = FISH_IS_LOCKED_REGION_BASE
+        self.first_fish_location = FIRST_FISH_LOCATION
+        self.close_button_location = CLOSE_BUTTON_LOCATION
+        self.fish_discard_location = FISH_DISCARD_LOCATION
+        self.fish_locked_location = FISH_LOCKED_LOCATION
+        self.fish_info_region_base = FISH_INFO_REGION_BASE
+
 
 location = Location()

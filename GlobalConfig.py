@@ -168,7 +168,7 @@ class GlobalConfig:
                         self.params['custom_height'] = data['custom_height']
                         self.scale_y = self.params['custom_height'] / self.params['base_height']
                     self.scale_uniform = min(self.scale_x, self.scale_y)
-                screen_adapt()
+                screen_init_adapt()
             return True
         except FileNotFoundError:
             print("📄 [信息] 未找到参数文件，使用默认值")
@@ -182,6 +182,15 @@ class GlobalConfig:
 global_config = GlobalConfig()
 
 
-def screen_adapt():
+def screen_init_adapt():
     from Location import location
     location.update_location()
+
+def screen_adapt():
+    from Location import location
+    location.reload_base_date()
+    location.update_location()
+
+    from Action import png_template
+    png_template.load_templates()
+
