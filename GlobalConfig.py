@@ -116,9 +116,9 @@ class GlobalConfig:
         with open(PARAMETER_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
             print("💾 [保存] 参数已成功保存到文件")
-            print("┌" + "─" * 48 + "┐")
-            print("│  ⚙️  参数更新成功                              │")
-            print("├" + "─" * 48 + "┤")
+            print("┌" + "─" * 60 + "┐")
+            print("│                    ⚙️  参数更新成功                        │")
+            print("├" + "─" * 60 + "┤")
 
             interval_str = "{:.1f}".format(data.get('interval'))
             hold_time_str = "{:.1f}".format(data.get('mouse_left_hold_time'))
@@ -139,15 +139,15 @@ class GlobalConfig:
             quality_name = QUALITY_LEVEL[discard_level_val - 1]
 
             print("│  ⏱️  循环间隔: {}s    📍 收线：{}s    📍 放线：{}s".format(
-                interval_str, hold_time_str, release_time_str))
+                interval_str, hold_time_str, release_time_str) + "      │")
             print("│  🎣 最大拉杆：{}次     ⏳ 抛竿：{}s    {} 加时：{}".format(
-                cycle_times_val, casting_time_str, overtime_status, overtime_text))
+                cycle_times_val, casting_time_str, overtime_status, overtime_text) + "        │")
             print("│  {} 丢鱼：{}    🐟️ 丢鱼品质：{}以下品质全丢 ({}保留)".format(
-                discard_status, discard_text, quality_name, quality_name))
+                discard_status, discard_text, quality_name, quality_name) + "   │")
             print("│  🖥️  分辨率：{} ({}×{})".format(
-                resolution_val, custom_width_val, custom_height_val))
-            print("│  📐 缩放比例：X={:.2f}  Y={:.2f}".format(self.scale_x, self.scale_y))
-            print("└" + "─" * 48 + "┘")
+                resolution_val, custom_width_val, custom_height_val) + " " * 28 + "│")
+            print("│  📐 缩放比例：X={:.2f}  Y={:.2f}".format(self.scale_x, self.scale_y) + " " * 31 + "│")
+            print("└" + "─" * 60 + "┘")
             screen_adapt()
 
     def load_parameters(self):
@@ -186,6 +186,7 @@ def screen_init_adapt():
     from Location import location
     location.update_location()
 
+
 def screen_adapt():
     from Location import location
     location.reload_base_date()
@@ -193,4 +194,3 @@ def screen_adapt():
 
     from Action import png_template
     png_template.load_templates()
-

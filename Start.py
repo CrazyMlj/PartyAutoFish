@@ -59,15 +59,15 @@ if __name__ == "__main__":
     print()
     print("╔" + "═" * 50 + "╗")
     print("║" + " " * 50 + "║")
-    print("║     🎣  PartyFish 自动钓鱼助手  v3.0               ║")
+    print("║     🎣  PartyFish 自动钓鱼助手  v4.1             ║")
     print("║" + " " * 50 + "║")
     print("╠" + "═" * 50 + "╣")
     print(
         f"║  📺 当前分辨率: {global_config.params['custom_width']} × {global_config.params['custom_height']}".ljust(
-            47) + "║")
-    print("║  ⌨️ 快捷键: F2 启动/暂停钓鱼脚本                     ║")
-    print("║  ⌨️ 快捷键: F3 启动/暂停放鱼脚本                     ║")
-    print("║  🔧 开发者: Crazy                                 ║")
+            45) + "║")
+    print("║  ⌨️ 快捷键: F2 启动/暂停钓鱼脚本                 ║")
+    print("║  ⌨️ 快捷键: F3 启动/暂停放鱼脚本                 ║")
+    print("║  🔧 开发者: Crazy                                ║")
     print("╚" + "═" * 50 + "╝")
     print()
 
@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
     print()
     print("┌" + "─" * 63 + "┐")
-    print("│  🚀 程序已就绪，按 F2 开始自动钓鱼! 按 F3 开始自动丢鱼!               │")
+    print("│  🚀 程序已就绪，按 F2 开始自动钓鱼! 按 F3 开始自动丢鱼!       │")
     print("└" + "─" * 63 + "┘")
     print()
 

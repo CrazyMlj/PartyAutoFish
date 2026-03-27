@@ -609,7 +609,7 @@ def create_gui():
 
     ttkb.Label(
         status_frame,
-        text="v4.0 | Party_Fish",
+        text="v4.1 | Party_Fish",
         font=("Segoe UI", 8),
         bootstyle="secondary"
     ).pack(side=RIGHT)
