@@ -30,8 +30,7 @@ class GlobalConfig:
     def __init__(self):
         self.scale_x = 1.0
         self.scale_y = 1.0
-        self.off_x = 0
-        self.off_y = 0
+        self.scale_uniform = 1.0
         self.scr = None
         self.gui_fish_update_callback = None
         self.bait_count_val = None
@@ -63,14 +62,13 @@ class GlobalConfig:
             if key in self.params:
                 self.params[key] = value
         self.save_parameters()
-        self.calculate_offset()
 
     def save_parameters(self):
         global QUALITY_LEVEL_MAP
         data = self.params.copy()
         self.scale_x = data.get('custom_width') / data.get('base_width')
         self.scale_y = data.get('custom_height') / data.get('base_height')
-        self.calculate_offset()
+        self.scale_uniform = min(self.scale_x, self.scale_y)
         with open(PARAMETER_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
             print("💾 [保存] 参数已成功保存到文件")
@@ -105,7 +103,7 @@ class GlobalConfig:
                 if 'custom_height' in data:
                     self.params['custom_height'] = data['custom_height']
                     self.scale_y = self.params['custom_height'] / self.params['base_height']
-                self.calculate_offset()
+                self.scale_uniform = min(self.scale_x, self.scale_y)
                 screen_adapt()
             return True
         except FileNotFoundError:
@@ -115,10 +113,6 @@ class GlobalConfig:
             print(f"❌ [错误] 更新参数失败: {e}")
             return False
 
-    def calculate_offset(self):
-        self.off_x = self.params['custom_width'] - self.params['base_width']
-        self.off_y = self.params['custom_height'] - self.params['base_height']
-
 
 # 全局配置
 global_config = GlobalConfig()
@@ -126,9 +120,4 @@ global_config = GlobalConfig()
 
 def screen_adapt():
     from Location import location
-    if global_config.scale_x == global_config.scale_y:
-        if global_config.scale_x == 1.0:
-            return
-        location.update_location_percentage_not_change()
-    else:
-        location.update_location_percentage_change()
+    location.update_location()

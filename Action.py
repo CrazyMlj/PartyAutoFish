@@ -10,13 +10,12 @@ from GlobalConfig import global_config
 from Location import location
 from MouseOrKeyBoardUtil import hold_mouse_left_button, key_press, POINT, key_release, \
     hold_mouse_right_button, _default_mouse
-from ScreenAdapt import capture_region_gary, capture_region_rgb
+from ScreenAdapt import scale_template
 
 template_folder_path = os.path.join('.', 'resources')
 user32 = ctypes.WinDLL("user32")
 mouse = _default_mouse
 scr = mss.mss()
-
 
 QUALITY_COLORS = {
     1: [181, 185, 190],  # 标准
@@ -25,8 +24,6 @@ QUALITY_COLORS = {
     4: [169, 102, 249],  # 史诗
     5: [250, 198, 59]  # 传奇
 }
-
-
 
 
 def load(template: str):
@@ -75,39 +72,39 @@ class Template:
         self.load_bucket_empty_template()
 
     def load_star_template(self):
-        self.star_template = load("star_grayscale.png")
+        self.star_template = scale_template(load("star_grayscale.png"))
         return self.star_template
 
     def load_f1_template(self):
-        self.f1_template = load("F1_grayscale.png")
+        self.f1_template = scale_template(load("F1_grayscale.png"))
         return self.f1_template
 
     def load_f2_template(self):
-        self.f2_template = load("F2_grayscale.png")
+        self.f2_template = scale_template(load("F2_grayscale.png"))
         return self.f2_template
 
     def load_fishing_template(self):
-        self.fishing_template = load("shangyu_grayscale.png")
+        self.fishing_template = scale_template(load("shangyu_grayscale.png"))
         return self.fishing_template
 
     def load_over_time_template(self):
-        self.over_time_template = load("chang_grayscale.png")
+        self.over_time_template = scale_template(load("chang_grayscale.png"))
         return self.over_time_template
 
     def load_bucket_opened_template(self):
-        self.bucket_opened_template = load("bucket_opened_grayscale.png")
+        self.bucket_opened_template = scale_template(load("bucket_opened_grayscale.png"))
         return self.bucket_opened_template
 
     def load_lock_template(self):
-        self.lock_template = load("lock_grayscale.png")
+        self.lock_template = scale_template(load("lock_grayscale.png"))
         return self.lock_template
 
     def load_bucket_full_template(self):
-        self.bucket_full_template = load("bucket_full_grayscale.png")
+        self.bucket_full_template = scale_template(load("bucket_full_grayscale.png"))
         return self.bucket_full_template
 
     def load_bucket_empty_template(self):
-        self.bucket_empty_template = load("bucket_empty_grayscale.png")
+        self.bucket_empty_template = scale_template(load("bucket_empty_grayscale.png"))
         return self.bucket_empty_template
 
     # 加载模板（0.png到9.png）
@@ -119,7 +116,7 @@ class Template:
                 template_path = os.path.join(template_folder_path, f"{i}_grayscale.png")
                 img = Image.open(template_path)
                 template = np.array(img)
-                self.num_templates.append(template)
+                self.num_templates.append(scale_template(template))
         return self.num_templates
 
 
@@ -130,7 +127,8 @@ png_template = Template()
 # 识别数字
 # ========================
 def bait_match_val():
-    gray_img = capture_region_gary(*location.bait_region_base)
+    gray_img = capture_region_gary(location.bait_region_base[0], location.bait_region_base[1],
+                                   location.bait_region_base[2], location.bait_region_base[3])
     # 截取并处理区域1
     bait_ten = gray_img[
         location.bait_ten[0]:location.bait_ten[1], location.bait_ten[2]:location.bait_ten[3]]  # 获取区域1的图像 15 * 22
@@ -173,7 +171,8 @@ def match_digit_template(image):
 # 基本识别方法
 def match(region_base, template):
     # 获取区域坐标并捕获灰度图
-    region_gray = capture_region_gary(*region_base)
+    x, y, w, h = region_base[0], region_base[1], region_base[2], region_base[3]
+    region_gray = capture_region_gary(x, y, w, h)
     if region_gray is None:
         return None
     # 执行模板匹配并检查最大匹配度是否大于 0.8
@@ -240,6 +239,36 @@ def recognize_fish_quality(tolerance):
         if distance <= tolerance:
             return QUALITY_COLOR[0]
     return None
+
+
+# 截取鱼信息区域的图像
+def capture_fish_info_region():
+    capture_region_rgb(*location.fish_info_region_base)
+
+
+# 截取屏幕区域
+def capture_region(x, y, w, h, tp):
+    region = (x, y, x + w, y + h)
+    try:
+        frame = global_config.scr.grab(region)
+        if frame is None:
+            return None
+        img_arr = np.array(frame)
+        img = cv2.cvtColor(img_arr, tp)
+        return img
+    except Exception as e:
+        print(f"❌ [错误] 截取鱼信息区域失败: {e}")
+        return None
+
+
+# 灰度截取
+def capture_region_rgb(x, y, w, h):
+    return capture_region(x, y, w, h, cv2.COLOR_BGRA2RGB)
+
+
+# 灰度截取
+def capture_region_gary(x, y, w, h):
+    return capture_region(x, y, w, h, cv2.COLOR_RGBA2GRAY)
 
 
 # ========================

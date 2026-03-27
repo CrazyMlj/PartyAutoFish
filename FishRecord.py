@@ -7,11 +7,8 @@ import time
 import cv2
 import numpy as np
 
+from Action import capture_fish_info_region
 from GlobalConfig import global_config
-from ScreenAdapt import screen_adaptation_rectangle
-
-# 鱼信息识别区域（2K分辨率基准值）
-FISH_INFO_REGION_BASE = (915, 75, 1640, 225)
 
 # 品质等级定义
 QUALITY_LEVELS = ["标准", "非凡", "稀有", "史诗", "传奇"]
@@ -109,26 +106,6 @@ def end_current_session():
             print(f"   {emoji} {q}: {count} 条")
     current_session_id = None
 
-
-# 截取鱼信息区域的图像
-def capture_fish_info_region():
-    scr = global_config.scr
-    if scr is None:
-        return None
-
-    region = screen_adaptation_rectangle(*FISH_INFO_REGION_BASE)
-
-    try:
-        frame = scr.grab(region)
-        if frame is None:
-            return None
-        img = np.array(frame)
-        # 转换为RGB格式（OCR需要）
-        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
-        return img_rgb
-    except Exception as e:
-        print(f"❌ [错误] 截取鱼信息区域失败: {e}")
-        return None
 
 # 使用OCR识别鱼的信息
 def recognize_fish_info_ocr(img):

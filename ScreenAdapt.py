@@ -1,39 +1,115 @@
 import cv2
-import numpy as np
 
+from AnchorType import AnchorType
 from GlobalConfig import global_config
 
 
-# 分辨率适配
-def screen_adaptation_rectangle(x, y, w, h):
+# 根据分辨率缩放坐标（保持比例）
+def scale_cords_by_percentage(x, y, w, h):
     return int(x * global_config.scale_x), int(y * global_config.scale_y), int(w * global_config.scale_x), int(
-        h + global_config.scale_y)
+        h * global_config.scale_y)
 
 
-# 分辨率适配
-def screen_adaptation_point(x, y):
-    return int(x * global_config.scale_x), int(y * global_config.scale_y)
-
-
-# 分辨率适配
-def screen_adaptation_x(x):
+def scale_cords_x(x):
     return int(x * global_config.scale_x)
 
 
-# 截取屏幕区域
-def capture_region(x, y, w, h, tp):
-    region = (x, y, x + w, y + h)
-    frame = global_config.scr.grab(region)
-    if frame is None:
+# 使用中心锚定方式缩放单点坐标
+# 适用于居中UI元素（如加时按钮）
+def scale_point_anchored(x, y, screen_location):
+    new_x, new_y = x, y
+
+    if AnchorType.from_string(screen_location) == AnchorType.CENTER:
+        # 计算相对偏移
+        offset_x = x - global_config.params['base_width'] / 2
+        offset_y = y - global_config.params['base_height'] / 2
+
+        # 缩放偏移
+        new_offset_x = offset_x * global_config.scale_x
+        new_offset_y = offset_y * global_config.scale_y
+        new_x = global_config.params['custom_width'] / 2 + new_offset_x
+        new_y = global_config.params['custom_height'] / 2 + new_offset_y
+
+    if AnchorType.from_string(screen_location) == AnchorType.TOP_RIGHT:
+        offset_x = global_config.params['base_width'] - x
+        new_x = global_config.params['custom_width'] - offset_x
+        new_y = y * global_config.scale_y
+
+    return int(new_x), int(new_y), screen_location
+
+
+# 缩放坐标
+def scale_corner_anchored(x, y, w, h, screen_location):
+    new_x, new_y, new_w, new_h = x, y, w, h
+    if AnchorType.from_string(screen_location) is AnchorType.TOP_LEFT:
+        new_x = x * global_config.scale_x
+        new_y = y * global_config.scale_y
+        new_w = w * global_config.scale_uniform
+        new_h = h * global_config.scale_uniform
+
+    elif AnchorType.from_string(screen_location) is AnchorType.TOP_CENTER:
+        # 计算相对于底部中央的偏移
+        base_center_x = global_config.params['base_width'] / 2
+        offset_x = x - base_center_x
+
+        # 缩放偏移
+        new_offset_x = offset_x * global_config.scale_uniform
+        new_center_x = global_config.params['custom_width'] / 2
+
+        # 计算新坐标
+        new_x = new_center_x + new_offset_x
+        new_y = y * global_config.scale_y
+        new_w = w * global_config.scale_uniform
+        new_h = h * global_config.scale_uniform
+
+    elif AnchorType.from_string(screen_location) is AnchorType.TOP_RIGHT:
+        offset_x = global_config.params['base_width'] - x
+
+        new_x = global_config.params['custom_width'] - offset_x
+        new_y = y * global_config.scale_y
+        new_w = w * global_config.scale_uniform
+        new_h = h * global_config.scale_uniform
+
+    elif AnchorType.from_string(screen_location) is AnchorType.BOTTOM_RIGHT:
+        # 计算相对于右下角的偏移
+        offset_x = global_config.params['base_width'] - x
+        offset_y = global_config.params['base_height'] - y
+
+        # 缩放后重新计算位置
+        new_x = global_config.params['custom_width'] - offset_x
+        new_y = global_config.params['custom_height'] - offset_y
+        new_w = w * global_config.scale_uniform
+        new_h = h * global_config.scale_uniform
+
+    elif AnchorType.from_string(screen_location) is AnchorType.BOTTOM_CENTER:
+        # 计算相对于底部中央的偏移
+        base_center_x = global_config.params['base_width'] / 2
+        offset_x = x - base_center_x
+
+        # 缩放偏移
+        new_offset_x = offset_x * global_config.scale_uniform
+        new_center_x = global_config.params['custom_width'] / 2
+
+        # 缩放后重新计算位置
+        new_x = new_center_x + new_offset_x
+        new_y = global_config.params['custom_height'] - (
+                global_config.params['base_height'] - y) * global_config.scale_uniform
+        new_w = w * global_config.scale_uniform
+        new_h = h * global_config.scale_uniform
+
+    return int(new_x), int(new_y), int(new_w), int(new_h), screen_location
+
+
+# 根据缩放因子缩放模板图片
+def scale_template(template):
+    if template is None:
         return None
-    img_arr = np.array(frame)
-    img = cv2.cvtColor(img_arr, tp)
-    return img
 
-# 灰度截取
-def capture_region_rgb(x, y, w, h):
-    return capture_region(x, y, w, h, cv2.COLOR_BGRA2RGB)
+    if global_config.scale_x == 1 and global_config.scale_y == 1:
+        return template
 
-# 灰度截取
-def capture_region_gary(x, y, w, h):
-    return capture_region(x, y, w, h, cv2.COLOR_RGBA2GRAY)
+    new_width = int(template.shape[1] * global_config.scale_x)
+    new_height = int(template.shape[0] * global_config.scale_y)
+
+    scaled_template = cv2.resize(template, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+    return scaled_template
