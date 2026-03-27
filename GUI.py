@@ -29,7 +29,7 @@ def create_gui():
     # 创建现代化主题窗口
     root = ttkb.Window(themename="darkly")  # 使用深色主题
     root.title("🎣 Party_Fish 自动钓鱼助手")
-    root.geometry("950x860")  # 增加高度以容纳所有内容
+    root.geometry("950x890")  # 增加高度以容纳所有内容
     root.minsize(900, 650)  # 最小尺寸
     root.resizable(True, True)  # 允许调整大小
 
@@ -550,7 +550,15 @@ def create_gui():
 
     status_label = ttkb.Label(
         status_frame,
-        text="按 F2 启动/暂停",
+        text="按 F2启动/暂停(钓鱼)",
+        font=("Segoe UI", 9),
+        bootstyle="light"
+    )
+    status_label.pack()
+
+    status_label = ttkb.Label(
+        status_frame,
+        text="按 F3启动/暂停(放生)",
         font=("Segoe UI", 9),
         bootstyle="light"
     )
@@ -558,7 +566,7 @@ def create_gui():
 
     version_label = ttkb.Label(
         status_frame,
-        text="v3.0 | Party_Fish",
+        text="v4.0 | Party_Fish",
         font=("Segoe UI", 7),
         bootstyle="light"
     )
