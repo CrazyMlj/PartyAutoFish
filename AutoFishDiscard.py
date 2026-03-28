@@ -76,7 +76,7 @@ def auto_fish_discard_sync(event):
             if locked_fish_matched():
                 print("🌊🐟️ [自动放生] 当前没有鱼可以放生...")
 
-                # 鱼桶已满
+                # 鱼桶已满 todo 待验证
                 if bucket_48_matched():
                     print("🌊🐟️ [自动放生] 桶里已有48条鱼...")
                     print("⏸️  [状态] 钓鱼脚本已暂停")

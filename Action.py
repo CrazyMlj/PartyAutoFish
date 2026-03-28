@@ -10,7 +10,7 @@ from PIL import Image
 from GlobalConfig import global_config
 from Location import location
 from MouseOrKeyBoardUtil import hold_mouse_left_button, key_press, POINT, key_release, \
-    hold_mouse_right_button, _default_mouse
+    hold_mouse_right_button, _default_mouse, ensure_mouse_left_up
 from ScreenAdapt import scale_template
 
 template_folder_path = os.path.join('.', 'resources')
@@ -300,12 +300,14 @@ def capture_region_gary(x, y, w, h):
 # ========================
 # 加时
 def overtime_y():
+    ensure_mouse_left_up()
     mouse.move(location.btn_yes_jiashi_base[0], location.btn_yes_jiashi_base[1])
     hold_mouse_left_button(0.1)
 
 
 # 不加时
 def overtime_n():
+    ensure_mouse_left_up()
     mouse.move(location.btn_no_jiashi_base[0], location.btn_no_jiashi_base[1])
     hold_mouse_left_button(0.1)
 
