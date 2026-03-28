@@ -19,11 +19,11 @@ mouse = _default_mouse
 scr = mss.mss()
 
 QUALITY_COLORS = {
-    1: [181, 185, 190],  # 标准
+    1: [182, 186, 191],  # 标准
     2: [140, 196, 85],  # 非凡
     3: [110, 172, 241],  # 稀有
     4: [169, 102, 249],  # 史诗
-    5: [250, 198, 59]  # 传奇
+    5: [250, 198, 59]  # 传奇 250 196 58
 }
 
 
@@ -243,7 +243,7 @@ def bucket_48_matched():
     return match(location.bucket_left_num_region_base, png_template.bucket_48_template)
 
 
-def is_color_similar_rgb(color1, color2, threshold=2):
+def is_color_similar_rgb(color1, color2, threshold=3):
     """
     判断两个RGB颜色是否相似
     color1, color2: (R, G, B) 元组或列表
@@ -251,6 +251,7 @@ def is_color_similar_rgb(color1, color2, threshold=2):
     """
     # 计算欧几里得距离
     distance = math.sqrt((color1[0] - color2[0]) ** 2 + (color1[1] - color2[1]) ** 2 + (color1[2] - color2[2]) ** 2)
+    print(distance)
     return distance < threshold
 
 

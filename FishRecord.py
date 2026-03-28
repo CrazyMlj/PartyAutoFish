@@ -8,7 +8,10 @@ import warnings
 from Action import capture_fish_info_region
 from GlobalConfig import global_config
 
+# 过滤libpng的iCCP警告（图片ICC配置文件问题）
 warnings.filterwarnings("ignore", message=".*iCCP.*")
+# 设置OpenCV不显示libpng警告
+os.environ["OPENCV_IO_ENABLE_JASPER"] = "0"
 
 # 品质等级定义
 QUALITY_LEVELS = ["标准", "非凡", "稀有", "史诗", "传奇"]
@@ -275,7 +278,8 @@ def search_fish_records(keyword="", quality_filter="全部", use_session=True):
             filtered.append(record)
         return filtered
 
-#保存单条钓鱼记录到文件
+
+# 保存单条钓鱼记录到文件
 def save_fish_record(fish_record):
     try:
         with open(FISH_RECORD_FILE, "a", encoding="utf-8") as f:
@@ -283,7 +287,8 @@ def save_fish_record(fish_record):
     except Exception as e:
         print(f"❌ [错误] 保存钓鱼记录失败: {e}")
 
-#加载所有历史钓鱼记录
+
+# 加载所有历史钓鱼记录
 def load_all_fish_records():
     global all_fish_records
     all_fish_records = []
