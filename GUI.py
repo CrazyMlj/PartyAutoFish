@@ -299,7 +299,7 @@ def create_gui():
     # 创建现代化主题窗口
     root = ttkb.Window(themename="darkly")
     root.title("🎣 Party_Fish 自动钓鱼助手")
-    root.geometry("970x1030")
+    root.geometry("1020x1030")
     root.minsize(900, 700)
     root.resizable(True, True)
 
