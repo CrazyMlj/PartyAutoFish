@@ -69,7 +69,7 @@ def scale_corner_anchored(x, y, w, h, screen_location):
 
         # 计算新坐标
         new_x = new_center_x + new_offset_x
-        new_y = y * global_config.scale_y
+        new_y = y * global_config.scale_uniform
         new_w = w * global_config.scale_uniform
         new_h = h * global_config.scale_uniform
 

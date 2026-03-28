@@ -6,6 +6,8 @@ import time
 
 from GlobalConfig import global_config
 
+JITTER_RANGE_PERCENTAGE = 40
+
 user32 = ctypes.WinDLL("user32")
 mouse_lock = threading.Lock()
 is_mouse_left_down = False
@@ -94,6 +96,14 @@ class HumanLikeMouse:
         self.jitter = 2 / speed_factor
 
 
+# 加上抖动随机数
+def add_jitter(base_time: float):
+    global JITTER_RANGE_PERCENTAGE
+    jitter_factor = random.uniform(1 - JITTER_RANGE_PERCENTAGE / 100, 1 + JITTER_RANGE_PERCENTAGE / 100)
+    jittered_time = base_time * jitter_factor
+    return max(0.01, round(jittered_time, 3))
+
+
 def ensure_mouse_left_down():
     global is_mouse_left_down
     with mouse_lock:
@@ -128,9 +138,9 @@ def ensure_mouse_right_up():
 
 def press_and_release_mouse_button():
     user32.mouse_event(0x02, 0, 0, 0, 0)
-    time.sleep(global_config.params['mouse_left_hold_time'])
+    time.sleep(add_jitter(global_config.params['mouse_left_hold_time']))
     user32.mouse_event(0x04, 0, 0, 0, 0)
-    time.sleep(global_config.params['mouse_left_release_time'])
+    time.sleep(add_jitter(global_config.params['mouse_left_release_time']))
 
 
 def hold_mouse_left_button(duration):
@@ -139,7 +149,7 @@ def hold_mouse_left_button(duration):
         ensure_mouse_left_up()
     with mouse_lock:
         user32.mouse_event(0x02, 0, 0, 0, 0)
-        time.sleep(duration)
+        time.sleep(add_jitter(duration))
         user32.mouse_event(0x04, 0, 0, 0, 0)
 
 
@@ -149,13 +159,13 @@ def hold_mouse_right_button(duration):
         user32.mouse_event(0x08, 0, 0, 0, 0)
     with mouse_lock:
         user32.mouse_event(0x08, 0, 0, 0, 0)
-        time.sleep(duration)
+        time.sleep(add_jitter(duration))
         user32.mouse_event(0x10, 0, 0, 0, 0)
 
 
 def key_press(vk_code, duration, is_hold=False):
     user32.keybd_event(vk_code, 0, 0, 0)
-    time.sleep(duration)
+    time.sleep(add_jitter(duration))
     if not is_hold:
         user32.keybd_event(vk_code, 0, 0x0002, 0)
 
