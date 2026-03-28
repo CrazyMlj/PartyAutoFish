@@ -180,7 +180,7 @@ def auto_fish_discard():
                 # 鱼桶是否已打开
                 if not bucket_opened_matched():
                     open_fish_bucket()
-                    time.sleep(1)
+                    time.sleep(2)
 
                 if bucket_empty_matched():
                     print("🌊🐟️ [自动放生] 鱼桶中没有鱼...")
