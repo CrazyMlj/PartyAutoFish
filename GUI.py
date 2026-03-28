@@ -3,7 +3,6 @@ import tkinter as tk
 import ttkbootstrap as ttkb
 from ttkbootstrap.constants import *
 import sys
-
 import queue
 from datetime import datetime
 
@@ -65,7 +64,8 @@ class ConsoleRedirector:
 
             # 添加时间戳并确保换行
             timestamp = datetime.now().strftime("%H:%M:%S")
-            # 添加新的格式化文本
+            # 移除原有的换行，添加新的格式化文本
+            text = text.rstrip('\n')
             formatted_text = f"[{timestamp}] {text}\n"
 
             # 判断消息类型并设置颜色
@@ -79,6 +79,7 @@ class ConsoleRedirector:
             elif "钓鱼" in text or "抛竿" in text or "收线" in text:
                 tag = "FISHING"
 
+            # 直接插入，不清空原有内容
             self.console_window.text_area.insert(tk.END, formatted_text, tag)
             self.console_window.text_area.see(tk.END)
         except:
@@ -175,6 +176,7 @@ class ConsoleWindow:
 
         # 消息存储（用于过滤）
         self.messages = []  # 存储 (text, tag)
+        self.all_messages = []  # 存储所有消息（不过滤）
 
         # 设置重定向器
         self.redirector = ConsoleRedirector(self)
@@ -205,24 +207,37 @@ class ConsoleWindow:
         """打印欢迎信息"""
         welcome_text = """
 ╔══════════════════════════════════════════════════════════╗
-║  🎣 Party_Fish 自动钓鱼助手 v4.2                         ║
+║  🎣 Party_Fish 自动钓鱼助手 v4.3                         ║
 ║  📅 控制台已启动                                          ║
 ║  ⌨️ 快捷键: F2 - 启动/暂停钓鱼 | F3 - 启动/暂停放生     ║
 ╚══════════════════════════════════════════════════════════╝
 """
-        self.write(welcome_text + "\n", "INFO")
+        self.write(welcome_text, "INFO")
 
     def write(self, text, tag="INFO"):
-        """写入消息"""
+        """写入消息（保留所有历史消息）"""
         if text and text.strip():
             # 确保每条消息都有换行
             if not text.endswith('\n'):
                 text = text + '\n'
-            self.messages.append((text, tag))
-            self.filter_messages()
+
+            # 添加时间戳
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            formatted_text = f"[{timestamp}] {text}"
+
+            # 存储到消息列表
+            self.all_messages.append((formatted_text, tag))
+            self.messages.append((formatted_text, tag))
+
+            # 直接插入到文本框（保留历史）
+            self.text_area.insert(tk.END, formatted_text, tag)
+
+            # 自动滚动到底部
+            if self.auto_scroll_var.get():
+                self.text_area.see(tk.END)
 
     def filter_messages(self):
-        """根据显示级别过滤消息"""
+        """根据显示级别过滤消息（只改变显示，不删除数据）"""
         if not self.text_area.winfo_exists():
             return
 
@@ -234,7 +249,8 @@ class ConsoleWindow:
 
         current_level = self.log_level_var.get()
 
-        for text, tag in self.messages:
+        # 根据过滤条件重新显示消息
+        for text, tag in self.all_messages:
             if current_level == "全部" or tag == current_level:
                 self.text_area.insert(tk.END, text, tag)
 
@@ -248,9 +264,10 @@ class ConsoleWindow:
                 pass
 
     def clear_console(self):
-        """清空控制台"""
+        """清空控制台（只清空显示，不清空存储）"""
+        self.text_area.delete(1.0, tk.END)
+        self.all_messages.clear()
         self.messages.clear()
-        self.filter_messages()
         self._print_welcome()
 
     def get_frame(self):
@@ -266,7 +283,7 @@ def print_to_console(message, level="INFO"):
     """打印到控制台的便捷函数"""
     if console_instance:
         try:
-            console_instance.write(message + "\n", level)
+            console_instance.write(message, level)
         except:
             if hasattr(sys, '__stderr__'):
                 print(message, file=sys.__stderr__)
@@ -885,7 +902,7 @@ def create_gui():
 
     ttkb.Label(
         status_frame,
-        text="v4.2 | Party_Fish",
+        text="v4.3 | Party_Fish",
         font=("Segoe UI", 8),
         bootstyle="secondary"
     ).pack(side=RIGHT)
