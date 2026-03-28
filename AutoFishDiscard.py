@@ -57,11 +57,11 @@ def auto_fish_discard_sync(event):
             discard_level = global_config.params['discard_level']
 
         if not is_auto_fish_discard:
-            print("🌊🐟️ [自动放生] 自动放生开关未打开... 若需要使用此功能，请手动开启开关...")
+            print("🌊🐟️ [放生] 自动放生开关未打开... 若需要使用此功能，请手动开启开关...")
             return
 
         if discard_level == 1:
-            print("🌊🐟️ [自动放生] 当前保留普通及以上鱼种，无需丢弃...")
+            print("🌊🐟️ [放生] 当前保留普通及以上鱼种，无需丢弃...")
             return
 
         if not bucket_opened_matched():
@@ -69,16 +69,16 @@ def auto_fish_discard_sync(event):
             time.sleep(2)
 
         if bucket_empty_matched():
-            print("🌊🐟️ [自动放生] 鱼桶中没有鱼...")
+            print("🌊🐟️ [放生] 鱼桶中没有鱼...")
             return
 
         while event.is_set():
             if locked_fish_matched():
-                print("🌊🐟️ [自动放生] 当前没有鱼可以放生...")
+                print("🌊🐟️ [放生] 当前没有鱼可以放生...")
 
                 # 鱼桶已满 todo 待验证
                 if bucket_48_matched():
-                    print("🌊🐟️ [自动放生] 桶里已有48条鱼...")
+                    print("🌊🐟️[放生] 桶里已有48条鱼...")
                     print("⏸️  [状态] 钓鱼脚本已暂停")
                     # 钓鱼程序暂停
                     event.clear()
@@ -91,7 +91,7 @@ def auto_fish_discard_sync(event):
 
             level = recognize_fish_quality()
             if level is None:
-                print("🌊🐟️ [自动放生] 未识别出桶中第一条鱼的质量...")
+                print("🌊🐟️ [放生] 未识别出桶中第一条鱼的质量...")
                 break
 
             with global_config._params_lock:
@@ -151,19 +151,19 @@ def auto_fish_discard():
                     discard_level = global_config.params['discard_level']
 
                 if not is_auto_fish_discard:
-                    print("🌊🐟️ [自动放生] 自动放生开关未打开... 若需要使用此功能，请手动开启开关...")
+                    print("🌊🐟️ [放生] 自动放生开关未打开... 若需要使用此功能，请手动开启开关...")
                     run_event.clear()
                     continue
 
                 if discard_level == 1:
-                    print("🌊🐟️ [自动放生] 当前保留普通及以上鱼种，无需丢弃...")
+                    print("🌊🐟️ [放生] 当前保留普通及以上鱼种，无需丢弃...")
                     run_event.clear()
                     continue
 
                 # 前置判断
                 # 是否在拉杆阶段
                 if drag_fish_matched():
-                    print("🌊🐟️ [自动放生] 当前正在拉鱼无法自动放生...")
+                    print("🌊🐟️ [放生] 当前正在拉鱼无法自动放生...")
                     run_event.clear()
                     continue
 
@@ -183,13 +183,13 @@ def auto_fish_discard():
                     time.sleep(2)
 
                 if bucket_empty_matched():
-                    print("🌊🐟️ [自动放生] 鱼桶中没有鱼...")
+                    print("🌊🐟️ [放生] 鱼桶中没有鱼...")
                     run_event.clear()
                     continue
 
                 while run_event.is_set():
                     if locked_fish_matched():
-                        print("🌊🐟️ [自动放生] 当前没有鱼可以放生...")
+                        print("🌊🐟️ [放生] 当前没有鱼可以放生...")
                         close_fish_bucket()
                         run_event.clear()
                         break
@@ -199,7 +199,7 @@ def auto_fish_discard():
 
                     level = recognize_fish_quality()
                     if level is None:
-                        print("🌊🐟️ [自动放生] 未识别出桶中第一条鱼的质量...")
+                        print("🌊🐟️ [放生] 未识别出桶中第一条鱼的质量...")
                         run_event.clear()
                         break
 
@@ -234,7 +234,7 @@ def auto_fish_discard():
 
 def count_discard_fish():
     global discard_count
-    print("🌊🐟️ [自动放生] 本次放鱼结束..共释放如下")
+    print("🌊🐟️ [放生] 本次放鱼结束..共释放如下")
     for i in range(4):
         emoji = QUALITY_COLORS.get(QUALITY_LEVELS[i])
         print("🌊🐟️ {} {}: 释放{}条".format(emoji, QUALITY_LEVELS[i], discard_count[i]))
