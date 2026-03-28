@@ -14,8 +14,8 @@ DRAG_FISH_REGION_BASE = (1007, 1094, 30, 30, 'bc')  # 拉鱼位置
 FISHING_REGION_BASE = (1146, 1316, 20, 25, 'bc')  # 上鱼右键
 
 OVERTIME_REGION_BASE = (1245, 675, 30, 30, 'c')  # 加时界面检测区域
-BTN_NO_JIASHI_BASE = (1182, 776, 'c')  # 不加时按钮
-BTN_YES_JIASHI_BASE = (1398, 776, 'c')  # 加时按钮
+BTN_NO_JIASHI_BASE = (1172, 784, 'c')  # 不加时按钮
+BTN_YES_JIASHI_BASE = (1387, 784, 'c')  # 加时按钮
 
 OPEN_FISH_BUCKET_BIT_BASE = -200  # 打开鱼桶鼠标移动
 BUCKET_OPENED_REGION_BASE = (2145, 408, 35, 40, 'tr')  # 桶以打开 3440*1440(3021, 408) 1K(1605,306)
