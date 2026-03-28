@@ -145,7 +145,7 @@ class GlobalConfig:
             print("│  {} 丢鱼：{}    🐟️ 丢鱼品质：{}以下品质全丢 ({}保留)".format(
                 discard_status, discard_text, quality_name, quality_name) + "  │")
             print("│  🖥️  分辨率：{} ({}×{})".format(
-                resolution_val, custom_width_val, custom_height_val) + " " * 30 + "│")
+                resolution_val, custom_width_val, custom_height_val) + " " * 26 + "│")
             print("│  📐 缩放比例：X={:.2f}  Y={:.2f}".format(self.scale_x, self.scale_y) + " " * 32 + "│")
             print("└" + "─" * 60 + "┘")
             screen_adapt()

@@ -3,9 +3,12 @@ import os
 import re
 import threading
 import time
+import warnings
 
 from Action import capture_fish_info_region
 from GlobalConfig import global_config
+
+warnings.filterwarnings("ignore", message=".*iCCP.*")
 
 # 品质等级定义
 QUALITY_LEVELS = ["标准", "非凡", "稀有", "史诗", "传奇"]

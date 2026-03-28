@@ -5,7 +5,6 @@ import threading
 import time
 
 import keyboard
-import mss
 from pynput import keyboard
 
 from Action import png_template
@@ -14,7 +13,6 @@ from AutoFishDiscard import auto_fish_discard, toggle_run_auto_fish_discard
 from FishRecord import load_all_fish_records
 from GUI import create_gui
 from GlobalConfig import global_config
-from MouseOrKeyBoardUtil import HumanLikeMouse
 
 listener_f2 = None  # 监听
 listener_f3 = None  # 监听
