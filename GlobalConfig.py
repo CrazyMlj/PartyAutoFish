@@ -139,14 +139,14 @@ class GlobalConfig:
             quality_name = QUALITY_LEVEL[discard_level_val - 1]
 
             print("│  ⏱️  循环间隔: {}s    📍 收线：{}s    📍 放线：{}s".format(
-                interval_str, hold_time_str, release_time_str) + "      │")
+                interval_str, hold_time_str, release_time_str) + "       │")
             print("│  🎣 最大拉杆：{}次     ⏳ 抛竿：{}s    {} 加时：{}".format(
                 cycle_times_val, casting_time_str, overtime_status, overtime_text) + "        │")
             print("│  {} 丢鱼：{}    🐟️ 丢鱼品质：{}以下品质全丢 ({}保留)".format(
-                discard_status, discard_text, quality_name, quality_name) + "   │")
+                discard_status, discard_text, quality_name, quality_name) + "  │")
             print("│  🖥️  分辨率：{} ({}×{})".format(
-                resolution_val, custom_width_val, custom_height_val) + " " * 28 + "│")
-            print("│  📐 缩放比例：X={:.2f}  Y={:.2f}".format(self.scale_x, self.scale_y) + " " * 31 + "│")
+                resolution_val, custom_width_val, custom_height_val) + " " * 26 + "│")
+            print("│  📐 缩放比例：X={:.2f}  Y={:.2f}".format(self.scale_x, self.scale_y) + " " * 32 + "│")
             print("└" + "─" * 60 + "┘")
             screen_adapt()
 

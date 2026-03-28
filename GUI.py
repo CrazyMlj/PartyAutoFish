@@ -2,6 +2,10 @@ from tkinter import ttk
 import tkinter as tk
 import ttkbootstrap as ttkb
 from ttkbootstrap.constants import *
+import sys
+
+import queue
+from datetime import datetime
 
 from FishRecord import search_fish_records
 from GlobalConfig import global_config
@@ -25,11 +29,260 @@ QUALITY_LEVEL_MAP = {
 auto_discard_level_var = 4
 
 
+class ConsoleRedirector:
+    """控制台输出重定向类"""
+
+    def __init__(self, console_window):
+        self.console_window = console_window
+        self.queue = queue.Queue()
+
+    def write(self, text):
+        """写入文本到队列"""
+        if text and text.strip():
+            self.queue.put(text)
+            try:
+                if self.console_window and hasattr(self.console_window, 'text_area'):
+                    self.console_window.text_area.after_idle(self._process_queue)
+            except:
+                pass
+
+    def _process_queue(self):
+        """处理队列中的消息"""
+        try:
+            while True:
+                text = self.queue.get_nowait()
+                self._insert_text(text)
+        except queue.Empty:
+            pass
+        except:
+            pass
+
+    def _insert_text(self, text):
+        """插入文本到文本框"""
+        try:
+            if not self.console_window or not hasattr(self.console_window, 'text_area'):
+                return
+
+            # 添加时间戳并确保换行
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            # 添加新的格式化文本
+            formatted_text = f"[{timestamp}] {text}\n"
+
+            # 判断消息类型并设置颜色
+            tag = "INFO"
+            if "错误" in text or "失败" in text or "ERROR" in text.upper():
+                tag = "ERROR"
+            elif "警告" in text or "WARNING" in text.upper():
+                tag = "WARNING"
+            elif "成功" in text or "SUCCESS" in text.upper():
+                tag = "SUCCESS"
+            elif "钓鱼" in text or "抛竿" in text or "收线" in text:
+                tag = "FISHING"
+
+            self.console_window.text_area.insert(tk.END, formatted_text, tag)
+            self.console_window.text_area.see(tk.END)
+        except:
+            pass
+
+    def flush(self):
+        pass
+
+
+class ConsoleWindow:
+    """控制台输出窗口组件"""
+
+    def __init__(self, parent):
+        self.parent = parent
+        self.running = True
+
+        # 创建控制台框架
+        self.console_frame = ttkb.Labelframe(
+            parent,
+            text=" 📋 控制台输出 ",
+            padding=10,
+            bootstyle="secondary"
+        )
+
+        # 工具栏
+        toolbar = ttkb.Frame(self.console_frame)
+        toolbar.pack(fill=X, pady=(0, 5))
+
+        # 清空按钮
+        self.clear_btn = ttkb.Button(
+            toolbar,
+            text="🗑️",
+            bootstyle="danger-outline",
+            width=3,
+            command=self.clear_console
+        )
+        self.clear_btn.pack(side=LEFT, padx=2)
+
+        # 自动滚动开关
+        self.auto_scroll_var = tk.BooleanVar(value=True)
+        self.auto_scroll_btn = ttkb.Checkbutton(
+            toolbar,
+            text="自动滚动",
+            variable=self.auto_scroll_var,
+            bootstyle="info-outline-toolbutton"
+        )
+        self.auto_scroll_btn.pack(side=LEFT, padx=5)
+
+        # 显示级别选择
+        ttkb.Label(toolbar, text="显示:", font=("Segoe UI", 8)).pack(side=LEFT, padx=(10, 2))
+        self.log_level_var = tk.StringVar(value="全部")
+        self.level_combo = ttk.Combobox(
+            toolbar,
+            textvariable=self.log_level_var,
+            values=["全部", "INFO", "WARNING", "ERROR", "SUCCESS", "FISHING"],
+            width=10,
+            state="readonly"
+        )
+        self.level_combo.pack(side=LEFT, padx=2)
+        self.level_combo.bind("<<ComboboxSelected>>", lambda e: self.filter_messages())
+
+        # 创建文本框和滚动条
+        text_frame = ttkb.Frame(self.console_frame)
+        text_frame.pack(fill=BOTH, expand=YES)
+
+        self.text_area = tk.Text(
+            text_frame,
+            wrap=tk.WORD,
+            font=("Consolas", 9),
+            bg="#1e1e1e",
+            fg="#d4d4d4",
+            insertbackground="white",
+            relief="flat",
+            height=12
+        )
+
+        scrollbar = ttkb.Scrollbar(
+            text_frame,
+            orient=VERTICAL,
+            command=self.text_area.yview,
+            bootstyle="rounded"
+        )
+        self.text_area.configure(yscrollcommand=scrollbar.set)
+
+        self.text_area.pack(side=LEFT, fill=BOTH, expand=YES)
+        scrollbar.pack(side=RIGHT, fill=Y)
+
+        # 配置文本标签颜色
+        self.text_area.tag_config("INFO", foreground="#a9b7c6")
+        self.text_area.tag_config("WARNING", foreground="#ffc66d")
+        self.text_area.tag_config("ERROR", foreground="#ff6b68")
+        self.text_area.tag_config("SUCCESS", foreground="#6aab73")
+        self.text_area.tag_config("FISHING", foreground="#87cefa")
+
+        # 消息存储（用于过滤）
+        self.messages = []  # 存储 (text, tag)
+
+        # 设置重定向器
+        self.redirector = ConsoleRedirector(self)
+
+        # 保存原始输出
+        self.original_stdout = sys.stdout
+        self.original_stderr = sys.stderr
+
+        # 重定向输出
+        sys.stdout = self.redirector
+        sys.stderr = self.redirector
+
+        # 初始化欢迎信息
+        self._print_welcome()
+
+        # 设置窗口关闭时的清理
+        self.console_frame.bind("<Destroy>", self._on_destroy)
+
+    def _on_destroy(self, event):
+        """窗口销毁时的清理"""
+        self.running = False
+        if hasattr(self, 'original_stdout'):
+            sys.stdout = self.original_stdout
+        if hasattr(self, 'original_stderr'):
+            sys.stderr = self.original_stderr
+
+    def _print_welcome(self):
+        """打印欢迎信息"""
+        welcome_text = """
+╔══════════════════════════════════════════════════════════╗
+║  🎣 Party_Fish 自动钓鱼助手 v4.2                         ║
+║  📅 控制台已启动                                          ║
+║  ⌨️ 快捷键: F2 - 启动/暂停钓鱼 | F3 - 启动/暂停放生     ║
+╚══════════════════════════════════════════════════════════╝
+"""
+        self.write(welcome_text + "\n", "INFO")
+
+    def write(self, text, tag="INFO"):
+        """写入消息"""
+        if text and text.strip():
+            # 确保每条消息都有换行
+            if not text.endswith('\n'):
+                text = text + '\n'
+            self.messages.append((text, tag))
+            self.filter_messages()
+
+    def filter_messages(self):
+        """根据显示级别过滤消息"""
+        if not self.text_area.winfo_exists():
+            return
+
+        # 保存当前滚动位置
+        current_scroll = self.text_area.yview()
+
+        # 清空显示
+        self.text_area.delete(1.0, tk.END)
+
+        current_level = self.log_level_var.get()
+
+        for text, tag in self.messages:
+            if current_level == "全部" or tag == current_level:
+                self.text_area.insert(tk.END, text, tag)
+
+        # 自动滚动到底部（如果启用）
+        if self.auto_scroll_var.get():
+            self.text_area.see(tk.END)
+        else:
+            try:
+                self.text_area.yview_moveto(current_scroll[0])
+            except:
+                pass
+
+    def clear_console(self):
+        """清空控制台"""
+        self.messages.clear()
+        self.filter_messages()
+        self._print_welcome()
+
+    def get_frame(self):
+        """获取控制台框架"""
+        return self.console_frame
+
+
+# 全局控制台实例
+console_instance = None
+
+
+def print_to_console(message, level="INFO"):
+    """打印到控制台的便捷函数"""
+    if console_instance:
+        try:
+            console_instance.write(message + "\n", level)
+        except:
+            if hasattr(sys, '__stderr__'):
+                print(message, file=sys.__stderr__)
+            else:
+                print(message)
+    else:
+        print(message)
+
+
 def create_gui():
+    global console_instance
+
     # 创建现代化主题窗口
     root = ttkb.Window(themename="darkly")
     root.title("🎣 Party_Fish 自动钓鱼助手")
-    root.geometry("1050x1030")
+    root.geometry("970x1030")
     root.minsize(900, 700)
     root.resizable(True, True)
 
@@ -39,7 +292,7 @@ def create_gui():
     except:
         pass
 
-    # ==================== 主容器 ====================
+    # ==================== 主容器（使用 PanedWindow 实现三栏布局） ====================
     main_paned = ttkb.Panedwindow(root, orient=HORIZONTAL)
     main_paned.pack(fill=BOTH, expand=YES, padx=12, pady=12)
 
@@ -52,12 +305,12 @@ def create_gui():
     main_paned.add(left_container, weight=0)
 
     # 左侧滚动区域
-    left_canvas = tk.Canvas(left_container, highlightthickness=0, bd=0,width=350)
+    left_canvas = tk.Canvas(left_container, highlightthickness=0, bd=0, width=350)
     left_scrollbar = ttkb.Scrollbar(left_container, orient=VERTICAL, command=left_canvas.yview, bootstyle="rounded")
     left_scrollable = ttkb.Frame(left_canvas)
 
     left_scrollable.bind("<Configure>", lambda e: left_canvas.configure(scrollregion=left_canvas.bbox("all")))
-    left_canvas.create_window((12, 8), window=left_scrollable, anchor="nw",width=350)
+    left_canvas.create_window((12, 8), window=left_scrollable, anchor="nw", width=350)
     left_canvas.configure(yscrollcommand=left_scrollbar.set)
 
     left_canvas.pack(side=LEFT, fill=BOTH, expand=YES)
@@ -108,17 +361,16 @@ def create_gui():
     def toggle_topmost():
         """切换窗口置顶状态"""
         if is_topmost.get():
-            # 当前是置顶状态，点击后取消置顶
             root.attributes('-topmost', False)
             is_topmost.set(False)
             topmost_btn.config(text="📌 窗口置顶", bootstyle="secondary")
+            print_to_console("窗口置顶已关闭", "INFO")
         else:
-            # 当前不是置顶状态，点击后启用置顶
             root.attributes('-topmost', True)
             is_topmost.set(True)
             topmost_btn.config(text="🔝 窗口置顶", bootstyle="success")
+            print_to_console("窗口置顶已开启", "SUCCESS")
 
-    # 置顶按钮
     topmost_btn = ttkb.Button(
         window_card,
         text="📌 窗口置顶",
@@ -128,7 +380,6 @@ def create_gui():
     )
     topmost_btn.pack(pady=5)
 
-    # 置顶提示
     ttkb.Label(
         window_card,
         text="💡 点击按钮启用置顶，再次点击取消",
@@ -247,6 +498,7 @@ def create_gui():
         global auto_discard_level_var
         selected = discard_level_combo.get()
         auto_discard_level_var = QUALITY_LEVEL_MAP.get(selected, 4)
+        print_to_console(f"自动丢鱼品质阈值已设置为: {selected}", "INFO")
 
     discard_level_frame = ttkb.Frame(discard_card)
     discard_level_frame.pack(fill=X)
@@ -327,17 +579,21 @@ def create_gui():
         if resolution_var.get() == "自定义":
             # 显示自定义输入框
             custom_frame.pack(fill=X, pady=(5, 0))
+            print_to_console("已切换到自定义分辨率模式", "INFO")
         else:
             # 根据选择更新显示值
             if resolution_var.get() == "1080P":
                 custom_width_var.set("1920")
                 custom_height_var.set("1080")
+                print_to_console("已切换到 1080P 分辨率", "INFO")
             elif resolution_var.get() == "2K":
                 custom_width_var.set("2560")
                 custom_height_var.set("1440")
+                print_to_console("已切换到 2K 分辨率", "INFO")
             elif resolution_var.get() == "4K":
                 custom_width_var.set("3840")
                 custom_height_var.set("2160")
+                print_to_console("已切换到 4K 分辨率", "INFO")
         # 始终显示分辨率信息标签
         info_label.pack(pady=(8, 0))
         update_resolution_info()
@@ -369,6 +625,8 @@ def create_gui():
     def update_and_refresh():
         global auto_discard_level_var
         try:
+            old_resolution = global_config.params['resolution']
+
             global_config.update(
                 interval=float(param_vars['interval'].get()),
                 mouse_left_hold_time=float(param_vars['mouse_left_hold_time'].get()),
@@ -382,13 +640,20 @@ def create_gui():
                 custom_width=int(custom_width_var.get()),
                 custom_height=int(custom_height_var.get())
             )
+
             resolution_info_var.set(
                 f"当前: {global_config.params['custom_width']}×{global_config.params['custom_height']}")
             save_status_label.config(text="✅ 参数已保存", bootstyle="success")
             root.after(2000, lambda: save_status_label.config(text="", bootstyle="light"))
+
+            print_to_console("参数配置已保存", "SUCCESS")
+            if old_resolution != resolution_var.get():
+                print_to_console(f"分辨率已从 {old_resolution} 更改为 {resolution_var.get()}", "WARNING")
+
         except ValueError as e:
             save_status_label.config(text=f"❌ 输入无效: {e}", bootstyle="danger")
             root.after(3000, lambda: save_status_label.config(text="", bootstyle="light"))
+            print_to_console(f"参数保存失败: {e}", "ERROR")
 
     save_btn = ttkb.Button(
         save_frame,
@@ -408,19 +673,22 @@ def create_gui():
     )
     save_status_label.pack()
 
-    # ==================== 右侧面板（钓鱼记录区域） ====================
-    right_panel = ttkb.Frame(main_paned)
-    right_panel.grid(row=0, column=1, sticky="nsew")
-    main_paned.add(right_panel, weight=1)
+    # ==================== 右侧面板（包含钓鱼记录和控制台） ====================
+    right_container = ttkb.Frame(main_paned)
+    main_paned.add(right_container, weight=1)
 
-    # 钓鱼记录卡片
+    # 右侧使用 PanedWindow 实现上下分栏
+    right_paned = ttkb.Panedwindow(right_container, orient=VERTICAL)
+    right_paned.pack(fill=BOTH, expand=YES)
+
+    # ==================== 钓鱼记录区域（上半部分） ====================
     record_card = ttkb.Labelframe(
-        right_panel,
+        right_paned,
         text=" 🐟 钓鱼记录 ",
         padding=12,
         bootstyle="primary"
     )
-    record_card.pack(fill=BOTH, expand=YES)
+    right_paned.add(record_card, weight=2)
 
     # 工具栏
     toolbar = ttkb.Frame(record_card)
@@ -432,6 +700,7 @@ def create_gui():
     def set_view(mode):
         view_mode.set(mode)
         update_fish_display()
+        print_to_console(f"切换到{'本次钓鱼' if mode == 'current' else '历史总览'}视图", "INFO")
 
     ttkb.Button(
         toolbar,
@@ -509,7 +778,7 @@ def create_gui():
         tree_frame,
         columns=columns,
         show="headings",
-        height=18,
+        height=12,
         bootstyle="info"
     )
 
@@ -591,6 +860,13 @@ def create_gui():
     global_config.gui_fish_update_callback = safe_update
     update_fish_display()
 
+    # ==================== 控制台输出区域（下半部分） ====================
+    console_widget = ConsoleWindow(right_paned)
+    right_paned.add(console_widget.get_frame(), weight=1)
+
+    # 保存全局控制台实例
+    console_instance = console_widget
+
     # ==================== 底部状态栏 ====================
     status_bar = ttkb.Frame(root)
     status_bar.pack(fill=X, side=BOTTOM, padx=10, pady=(0, 5))
@@ -613,6 +889,10 @@ def create_gui():
         font=("Segoe UI", 8),
         bootstyle="secondary"
     ).pack(side=RIGHT)
+
+    # 打印启动信息
+    print_to_console("Party_Fish GUI 已启动", "SUCCESS")
+    print_to_console("等待用户操作...", "INFO")
 
     # 运行
     root.mainloop()

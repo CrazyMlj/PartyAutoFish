@@ -235,7 +235,7 @@ def bucket_48_matched():
 def recognize_fish_quality(tolerance):
     img = capture_region_rgb(location.fish_color_info_location[0], location.fish_color_info_location[1], 1, 1)
     for QUALITY_COLOR in QUALITY_COLORS.items():
-        distance = sum((img[0][0][i] - QUALITY_COLOR[1][i]) for i in range(3))
+        distance = sum((int(img[0][0][i]) - int(QUALITY_COLOR[1][i])) for i in range(3))
         if distance <= tolerance:
             return QUALITY_COLOR[0]
     return None
