@@ -5,9 +5,9 @@ import mss
 
 from Action import open_fish_bucket, locked_fish_matched, close_fish_bucket, \
     recognize_fish_quality, lock_fish, discard_fish, bucket_empty_matched, bucket_opened_matched, mouse_move_safe, \
-    fishing_matched, waiting_strike_matched, retrieve_the_rod, drag_fish_matched, bucket_48_matched
+    waiting_strike_matched, retrieve_the_rod, drag_fish_matched, bucket_48_matched, fished_match
 from GlobalConfig import global_config
-from MouseOrKeyBoardUtil import ensure_mouse_left_up, ensure_mouse_right_up, _default_mouse
+from MouseOrKeyBoardUtil import ensure_mouse_left_up, ensure_mouse_right_up, _default_mouse, hold_mouse_left_button
 
 QUALITY_LEVELS = ["标准", "非凡", "稀有", "史诗", "传奇"]
 QUALITY_COLORS = {
@@ -170,10 +170,11 @@ def auto_fish_discard():
                 # 是否在等待上鱼阶段
                 if waiting_strike_matched():
                     retrieve_the_rod()
-                    time.sleep(5)
+                    time.sleep(3.5)
 
                 # 是否在钓鱼完成界面
-                if fishing_matched():
+                if fished_match():
+                    hold_mouse_left_button(0.2)
                     time.sleep(1)
 
                 # 鱼桶是否已打开
