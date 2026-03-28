@@ -59,7 +59,7 @@ if __name__ == "__main__":
     print()
     print("╔" + "═" * 50 + "╗")
     print("║" + " " * 50 + "║")
-    print("║     🎣  PartyFish 自动钓鱼助手  v4.3             ║")
+    print("║     🎣  PartyFish 自动钓鱼助手  v4.5             ║")
     print("║" + " " * 50 + "║")
     print("╠" + "═" * 50 + "╣")
     print(

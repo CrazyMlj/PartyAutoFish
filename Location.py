@@ -9,6 +9,8 @@ BAIT_MID = (0, 22, 7, 15)  # 中间位
 FISH_STAR_REGION_BASE = (1172, 165, 40, 40, 'tc')  # 上鱼星星 3440*1440(1613, 165) 1K(879 122)
 F_1_REGION_BASE = (1100, 1329, 18, 25, 'bc')  # F1位置 3440*1440(1539, 1296) 1K(823,995)
 F_2_REGION_BASE = (1212, 1329, 18, 25, 'bc')  # F2位置
+WAITING_STRIKE_REGION_BASE = (1007, 1324, 30, 30, 'bc')  # 等待上鱼位置
+DRAG_FISH_REGION_BASE = (1007, 1094, 30, 30, 'bc')  # 拉鱼位置
 FISHING_REGION_BASE = (1146, 1316, 20, 25, 'bc')  # 上鱼右键
 
 OVERTIME_REGION_BASE = (1245, 675, 30, 30, 'c')  # 加时界面检测区域
@@ -18,7 +20,7 @@ BTN_YES_JIASHI_BASE = (1398, 776, 'c')  # 加时按钮
 OPEN_FISH_BUCKET_BIT_BASE = -200  # 打开鱼桶鼠标移动
 BUCKET_OPENED_REGION_BASE = (2145, 408, 35, 40, 'tr')  # 桶以打开 3440*1440(3021, 408) 1K(1605,306)
 BUCKET_FULL_REGION_BASE = (1184, 434, 40, 40, 'tc')  # 鱼桶满了(满)
-BUCKET_LEFT_NUM_REGION_BASE = (2148, 457, 25, 30, 'bc')  # 鱼桶已装(48)
+BUCKET_LEFT_NUM_REGION_BASE = (2147, 453, 25, 30, 'bc')  # 鱼桶已装(48)
 BUCKET_EMPTY_REGION_BASE = (2111, 909, 40, 40, 'br')  # 鱼桶一条鱼也没有(空)
 FISH_COLOR_INFO_LOCATION = (1924, 640, 'tr')  # 鱼桶中第一条鱼位置
 MOUSE_SAFE_BIT_BASE = -80  # 鼠标移动安全位置 排除对鱼品质识别干扰
@@ -68,6 +70,8 @@ class Location:
         self.fish_locked_location = FISH_LOCKED_LOCATION
         self.fish_info_region_base = FISH_INFO_REGION_BASE
         self.mouse_safe_bit_base = MOUSE_SAFE_BIT_BASE
+        self.waiting_strike_region_base = WAITING_STRIKE_REGION_BASE
+        self.drag_fish_region_base = DRAG_FISH_REGION_BASE
 
     # 更新位置信息
     def update_location(self):
@@ -85,7 +89,7 @@ class Location:
         self.open_fish_bucket_bit_base = scale_cords_x(OPEN_FISH_BUCKET_BIT_BASE)
         self.bucket_opened_region_base = scale_corner_anchored(*BUCKET_OPENED_REGION_BASE)
         self.bucket_full_region_base = scale_corner_anchored(*BUCKET_FULL_REGION_BASE)
-        self.bucket_left_num_region_base = scale_corner_anchored(*BUCKET_LEFT_NUM_REGION_BASE)  # todo 鱼桶中锁定鱼达到48时停止脚本
+        self.bucket_left_num_region_base = scale_corner_anchored(*BUCKET_LEFT_NUM_REGION_BASE)
         self.bucket_empty_region_base = scale_corner_anchored(*BUCKET_EMPTY_REGION_BASE)
         self.fish_color_info_location = scale_point_anchored(*FISH_COLOR_INFO_LOCATION)
         self.fish_is_locked_region_base = scale_corner_anchored(*FISH_IS_LOCKED_REGION_BASE)
@@ -95,6 +99,8 @@ class Location:
         self.fish_locked_location = scale_point_anchored(*FISH_LOCKED_LOCATION)
         self.fish_info_region_base = scale_corner_anchored(*FISH_INFO_REGION_BASE)
         self.mouse_safe_bit_base = scale_cords_x(MOUSE_SAFE_BIT_BASE)
+        self.waiting_strike_region_base = scale_corner_anchored(*WAITING_STRIKE_REGION_BASE)
+        self.drag_fish_region_base = scale_corner_anchored(*DRAG_FISH_REGION_BASE)
 
     # 重新加载
     def reload_base_date(self):
@@ -122,6 +128,8 @@ class Location:
         self.fish_locked_location = FISH_LOCKED_LOCATION
         self.fish_info_region_base = FISH_INFO_REGION_BASE
         self.mouse_safe_bit_base = scale_cords_x(MOUSE_SAFE_BIT_BASE)
+        self.waiting_strike_region_base = scale_corner_anchored(*WAITING_STRIKE_REGION_BASE)
+        self.drag_fish_region_base = scale_corner_anchored(*DRAG_FISH_REGION_BASE)
 
 
 location = Location()

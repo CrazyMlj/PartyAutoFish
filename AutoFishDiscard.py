@@ -4,7 +4,8 @@ import time
 import mss
 
 from Action import open_fish_bucket, locked_fish_matched, close_fish_bucket, \
-    recognize_fish_quality, lock_fish, discard_fish, bucket_empty_matched, bucket_opened_matched, mouse_move_safe
+    recognize_fish_quality, lock_fish, discard_fish, bucket_empty_matched, bucket_opened_matched, mouse_move_safe, \
+    fishing_matched, waiting_strike_matched, retrieve_the_rod, drag_fish_matched, bucket_48_matched
 from GlobalConfig import global_config
 from MouseOrKeyBoardUtil import ensure_mouse_left_up, ensure_mouse_right_up, _default_mouse
 
@@ -46,7 +47,10 @@ def auto_fish_discard_sync(event):
     local_scr = None
 
     try:
-        local_scr = mss.mss()
+        # 创建独立的 mss 实例
+        if local_scr is None:
+            local_scr = mss.mss()
+        global_config.set_scr(local_scr)
 
         with global_config._params_lock:
             is_auto_fish_discard = global_config.params['is_auto_fish_discard']
@@ -71,16 +75,24 @@ def auto_fish_discard_sync(event):
         while event.is_set():
             if locked_fish_matched():
                 print("🌊🐟️ [自动放生] 当前没有鱼可以放生...")
+
+                # 鱼桶已满
+                if bucket_48_matched():
+                    print("🌊🐟️ [自动放生] 桶里已有48条鱼...")
+                    print("⏸️  [状态] 钓鱼脚本已暂停")
+                    # 钓鱼程序暂停
+                    event.clear()
+
                 close_fish_bucket()
                 break
 
             # 将鼠标移走排除鱼品质判断干扰
             mouse_move_safe()
 
-            level = recognize_fish_quality(50)
+            level = recognize_fish_quality()
             if level is None:
                 print("🌊🐟️ [自动放生] 未识别出桶中第一条鱼的质量...")
-                continue
+                break
 
             with global_config._params_lock:
                 discard_level = global_config.params['discard_level']
@@ -121,10 +133,13 @@ def auto_fish_discard():
     while not begin_event.is_set():
         if run_event.is_set():
             try:
+                # 暂停自动钓鱼
+                global_config._fishing_pause_event.set()
+
                 # 创建独立的 mss 实例
                 if local_scr is None:
                     local_scr = mss.mss()
-                    global_config.set_scr(local_scr)
+                global_config.set_scr(local_scr)
 
                 # 确保 mouse 对象已初始化
                 if _default_mouse is not None:
@@ -145,6 +160,23 @@ def auto_fish_discard():
                     run_event.clear()
                     continue
 
+                # 前置判断
+                # 是否在拉杆阶段
+                if drag_fish_matched():
+                    print("🌊🐟️ [自动放生] 当前正在拉鱼无法自动放生...")
+                    run_event.clear()
+                    continue
+
+                # 是否在等待上鱼阶段
+                if waiting_strike_matched():
+                    retrieve_the_rod()
+                    time.sleep(5)
+
+                # 是否在钓鱼完成界面
+                if fishing_matched():
+                    time.sleep(1)
+
+                # 鱼桶是否已打开
                 if not bucket_opened_matched():
                     open_fish_bucket()
                     time.sleep(1)
@@ -164,7 +196,7 @@ def auto_fish_discard():
                     # 将鼠标移走排除鱼品质判断干扰
                     mouse_move_safe()
 
-                    level = recognize_fish_quality(20)
+                    level = recognize_fish_quality()
                     if level is None:
                         print("🌊🐟️ [自动放生] 未识别出桶中第一条鱼的质量...")
                         run_event.clear()
@@ -180,9 +212,12 @@ def auto_fish_discard():
                         lock_fish()
                 time.sleep(1)
                 count_discard_fish()
+
             except Exception as e:
                 print("❌ [错误] 自动放生脚本主循环异常：{}".format(e))
             finally:
+                # 通知钓鱼线程继续
+                global_config._fishing_pause_event.clear()
                 # 清理资源（注意：不在这里关闭 local_scr，因为循环还要继续）
                 pass
 

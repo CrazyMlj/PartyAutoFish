@@ -1,4 +1,5 @@
 ﻿import ctypes
+import math
 import os
 
 import cv2
@@ -57,6 +58,8 @@ class Template:
         self.over_time_template = None
         self.bucket_full_template = None
         self.bucket_empty_template = None
+        self.bucket_48_template = None
+        self.waiting_strike_or_drag_fish_template = None
 
     # 模板加载
     def load_templates(self):
@@ -70,6 +73,8 @@ class Template:
         self.load_lock_template()
         self.load_bucket_full_template()
         self.load_bucket_empty_template()
+        self.load_bucket_48_template()
+        self.load_waiting_strike_or_drag_fish_template()
 
     def load_star_template(self):
         self.star_template = scale_template(load("star_grayscale.png"))
@@ -106,6 +111,12 @@ class Template:
     def load_bucket_empty_template(self):
         self.bucket_empty_template = scale_template(load("bucket_empty_grayscale.png"))
         return self.bucket_empty_template
+
+    def load_bucket_48_template(self):
+        self.bucket_48_template = scale_template(load("bucket_48_grayscale.png"))
+
+    def load_waiting_strike_or_drag_fish_template(self):
+        self.waiting_strike_or_drag_fish_template = scale_template(load("waiting_strike_or_drag_fish_grayscale.png"))
 
     # 加载模板（0.png到9.png）
     def load_num_templates(self):
@@ -195,6 +206,14 @@ def fishing_matched():
     return match(location.fishing_region_base, png_template.fishing_template)
 
 
+def waiting_strike_matched():
+    return match(location.waiting_strike_region_base, png_template.waiting_strike_or_drag_fish_template)
+
+
+def drag_fish_matched():
+    return match(location.drag_fish_region_base, png_template.waiting_strike_or_drag_fish_template)
+
+
 def overtime_matched():
     return match(location.overtime_region_base, png_template.over_time_template)
 
@@ -219,24 +238,28 @@ def bucket_empty_matched():
     return match(location.bucket_empty_region_base, png_template.bucket_empty_template)
 
 
-# 桶是否有48条鱼 todo 匹配灰度图片
+# 桶是否有48条鱼
 def bucket_48_matched():
-    match_frame = global_config.scr.grab(location.bucket_left_num_region_base)
-    if match_frame is not None:
-        img = np.array(match_frame)
-        gray_img = cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
-        region1 = gray_img[0:28, 0:21]  # 获取区域1的图像
-        region2 = gray_img[9:37, 0:21]  # 获取区域2的图像
-        return cv2.minMaxLoc(cv2.matchTemplate(region1, region2, cv2.TM_CCOEFF_NORMED))[1] > 0.95
-    return False
+    return match(location.bucket_left_num_region_base, png_template.bucket_48_template)
+
+
+def is_color_similar_rgb(color1, color2, threshold=2):
+    """
+    判断两个RGB颜色是否相似
+    color1, color2: (R, G, B) 元组或列表
+    threshold: 阈值，越小越严格，推荐范围 20-50
+    """
+    # 计算欧几里得距离
+    distance = math.sqrt((color1[0] - color2[0]) ** 2 + (color1[1] - color2[1]) ** 2 + (color1[2] - color2[2]) ** 2)
+    return distance < threshold
 
 
 # 识别鱼品质
-def recognize_fish_quality(tolerance):
+def recognize_fish_quality():
     img = capture_region_rgb(location.fish_color_info_location[0], location.fish_color_info_location[1], 1, 1)
+    img_arr = np.array(img)
     for QUALITY_COLOR in QUALITY_COLORS.items():
-        distance = sum((int(img[0][0][i]) - int(QUALITY_COLOR[1][i])) for i in range(3))
-        if distance <= tolerance:
+        if is_color_similar_rgb(img_arr[0, 0, :3], QUALITY_COLOR[1]):
             return QUALITY_COLOR[0]
     return None
 
@@ -290,11 +313,17 @@ def overtime_n():
 # 打开鱼桶界面
 def open_fish_bucket():
     # 长按按c键打开 移动鼠标到鱼桶图标 释放c键打开鱼桶
-    key_press(67, 1, True)
+    key_press(0x43, 1, True)
     point = POINT()
     user32.GetCursorPos(ctypes.byref(point))
     mouse.move(point.x + location.open_fish_bucket_bit_base, point.y)
-    key_release(67)
+    key_release(0x43)
+
+
+# 收杆
+def retrieve_the_rod():
+    # 单击f
+    key_press(0x46, 0.2, False)
 
 
 # 关闭鱼桶界面
