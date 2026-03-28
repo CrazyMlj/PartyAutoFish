@@ -29,7 +29,7 @@ def create_gui():
     # 创建现代化主题窗口
     root = ttkb.Window(themename="darkly")
     root.title("🎣 Party_Fish 自动钓鱼助手")
-    root.geometry("1050x1070")
+    root.geometry("1050x1030")
     root.minsize(900, 700)
     root.resizable(True, True)
 
@@ -609,7 +609,7 @@ def create_gui():
 
     ttkb.Label(
         status_frame,
-        text="v4.1 | Party_Fish",
+        text="v4.2 | Party_Fish",
         font=("Segoe UI", 8),
         bootstyle="secondary"
     ).pack(side=RIGHT)

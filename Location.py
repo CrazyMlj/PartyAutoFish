@@ -85,7 +85,7 @@ class Location:
         self.open_fish_bucket_bit_base = scale_cords_x(OPEN_FISH_BUCKET_BIT_BASE)
         self.bucket_opened_region_base = scale_corner_anchored(*BUCKET_OPENED_REGION_BASE)
         self.bucket_full_region_base = scale_corner_anchored(*BUCKET_FULL_REGION_BASE)
-        self.bucket_left_num_region_base = scale_corner_anchored(*BUCKET_LEFT_NUM_REGION_BASE)  # todo
+        self.bucket_left_num_region_base = scale_corner_anchored(*BUCKET_LEFT_NUM_REGION_BASE)  # todo 鱼桶中锁定鱼达到48时停止脚本
         self.bucket_empty_region_base = scale_corner_anchored(*BUCKET_EMPTY_REGION_BASE)
         self.fish_color_info_location = scale_point_anchored(*FISH_COLOR_INFO_LOCATION)
         self.fish_is_locked_region_base = scale_corner_anchored(*FISH_IS_LOCKED_REGION_BASE)

@@ -53,7 +53,7 @@ def auto_fish():
                     local_scr = mss.mss()
                 global_config.set_scr(local_scr)
                 # 检测 F1/F2 抛竿
-                if f1_matched():
+                if f1_matched() or f2_matched():
                     hold_mouse_left_button(global_config.get_param('casting_time'))
                     if bucket_full_matched():
                         ensure_mouse_left_up()
@@ -62,31 +62,16 @@ def auto_fish():
                         auto_fish_discard_sync(run_event)
                         continue
                     time.sleep(0.15)
-                elif f2_matched():
-                    hold_mouse_left_button(global_config.get_param('casting_time'))
-                    time.sleep(0.15)
                 elif fishing_matched():
                     hold_mouse_left_button(global_config.get_param('casting_time'))
 
                 time.sleep(0.05)
 
-                # 处理加时选择（线程安全读取参数）
-                current_overtime_val = global_config.get_param('is_overtime')
-
-                if current_overtime_val == 0:
-                    if overtime_matched():
-                        overtime_y()
-                        if bait_match_val() is not None:
-                            previous_result = global_config.get_bait_count()
-                elif current_overtime_val == 1:
-                    if overtime_matched():
-                        overtime_n()
-                        if bait_match_val() is not None:
-                            previous_result = global_config.get_bait_count()
-                time.sleep(0.05)
+                overtime_action()
 
                 # 获取当前结果（线程安全）
-                if bait_match_val() is not None:
+                bait_result = bait_match_val()
+                if bait_result is not None:
                     current_result = global_config.get_bait_count()
                 else:
                     current_result = previous_result if previous_result is not None else 0
@@ -111,6 +96,8 @@ def auto_fish():
                         if reel_rod_times <= current_times:
                             reel_rod_times += 1
                             press_and_release_mouse_button()  # 执行点击循环直到识别到 star.png
+                            # 拉鱼过程中出现加时
+                            overtime_action()
                         else:
                             reel_rod_times = 0
                             print("🎣 [提示] 达到最大拉杆次数，本轮结束")
@@ -138,6 +125,24 @@ def auto_fish():
             local_scr.close()
         except:
             pass
+
+
+# 加时
+def overtime_action():
+    global previous_result
+    # 处理加时选择（线程安全读取参数）
+    current_overtime_val = global_config.get_param('is_overtime')
+    if current_overtime_val == 0:
+        if overtime_matched():
+            overtime_y()
+            if bait_match_val() is not None:
+                previous_result = global_config.get_bait_count()
+    elif current_overtime_val == 1:
+        if overtime_matched():
+            overtime_n()
+            if bait_match_val() is not None:
+                previous_result = global_config.get_bait_count()
+    time.sleep(0.05)
 
 
 def toggle_run_auto_fish():
