@@ -76,17 +76,17 @@ def auto_fish():
                 if current_overtime_val == 0:
                     if overtime_matched():
                         overtime_y()
-                        if bait_match_val():
+                        if bait_match_val() is not None:
                             previous_result = global_config.get_bait_count()
                 elif current_overtime_val == 1:
                     if overtime_matched():
                         overtime_n()
-                        if bait_match_val():
+                        if bait_match_val() is not None:
                             previous_result = global_config.get_bait_count()
                 time.sleep(0.05)
 
                 # 获取当前结果（线程安全）
-                if bait_match_val():
+                if bait_match_val() is not None:
                     current_result = global_config.get_bait_count()
                 else:
                     current_result = previous_result if previous_result is not None else 0

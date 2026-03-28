@@ -21,14 +21,15 @@ BUCKET_FULL_REGION_BASE = (1184, 434, 40, 40, 'tc')  # 鱼桶满了(满)
 BUCKET_LEFT_NUM_REGION_BASE = (2148, 457, 25, 30, 'bc')  # 鱼桶已装(48)
 BUCKET_EMPTY_REGION_BASE = (2111, 909, 40, 40, 'br')  # 鱼桶一条鱼也没有(空)
 FISH_COLOR_INFO_LOCATION = (1924, 640, 'tr')  # 鱼桶中第一条鱼位置
-MOUSE_SAFE_BIT_BASE = -80 # 鼠标移动安全位置 排除对鱼品质识别干扰
+MOUSE_SAFE_BIT_BASE = -80  # 鼠标移动安全位置 排除对鱼品质识别干扰
 FISH_IS_LOCKED_REGION_BASE = (1924, 588, 25, 30, 'tr')  # 鱼上锁
 FIRST_FISH_LOCATION = (1924, 640, 'tr')  # 第一条鱼坐标 1k(1444,480)
 CLOSE_BUTTON_LOCATION = (2461, 445, 'tr')  # 关闭鱼桶坐标 1K(1844,333)
 FISH_DISCARD_LOCATION = (1964, 800, 'tr')  # 丢弃鱼坐标 屏幕位置与FIRST_FISH_LOCATION保持一致
 FISH_LOCKED_LOCATION = (1964, 860, 'tr')  # 锁定鱼坐标 屏幕位置与FIRST_FISH_LOCATION保持一致
 
-FISH_INFO_REGION_BASE = (915, 75, 725, 150, 'tc')  # 鱼信息识别区域（2K分辨率基准值）
+FISH_INFO_REGION_BASE = (915, 75, 725, 150, 'tc')  # 鱼信息识别区域
+UNO_SKIP_INFO_REGION_BASE = (2242, 1314, 284, 100, 'br')  # uno跳过按钮 #todo
 
 
 class Location:
@@ -84,7 +85,7 @@ class Location:
         self.open_fish_bucket_bit_base = scale_cords_x(OPEN_FISH_BUCKET_BIT_BASE)
         self.bucket_opened_region_base = scale_corner_anchored(*BUCKET_OPENED_REGION_BASE)
         self.bucket_full_region_base = scale_corner_anchored(*BUCKET_FULL_REGION_BASE)
-        self.bucket_left_num_region_base = scale_corner_anchored(*BUCKET_LEFT_NUM_REGION_BASE) #todo
+        self.bucket_left_num_region_base = scale_corner_anchored(*BUCKET_LEFT_NUM_REGION_BASE)  # todo
         self.bucket_empty_region_base = scale_corner_anchored(*BUCKET_EMPTY_REGION_BASE)
         self.fish_color_info_location = scale_point_anchored(*FISH_COLOR_INFO_LOCATION)
         self.fish_is_locked_region_base = scale_corner_anchored(*FISH_IS_LOCKED_REGION_BASE)

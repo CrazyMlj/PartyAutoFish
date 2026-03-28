@@ -328,4 +328,6 @@ def discard_fish():
 
 # 移动鼠标到安全位置
 def mouse_move_safe():
-    mouse.move(location.mouse_safe_bit_base[0], location.mouse_safe_bit_base[1])
+    point = POINT()
+    user32.GetCursorPos(ctypes.byref(point))
+    mouse.move(point.x + location.mouse_safe_bit_base, point.y)

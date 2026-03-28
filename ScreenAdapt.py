@@ -14,8 +14,7 @@ def scale_cords_x(x):
     return int(x * global_config.scale_x)
 
 
-# 使用中心锚定方式缩放单点坐标
-# 适用于居中UI元素（如加时按钮）
+# 缩放坐标 todo 优化 合并点与矩形
 def scale_point_anchored(x, y, screen_location):
     new_x, new_y = x, y
     if global_config.scale_x == global_config.scale_y:
@@ -29,20 +28,20 @@ def scale_point_anchored(x, y, screen_location):
         offset_y = y - global_config.params['base_height'] / 2
 
         # 缩放偏移
-        new_offset_x = offset_x * global_config.scale_x
-        new_offset_y = offset_y * global_config.scale_y
+        new_offset_x = offset_x * global_config.scale_uniform
+        new_offset_y = offset_y * global_config.scale_uniform
         new_x = global_config.params['custom_width'] / 2 + new_offset_x
         new_y = global_config.params['custom_height'] / 2 + new_offset_y
 
-    if AnchorType.from_string(screen_location) == AnchorType.TOP_RIGHT:
+    elif AnchorType.from_string(screen_location) == AnchorType.TOP_RIGHT:
         offset_x = global_config.params['base_width'] - x
-        new_x = global_config.params['custom_width'] - offset_x
+        new_x = global_config.params['custom_width'] - offset_x * global_config.scale_uniform
         new_y = y * global_config.scale_y
 
     return int(new_x), int(new_y), screen_location
 
 
-# 缩放坐标
+# 缩放坐标 todo 优化 合并点与矩形
 def scale_corner_anchored(x, y, w, h, screen_location):
     new_x, new_y, new_w, new_h = x, y, w, h
     if global_config.scale_x == global_config.scale_y:
@@ -54,8 +53,8 @@ def scale_corner_anchored(x, y, w, h, screen_location):
         return int(new_x), int(new_y), int(new_w), int(new_h), screen_location
 
     if AnchorType.from_string(screen_location) is AnchorType.TOP_LEFT:
-        new_x = x * global_config.scale_x
-        new_y = y * global_config.scale_y
+        new_x = x * global_config.scale_uniform
+        new_y = y * global_config.scale_uniform
         new_w = w * global_config.scale_uniform
         new_h = h * global_config.scale_uniform
 
@@ -77,8 +76,8 @@ def scale_corner_anchored(x, y, w, h, screen_location):
     elif AnchorType.from_string(screen_location) is AnchorType.TOP_RIGHT:
         offset_x = global_config.params['base_width'] - x
 
-        new_x = global_config.params['custom_width'] - offset_x
-        new_y = y * global_config.scale_y
+        new_x = global_config.params['custom_width'] - offset_x * global_config.scale_uniform
+        new_y = y * global_config.scale_uniform
         new_w = w * global_config.scale_uniform
         new_h = h * global_config.scale_uniform
 
@@ -88,8 +87,8 @@ def scale_corner_anchored(x, y, w, h, screen_location):
         offset_y = global_config.params['base_height'] - y
 
         # 缩放后重新计算位置
-        new_x = global_config.params['custom_width'] - offset_x
-        new_y = global_config.params['custom_height'] - offset_y
+        new_x = global_config.params['custom_width'] - offset_x * global_config.scale_uniform
+        new_y = global_config.params['custom_height'] - offset_y * global_config.scale_uniform
         new_w = w * global_config.scale_uniform
         new_h = h * global_config.scale_uniform
 
