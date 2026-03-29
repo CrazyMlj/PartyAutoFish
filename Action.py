@@ -194,7 +194,7 @@ def match_digit_template(image):
     for i, template in enumerate(png_template.num_templates):
         res = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-        if max_val > 0.8 and max_val > best_val:  # 找到最佳匹配
+        if max_val > 0.61 and max_val > best_val:  # 找到最佳匹配
             best_val = max_val
             best_match = (i, max_loc)  # 记录最佳匹配的数字和位置
     return best_match

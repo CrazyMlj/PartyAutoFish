@@ -64,7 +64,7 @@ def auto_fish():
                     time.sleep(0.15)
                 elif fishing_matched():
                     hold_mouse_left_button(0.3)
-                elif no_bait_matched():
+                if no_bait_matched():
                     print("🐟️ [钓鱼] 鱼饵不足...")
                     print("⏸️  [状态] 钓鱼脚本已暂停")
                     run_event.clear()
