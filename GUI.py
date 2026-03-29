@@ -475,7 +475,7 @@ def create_gui():
     # ==================== 自动丢鱼卡片 ====================
     discard_card = ttkb.Labelframe(
         left_panel,
-        text=" 🐟 自动丢鱼 ",
+        text=" 🐠 自动丢鱼 ",
         padding=12,
         bootstyle="danger"
     )
@@ -531,6 +531,38 @@ def create_gui():
     discard_level_combo.set(QUALITY_LEVELS[global_config.params['discard_level'] - 1])
     discard_level_combo.bind("<<ComboboxSelected>>", on_discard_level_select)
     discard_level_combo.pack(side=RIGHT)
+
+    # ==================== UNO UI ====================
+    # 添加UNO的UI元素
+    uno_card = ttkb.Labelframe(
+        left_panel,
+        text=" 🎮 UNO 设置 ",
+        padding=12,
+        bootstyle="primary"
+    )
+    uno_card.pack(fill=X, pady=(0, 8))
+
+    # UNO输入框设置
+    uno_inputs_frame = ttkb.Frame(uno_card)
+    uno_inputs_frame.pack(fill=X)
+
+    # 抽取牌数次数
+    uno_input_frame = ttkb.Frame(uno_inputs_frame)
+    uno_input_frame.pack(fill=X)
+    uno_input_label = ttkb.Label(
+        uno_input_frame,
+        text="抽取牌数(张)",
+        font=("Segoe UI", 9),
+    )
+    uno_input_label.pack(side=LEFT)
+    uno_input_var = ttkb.IntVar(value=35)
+    uno_input_spacer = ttkb.Frame(uno_input_frame)
+    uno_input_spacer.pack(side=LEFT, fill=X, expand=YES)
+    uno_input = ttkb.Entry(
+        uno_input_frame, textvariable=uno_input_var, width=4, bootstyle="primary"
+    )
+    uno_input.pack(side=RIGHT, padx=(0, 5))  # 靠右显示，右边间距5
+
 
     # ==================== 分辨率设置卡片 ====================
     resolution_card = ttkb.Labelframe(
@@ -655,7 +687,8 @@ def create_gui():
                 discard_level=auto_discard_level_var,
                 resolution=resolution_var.get(),
                 custom_width=int(custom_width_var.get()),
-                custom_height=int(custom_height_var.get())
+                custom_height=int(custom_height_var.get()),
+                uno_skip_times=uno_input_var.get()
             )
 
             resolution_info_var.set(

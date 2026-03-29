@@ -40,6 +40,7 @@ class GlobalConfig:
         self.auto_fish_thread_event = None
         self.auto_fish_discard_thread_event = None
         self.mouse = None
+        self.new_cards = 0
         self.params = {
             'interval': 0.4,
             'mouse_left_hold_time': 1.8,
@@ -54,7 +55,8 @@ class GlobalConfig:
             'custom_width': 2560,
             'custom_height': 1440,
             'base_width': 2560,
-            'base_height': 1440
+            'base_height': 1440,
+            'uno_skip_times' : 35
         }
 
         # 线程同步原语 - 统一管理所有锁
@@ -131,6 +133,7 @@ class GlobalConfig:
             resolution_val = data.get('resolution')
             custom_width_val = data.get('custom_width')
             custom_height_val = data.get('custom_height')
+            uno_skip_times_val = data.get('uno_skip_times')
 
             overtime_status = "✅" if is_overtime_val else "❌"
             overtime_text = "是" if is_overtime_val else "否"
@@ -144,6 +147,7 @@ class GlobalConfig:
                 cycle_times_val, casting_time_str, overtime_status, overtime_text) + "        │")
             print("│  {} 丢鱼：{}    🐟️ 丢鱼品质：{}以下品质全丢 ({}保留)".format(
                 discard_status, discard_text, quality_name, quality_name) + "  │")
+            print("│  🎮 [UNO]抽取牌数：{}张".format(uno_skip_times_val) + " " * 36 + "│")
             print("│  🖥️  分辨率：{} ({}×{})".format(
                 resolution_val, custom_width_val, custom_height_val) + " " * 26 + "│")
             print("│  📐 缩放比例：X={:.2f}  Y={:.2f}".format(self.scale_x, self.scale_y) + " " * 32 + "│")

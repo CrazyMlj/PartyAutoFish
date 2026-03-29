@@ -60,6 +60,7 @@ class Template:
         self.bucket_empty_template = None
         self.bucket_48_template = None
         self.waiting_strike_or_drag_fish_template = None
+        self.uno_skip_template = None
 
     # 模板加载
     def load_templates(self):
@@ -75,6 +76,7 @@ class Template:
         self.load_bucket_empty_template()
         self.load_bucket_48_template()
         self.load_waiting_strike_or_drag_fish_template()
+        self.load_uno_skip_template()
 
     def load_star_template(self):
         self.star_template = scale_template(load("star_grayscale.png"))
@@ -117,6 +119,9 @@ class Template:
 
     def load_waiting_strike_or_drag_fish_template(self):
         self.waiting_strike_or_drag_fish_template = scale_template(load("waiting_strike_or_drag_fish_grayscale.png"))
+
+    def load_uno_skip_template(self):
+        self.uno_skip_template = scale_template(load("skip_grayscale.png"))
 
     # 加载模板（0.png到9.png）
     def load_num_templates(self):
@@ -255,8 +260,12 @@ def bucket_empty_matched():
 
 # 桶是否有48条鱼
 def bucket_48_matched():
-    print(location.bucket_left_num_region_base)
     return match(location.bucket_left_num_region_base, png_template.bucket_48_template)
+
+
+# uno跳过按钮
+def uno_skip_matched():
+    return match(location.uno_skip_info_region_base, png_template.uno_skip_template)
 
 
 def is_color_similar_rgb(color1, color2, threshold=3):
@@ -267,7 +276,6 @@ def is_color_similar_rgb(color1, color2, threshold=3):
     """
     # 计算欧几里得距离
     distance = math.sqrt((color1[0] - color2[0]) ** 2 + (color1[1] - color2[1]) ** 2 + (color1[2] - color2[2]) ** 2)
-    print(distance)
     return distance < threshold
 
 
@@ -379,3 +387,8 @@ def mouse_move_safe():
     point = POINT()
     user32.GetCursorPos(ctypes.byref(point))
     mouse.move(point.x + location.mouse_safe_bit_base, point.y)
+
+# uno点击跳过按钮
+def uno_click_skip_button():
+    mouse.move(location.mouse_uno_location[0], location.mouse_uno_location[1])
+    hold_mouse_left_button(0.1)

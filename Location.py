@@ -30,6 +30,7 @@ FISH_LOCKED_LOCATION = (1964, 860, 'tr')  # 锁定鱼坐标 屏幕位置与FIRST
 
 FISH_INFO_REGION_BASE = (915, 75, 725, 150, 'tc')  # 鱼信息识别区域
 UNO_SKIP_INFO_REGION_BASE = (2242, 1314, 284, 100, 'br')  # uno跳过按钮 #todo
+UNO_CLICK_LOCATION = (2318, 1353, 'br')  # uno 点击位置
 
 
 class Location:
@@ -68,6 +69,8 @@ class Location:
         self.mouse_safe_bit_base = MOUSE_SAFE_BIT_BASE
         self.waiting_strike_region_base = WAITING_STRIKE_REGION_BASE
         self.drag_fish_region_base = DRAG_FISH_REGION_BASE
+        self.uno_skip_info_region_base = UNO_SKIP_INFO_REGION_BASE
+        self.uno_click_location = UNO_CLICK_LOCATION
 
     # 更新位置信息
     def update_location(self):
@@ -95,6 +98,8 @@ class Location:
         self.mouse_safe_bit_base = scale_cords_x(MOUSE_SAFE_BIT_BASE)
         self.waiting_strike_region_base = scale_corner_anchored(*WAITING_STRIKE_REGION_BASE)
         self.drag_fish_region_base = scale_corner_anchored(*DRAG_FISH_REGION_BASE)
+        self.uno_skip_info_region_base = scale_corner_anchored(*UNO_SKIP_INFO_REGION_BASE)
+        self.uno_click_location = scale_point_anchored(*UNO_CLICK_LOCATION)
 
     # 重新加载
     def reload_base_date(self):
@@ -121,6 +126,8 @@ class Location:
         self.mouse_safe_bit_base = scale_cords_x(MOUSE_SAFE_BIT_BASE)
         self.waiting_strike_region_base = scale_corner_anchored(*WAITING_STRIKE_REGION_BASE)
         self.drag_fish_region_base = scale_corner_anchored(*DRAG_FISH_REGION_BASE)
+        self.uno_skip_info_region_base = scale_corner_anchored(*UNO_SKIP_INFO_REGION_BASE)
+        self.uno_click_location = scale_point_anchored(*UNO_CLICK_LOCATION)
 
 
 location = Location()
