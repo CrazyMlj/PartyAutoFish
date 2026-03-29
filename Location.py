@@ -18,6 +18,7 @@ BTN_YES_JIASHI_BASE = (1387, 784, 'c')  # 加时按钮
 OPEN_FISH_BUCKET_BIT_BASE = -200  # 打开鱼桶鼠标移动
 BUCKET_OPENED_REGION_BASE = (2145, 408, 35, 37, 'tr')  # 桶以打开 3440*1440(3021, 408) 1K(1605,306)
 BUCKET_FULL_REGION_BASE = (1184, 434, 36, 38, 'tc')  # 鱼桶满了(满)
+NO_BAIT_REGION_BASE = (1183, 434, 37, 36, 'tc')  # 没有鱼饵
 BUCKET_LEFT_NUM_REGION_BASE = (2148, 457, 28, 21, 'tr')  # 鱼桶已装(48) 2176 478
 BUCKET_EMPTY_REGION_BASE = (2111, 909, 35, 35, 'br')  # 鱼桶一条鱼也没有(空)
 FISH_COLOR_INFO_LOCATION = (1924, 640, 'tr')  # 鱼桶中第一条鱼位置
@@ -57,6 +58,7 @@ class Location:
         self.open_fish_bucket_bit_base = OPEN_FISH_BUCKET_BIT_BASE
         self.bucket_opened_region_base = BUCKET_OPENED_REGION_BASE
         self.bucket_full_region_base = BUCKET_FULL_REGION_BASE
+        self.no_bait_region_base = NO_BAIT_REGION_BASE
         self.bucket_left_num_region_base = BUCKET_LEFT_NUM_REGION_BASE
         self.bucket_empty_region_base = BUCKET_EMPTY_REGION_BASE
         self.fish_color_info_location = FISH_COLOR_INFO_LOCATION
@@ -86,6 +88,7 @@ class Location:
         self.open_fish_bucket_bit_base = scale_cords_x(OPEN_FISH_BUCKET_BIT_BASE)
         self.bucket_opened_region_base = scale_corner_anchored(*BUCKET_OPENED_REGION_BASE)
         self.bucket_full_region_base = scale_corner_anchored(*BUCKET_FULL_REGION_BASE)
+        self.no_bait_region_base = scale_corner_anchored(*NO_BAIT_REGION_BASE)
         self.bucket_left_num_region_base = scale_corner_anchored(*BUCKET_LEFT_NUM_REGION_BASE)
         self.bucket_empty_region_base = scale_corner_anchored(*BUCKET_EMPTY_REGION_BASE)
         self.fish_color_info_location = scale_point_anchored(*FISH_COLOR_INFO_LOCATION)
@@ -114,6 +117,7 @@ class Location:
         self.open_fish_bucket_bit_base = OPEN_FISH_BUCKET_BIT_BASE
         self.bucket_opened_region_base = BUCKET_OPENED_REGION_BASE
         self.bucket_full_region_base = BUCKET_FULL_REGION_BASE
+        self.no_bait_region_base = scale_corner_anchored(*NO_BAIT_REGION_BASE)
         self.bucket_left_num_region_base = BUCKET_LEFT_NUM_REGION_BASE
         self.bucket_empty_region_base = BUCKET_EMPTY_REGION_BASE
         self.fish_color_info_location = FISH_COLOR_INFO_LOCATION

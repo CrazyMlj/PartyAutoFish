@@ -4,7 +4,7 @@ import time
 import mss
 
 from Action import f1_matched, f2_matched, fishing_matched, overtime_matched, overtime_y, bait_match_val, overtime_n, \
-    fished_matched, bucket_full_matched
+    fished_matched, bucket_full_matched, no_bait_matched
 from AutoFishDiscard import auto_fish_discard_sync
 from FishRecord import record_caught_fish, end_current_session, start_new_session
 from GlobalConfig import global_config
@@ -64,7 +64,10 @@ def auto_fish():
                     time.sleep(0.15)
                 elif fishing_matched():
                     hold_mouse_left_button(0.3)
-
+                elif no_bait_matched():
+                    print("🐟️ [钓鱼] 鱼饵不足...")
+                    print("⏸️  [状态] 钓鱼脚本已暂停")
+                    run_event.clear()
                 time.sleep(0.05)
 
                 overtime_action()

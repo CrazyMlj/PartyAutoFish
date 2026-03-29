@@ -57,6 +57,7 @@ class Template:
         self.lock_template = None
         self.over_time_template = None
         self.bucket_full_template = None
+        self.no_bait_template = None
         self.bucket_empty_template = None
         self.bucket_48_template = None
         self.waiting_strike_or_drag_fish_template = None
@@ -73,6 +74,7 @@ class Template:
         self.load_bucket_opened_template()
         self.load_lock_template()
         self.load_bucket_full_template()
+        self.load_no_bait_template()
         self.load_bucket_empty_template()
         self.load_bucket_48_template()
         self.load_waiting_strike_or_drag_fish_template()
@@ -109,6 +111,9 @@ class Template:
     def load_bucket_full_template(self):
         self.bucket_full_template = scale_template(load("bucket_full_grayscale.png"))
         return self.bucket_full_template
+
+    def load_no_bait_template(self):
+        self.no_bait_template = scale_template(load("no_bait_grayscale.png"))
 
     def load_bucket_empty_template(self):
         self.bucket_empty_template = scale_template(load("bucket_empty_grayscale.png"))
@@ -252,6 +257,9 @@ def locked_fish_matched():
 def bucket_full_matched():
     return match(location.bucket_full_region_base, png_template.bucket_full_template)
 
+# 鱼饵不足
+def no_bait_matched():
+    return match(location.no_bait_region_base, png_template.no_bait_template)
 
 # 桶是否为空
 def bucket_empty_matched():
