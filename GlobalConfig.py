@@ -1,6 +1,20 @@
 import json
 import threading
 
+# =========================
+# OCR引擎初始化（使用rapidocr，速度快）
+# =========================
+try:
+    from rapidocr_onnxruntime import RapidOCR
+
+    ocr_engine = RapidOCR()
+    OCR_AVAILABLE = True
+    print("✅ [OCR] RapidOCR 引擎加载成功")
+except ImportError:
+    OCR_AVAILABLE = False
+    ocr_engine = None
+    print("⚠️  [OCR] RapidOCR 未安装，钓鱼记录功能将不可用")
+
 QUALITY_LEVEL = ["标准", "非凡", "稀有", "史诗", "传奇"]
 QUALITY_LEVEL_MAP = {
     "标准": 1,

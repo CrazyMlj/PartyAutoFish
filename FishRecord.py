@@ -6,7 +6,7 @@ import time
 import warnings
 
 from Action import capture_fish_info_region
-from GlobalConfig import global_config
+from GlobalConfig import global_config, ocr_engine, OCR_AVAILABLE
 
 # 过滤libpng的iCCP警告（图片ICC配置文件问题）
 warnings.filterwarnings("ignore", message=".*iCCP.*")
@@ -31,19 +31,6 @@ fish_record_lock = threading.Lock()  # 钓鱼记录锁
 
 FISH_RECORD_FILE = "./fish_records.txt"
 
-# =========================
-# OCR引擎初始化（使用rapidocr，速度快）
-# =========================
-try:
-    from rapidocr_onnxruntime import RapidOCR
-
-    ocr_engine = RapidOCR()
-    OCR_AVAILABLE = True
-    print("✅ [OCR] RapidOCR 引擎加载成功")
-except ImportError:
-    OCR_AVAILABLE = False
-    ocr_engine = None
-    print("⚠️  [OCR] RapidOCR 未安装，钓鱼记录功能将不可用")
 
 
 # 单条鱼的记录
