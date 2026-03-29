@@ -134,12 +134,12 @@ def overtime_action():
     current_overtime_val = global_config.get_param('is_overtime')
     if current_overtime_val == 0:
         if overtime_matched():
-            overtime_y()
+            overtime_n()
             if bait_match_val() is not None:
                 previous_result = global_config.get_bait_count()
     elif current_overtime_val == 1:
         if overtime_matched():
-            overtime_n()
+            overtime_y()
             if bait_match_val() is not None:
                 previous_result = global_config.get_bait_count()
     time.sleep(0.05)

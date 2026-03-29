@@ -251,7 +251,6 @@ def is_color_similar_rgb(color1, color2, threshold=3):
     """
     # 计算欧几里得距离
     distance = math.sqrt((color1[0] - color2[0]) ** 2 + (color1[1] - color2[1]) ** 2 + (color1[2] - color2[2]) ** 2)
-    print(distance)
     return distance < threshold
 
 
