@@ -9,9 +9,9 @@ F_1_REGION_BASE = (1100, 1329, 18, 25, 'bc')  # F1位置 3440*1440(1539, 1296) 1
 F_2_REGION_BASE = (1212, 1329, 18, 25, 'bc')  # F2位置
 WAITING_STRIKE_REGION_BASE = (1007, 1324, 30, 30, 'bc')  # 等待上鱼位置
 DRAG_FISH_REGION_BASE = (1007, 1094, 30, 30, 'bc')  # 拉鱼位置
-FISHING_REGION_BASE = (1146, 1316, 20, 25, 'bc')  # 上鱼鼠标右键
+FISHING_REGION_BASE = (1146, 1316, 20, 25, 'bc')  # 上鱼鼠标右键图标
 
-OVERTIME_REGION_BASE = (1244, 674, 30, 30, 'c')  # 加时界面检测区域
+OVERTIME_REGION_BASE = (1244, 674, 30, 30, 'c')  # 加时界面检测区域 1685 674
 BTN_NO_JIASHI_BASE = (1172, 784, 'c')  # 不加时按钮
 BTN_YES_JIASHI_BASE = (1387, 784, 'c')  # 加时按钮
 

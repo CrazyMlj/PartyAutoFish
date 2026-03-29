@@ -58,6 +58,25 @@ def scale_corner_anchored(x, y, w, h, screen_location):
         new_w = w * global_config.scale_uniform
         new_h = h * global_config.scale_uniform
 
+    elif AnchorType.from_string(screen_location) is AnchorType.CENTER:
+        # 计算相对于底部中央的偏移
+        base_center_x = global_config.params['base_width'] / 2
+        base_center_y = global_config.params['base_height'] / 2
+        offset_x = x - base_center_x
+        offset_y = x - base_center_y
+
+        # 缩放偏移
+        new_offset_x = offset_x * global_config.scale_uniform
+        new_offset_y = offset_y * global_config.scale_uniform
+        new_center_x = global_config.params['custom_width'] / 2
+        new_center_y = global_config.params['custom_height'] / 2
+
+        # 计算新坐标
+        new_x = new_center_x + new_offset_x
+        new_y = new_center_y + new_offset_y
+        new_w = w * global_config.scale_uniform
+        new_h = h * global_config.scale_uniform
+
     elif AnchorType.from_string(screen_location) is AnchorType.TOP_CENTER:
         # 计算相对于底部中央的偏移
         base_center_x = global_config.params['base_width'] / 2
