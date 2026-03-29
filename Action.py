@@ -175,7 +175,6 @@ def bait_match_val():
         global_config.bait_count_val = int(f'{best_match3[0]}')
     else:
         global_config.bait_count_val = None
-    print(global_config.bait_count_val)
     return global_config.bait_count_val
 
 
@@ -202,7 +201,9 @@ def match(region_base, template):
     if region_gray is None:
         return None
     # 执行模板匹配并检查最大匹配度是否大于 0.8
-    return cv2.minMaxLoc(cv2.matchTemplate(region_gray, template, cv2.TM_CCOEFF_NORMED))[1] > 0.8
+    min_max_loc = cv2.minMaxLoc(cv2.matchTemplate(region_gray, template, cv2.TM_CCOEFF_NORMED))[1]
+    print(min_max_loc)
+    return min_max_loc > 0.8
 
 
 def fished_matched():
@@ -230,6 +231,7 @@ def drag_fish_matched():
 
 
 def overtime_matched():
+    print("加时")
     return match(location.overtime_region_base, png_template.over_time_template)
 
 
@@ -240,6 +242,7 @@ def bucket_opened_matched():
 
 # 鱼是否已经锁住
 def locked_fish_matched():
+    print("第一条鱼锁住")
     return match(location.fish_is_locked_region_base, png_template.lock_template)
 
 
@@ -255,6 +258,8 @@ def bucket_empty_matched():
 
 # 桶是否有48条鱼
 def bucket_48_matched():
+    print("桶里48条鱼")
+    print(location.bucket_left_num_region_base)
     return match(location.bucket_left_num_region_base, png_template.bucket_48_template)
 
 
@@ -266,6 +271,7 @@ def is_color_similar_rgb(color1, color2, threshold=3):
     """
     # 计算欧几里得距离
     distance = math.sqrt((color1[0] - color2[0]) ** 2 + (color1[1] - color2[1]) ** 2 + (color1[2] - color2[2]) ** 2)
+    print(distance)
     return distance < threshold
 
 
