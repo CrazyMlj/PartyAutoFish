@@ -5,7 +5,7 @@ import mss
 
 from Action import open_fish_bucket, locked_fish_matched, close_fish_bucket, \
     recognize_fish_quality, lock_fish, discard_fish, bucket_empty_matched, bucket_opened_matched, mouse_move_safe, \
-    waiting_strike_matched, retrieve_the_rod, drag_fish_matched, bucket_48_matched, fished_match
+    waiting_strike_matched, retrieve_the_rod, drag_fish_matched, bucket_48_matched, fished_matched
 from GlobalConfig import global_config
 from MouseOrKeyBoardUtil import ensure_mouse_left_up, ensure_mouse_right_up, _default_mouse, hold_mouse_left_button
 
@@ -92,7 +92,7 @@ def auto_fish_discard_sync(event):
             level = recognize_fish_quality()
             if level is None:
                 print("🌊🐟️ [放生] 未识别出桶中第一条鱼的质量...")
-                break
+                continue
 
             with global_config._params_lock:
                 discard_level = global_config.params['discard_level']
@@ -173,7 +173,7 @@ def auto_fish_discard():
                     time.sleep(3.5)
 
                 # 是否在钓鱼完成界面
-                if fished_match():
+                if fished_matched():
                     hold_mouse_left_button(0.2)
                     time.sleep(1)
 

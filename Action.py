@@ -140,17 +140,31 @@ png_template = Template()
 def bait_match_val():
     gray_img = capture_region_gary(location.bait_region_base[0], location.bait_region_base[1],
                                    location.bait_region_base[2], location.bait_region_base[3])
-    # 截取并处理区域1
-    bait_ten = gray_img[
-        location.bait_ten[0]:location.bait_ten[1], location.bait_ten[2]:location.bait_ten[3]]  # 获取区域1的图像 15 * 22
-    best_match1 = match_digit_template(bait_ten)
-    # 截取并处理区域2
-    bait_one = gray_img[
-        location.bait_one[0]:location.bait_one[1], location.bait_one[2]:location.bait_one[3]]  # 获取区域2的图像 15 * 22
-    best_match2 = match_digit_template(bait_one)
-    region3 = gray_img[
-        location.bait_mid[0]:location.bait_mid[1], location.bait_mid[2]:location.bait_mid[3]]  # 获取区域3的图像 15 * 22
+
+    # 初始化匹配结果
+    best_match1 = None
+    best_match2 = None
+
+    # 确保不超出图像边界
+    img_h, img_w = gray_img.shape[:2]
+    crop_h = min(location.bait_corp_location[1], img_h)
+    crop_w = min(location.bait_corp_location[0], img_w // 2)  # 确保单个数字宽度不超过一半
+
+    if crop_w <= img_w:
+        # 截取并处理区域1
+        bait_ten = gray_img[0:crop_h, 0:crop_w]  # 获取区域1的图像 15 * 22
+        best_match1 = match_digit_template(bait_ten)
+
+    if crop_w * 2 <= img_w:
+        # 截取并处理区域2
+        bait_one = gray_img[0:crop_h, crop_w:crop_w * 2]  # 获取区域2的图像 15 * 22
+        best_match2 = match_digit_template(bait_one)
+
+    mid_start = max(0, (img_w - crop_w) // 2)
+    mid_end = min(mid_start + crop_w, img_w)
+    region3 = gray_img[0:crop_h, mid_start:mid_end]  # 获取区域3的图像 15 * 22
     best_match3 = match_digit_template(region3)
+
     if best_match1 and best_match2:
         # 从best_match中提取数字索引（i），并拼接成整数
         best_match1_val = best_match1[0]  # 提取区域1的数字索引
@@ -161,6 +175,7 @@ def bait_match_val():
         global_config.bait_count_val = int(f'{best_match3[0]}')
     else:
         global_config.bait_count_val = None
+    print(global_config.bait_count_val)
     return global_config.bait_count_val
 
 
@@ -190,7 +205,7 @@ def match(region_base, template):
     return cv2.minMaxLoc(cv2.matchTemplate(region_gray, template, cv2.TM_CCOEFF_NORMED))[1] > 0.8
 
 
-def fished_match():
+def fished_matched():
     return match(location.fish_star_region_base, png_template.star_template)
 
 

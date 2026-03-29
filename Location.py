@@ -3,17 +3,15 @@ from ScreenAdapt import scale_point_anchored, scale_corner_anchored, scale_cords
 
 # 位置信息(基准"2k")
 BAIT_REGION_BASE = (2318, 1296, 30, 22, 'br')  # 鱼饵数量区域  3440*1440(3198, 1296) 右下角锚定 1k(1739,972)
-BAIT_TEN = (0, 22, 0, 15)  # 十位
-BAIT_ONE = (0, 22, 15, 30)  # 个位
-BAIT_MID = (0, 22, 7, 15)  # 中间位
+BAIT_CORP_LOCATION = (15, 22, 'br')  # 鱼饵数量基本裁剪大小
 FISH_STAR_REGION_BASE = (1172, 165, 40, 40, 'tc')  # 上鱼星星 3440*1440(1613, 165) 1K(879 122)
 F_1_REGION_BASE = (1100, 1329, 18, 25, 'bc')  # F1位置 3440*1440(1539, 1296) 1K(823,995)
 F_2_REGION_BASE = (1212, 1329, 18, 25, 'bc')  # F2位置
 WAITING_STRIKE_REGION_BASE = (1007, 1324, 30, 30, 'bc')  # 等待上鱼位置
 DRAG_FISH_REGION_BASE = (1007, 1094, 30, 30, 'bc')  # 拉鱼位置
-FISHING_REGION_BASE = (1146, 1316, 20, 25, 'bc')  # 上鱼右键
+FISHING_REGION_BASE = (1146, 1316, 20, 25, 'bc')  # 上鱼鼠标右键
 
-OVERTIME_REGION_BASE = (1245, 675, 30, 30, 'c')  # 加时界面检测区域
+OVERTIME_REGION_BASE = (1244, 674, 30, 30, 'c')  # 加时界面检测区域
 BTN_NO_JIASHI_BASE = (1172, 784, 'c')  # 不加时按钮
 BTN_YES_JIASHI_BASE = (1387, 784, 'c')  # 加时按钮
 
@@ -47,9 +45,7 @@ class Location:
 
     def __init__(self):
         self.bait_region_base = BAIT_REGION_BASE
-        self.bait_ten = BAIT_TEN
-        self.bait_one = BAIT_ONE
-        self.bait_mid = BAIT_MID
+        self.bait_corp_location = BAIT_CORP_LOCATION
         self.fish_star_region_base = FISH_STAR_REGION_BASE
         self.f_1_region_base = F_1_REGION_BASE
         self.f_2_region_base = F_2_REGION_BASE
@@ -76,9 +72,7 @@ class Location:
     # 更新位置信息
     def update_location(self):
         self.bait_region_base = scale_corner_anchored(*BAIT_REGION_BASE)
-        self.bait_ten = scale_cords_by_percentage(*BAIT_TEN)
-        self.bait_one = scale_cords_by_percentage(*BAIT_ONE)
-        self.bait_mid = scale_cords_by_percentage(*BAIT_MID)
+        self.bait_corp_location = scale_point_anchored(*BAIT_CORP_LOCATION)
         self.fish_star_region_base = scale_corner_anchored(*FISH_STAR_REGION_BASE)
         self.f_1_region_base = scale_corner_anchored(*F_1_REGION_BASE)
         self.f_2_region_base = scale_corner_anchored(*F_2_REGION_BASE)
@@ -105,9 +99,6 @@ class Location:
     # 重新加载
     def reload_base_date(self):
         self.bait_region_base = BAIT_REGION_BASE
-        self.bait_ten = BAIT_TEN
-        self.bait_one = BAIT_ONE
-        self.bait_mid = BAIT_MID
         self.fish_star_region_base = FISH_STAR_REGION_BASE
         self.f_1_region_base = F_1_REGION_BASE
         self.f_2_region_base = F_2_REGION_BASE

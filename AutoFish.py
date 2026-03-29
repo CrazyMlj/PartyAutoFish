@@ -4,7 +4,7 @@ import time
 import mss
 
 from Action import f1_matched, f2_matched, fishing_matched, overtime_matched, overtime_y, bait_match_val, overtime_n, \
-    fished_match, bucket_full_matched
+    fished_matched, bucket_full_matched
 from AutoFishDiscard import auto_fish_discard_sync
 from FishRecord import record_caught_fish, end_current_session, start_new_session
 from GlobalConfig import global_config
@@ -63,7 +63,7 @@ def auto_fish():
                         continue
                     time.sleep(0.15)
                 elif fishing_matched():
-                    hold_mouse_left_button(global_config.get_param('casting_time'))
+                    hold_mouse_left_button(0.3)
 
                 time.sleep(0.05)
 
@@ -88,7 +88,7 @@ def auto_fish():
                     # 线程安全地读取最大拉杆次数
                     current_times = global_config.get_param('cycle_times')
 
-                    while not fished_match() and run_event.is_set():
+                    while not fished_matched() and run_event.is_set():
                         # 检查是否应该暂停（丢鱼进行中）
                         if global_config._fishing_pause_event.is_set():
                             break
