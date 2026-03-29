@@ -204,15 +204,15 @@ def match_digit_template(image):
 # 识别
 # ========================
 # 基本识别方法
-def match(region_base, template):
+def match(region_base, template, accuracy=0.8):
     # 获取区域坐标并捕获灰度图
     x, y, w, h = region_base[0], region_base[1], region_base[2], region_base[3]
     region_gray = capture_region_gary(x, y, w, h)
     if region_gray is None:
         return None
-    # 执行模板匹配并检查最大匹配度是否大于 0.8
+    # 执行模板匹配并检查最大匹配度是否大于 默认0.8
     min_max_loc = cv2.minMaxLoc(cv2.matchTemplate(region_gray, template, cv2.TM_CCOEFF_NORMED))[1]
-    return min_max_loc > 0.8
+    return min_max_loc > accuracy
 
 
 def fished_matched():
@@ -257,16 +257,18 @@ def locked_fish_matched():
 def bucket_full_matched():
     return match(location.bucket_full_region_base, png_template.bucket_full_template)
 
-# 鱼饵不足
+
+# 鱼饵不足 此功能只保证2K分辨率下正常
 def no_bait_matched():
-    return match(location.no_bait_region_base, png_template.no_bait_template)
+    return match(location.no_bait_region_base, png_template.no_bait_template, 0.9)
+
 
 # 桶是否为空
 def bucket_empty_matched():
     return match(location.bucket_empty_region_base, png_template.bucket_empty_template)
 
 
-# 桶是否有48条鱼
+# 桶是否有48条鱼 此功能只保证2K分辨率下正常
 def bucket_48_matched():
     return match(location.bucket_left_num_region_base, png_template.bucket_48_template)
 
@@ -395,6 +397,7 @@ def mouse_move_safe():
     point = POINT()
     user32.GetCursorPos(ctypes.byref(point))
     mouse.move(point.x + location.mouse_safe_bit_base, point.y)
+
 
 # uno点击跳过按钮
 def uno_click_skip_button():
