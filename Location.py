@@ -4,22 +4,22 @@ from ScreenAdapt import scale_point_anchored, scale_corner_anchored, scale_cords
 # 位置信息(基准"2k")
 BAIT_REGION_BASE = (2318, 1296, 30, 22, 'br')  # 鱼饵数量区域  3440*1440(3198, 1296) 右下角锚定 1k(1739,972)
 BAIT_CORP_LOCATION = (15, 22, 'br')  # 鱼饵数量基本裁剪大小
-FISH_STAR_REGION_BASE = (1172, 165, 40, 40, 'tc')  # 上鱼星星 3440*1440(1613, 165) 1K(879 122)
-F_1_REGION_BASE = (1100, 1329, 18, 25, 'bc')  # F1位置 3440*1440(1539, 1296) 1K(823,995)
-F_2_REGION_BASE = (1212, 1329, 18, 25, 'bc')  # F2位置
+FISH_STAR_REGION_BASE = (1172, 165, 35, 32, 'tc')  # 上鱼星星 3440*1440(1613, 165) 1K(879 122)
+F_1_REGION_BASE = (1100, 1329, 11, 20, 'bc')  # F1位置 3440*1440(1539, 1296) 1K(823,995)
+F_2_REGION_BASE = (1212, 1329, 11, 20, 'bc')  # F2位置
 WAITING_STRIKE_REGION_BASE = (1007, 1324, 30, 30, 'bc')  # 等待上鱼位置
 DRAG_FISH_REGION_BASE = (1007, 1094, 30, 30, 'bc')  # 拉鱼位置
-FISHING_REGION_BASE = (1146, 1316, 20, 25, 'bc')  # 上鱼鼠标右键图标
+FISHING_REGION_BASE = (1146, 1316, 18, 22, 'bc')  # 上鱼鼠标右键图标
 
-OVERTIME_REGION_BASE = (1244, 674, 30, 30, 'c')  # 加时界面检测区域 1685 674
+OVERTIME_REGION_BASE = (1244, 674, 27, 30, 'c')  # 加时界面检测区域 1685 674
 BTN_NO_JIASHI_BASE = (1172, 784, 'c')  # 不加时按钮
 BTN_YES_JIASHI_BASE = (1387, 784, 'c')  # 加时按钮
 
 OPEN_FISH_BUCKET_BIT_BASE = -200  # 打开鱼桶鼠标移动
-BUCKET_OPENED_REGION_BASE = (2145, 408, 35, 40, 'tr')  # 桶以打开 3440*1440(3021, 408) 1K(1605,306)
-BUCKET_FULL_REGION_BASE = (1184, 434, 40, 40, 'tc')  # 鱼桶满了(满)
+BUCKET_OPENED_REGION_BASE = (2145, 408, 35, 37, 'tr')  # 桶以打开 3440*1440(3021, 408) 1K(1605,306)
+BUCKET_FULL_REGION_BASE = (1184, 434, 36, 38, 'tc')  # 鱼桶满了(满)
 BUCKET_LEFT_NUM_REGION_BASE = (2148, 457, 28, 21, 'tr')  # 鱼桶已装(48) 2176 478
-BUCKET_EMPTY_REGION_BASE = (2111, 909, 40, 40, 'br')  # 鱼桶一条鱼也没有(空)
+BUCKET_EMPTY_REGION_BASE = (2111, 909, 35, 35, 'br')  # 鱼桶一条鱼也没有(空)
 FISH_COLOR_INFO_LOCATION = (1924, 640, 'tr')  # 鱼桶中第一条鱼位置
 MOUSE_SAFE_BIT_BASE = -80  # 鼠标移动安全位置 排除对鱼品质识别干扰
 FISH_IS_LOCKED_REGION_BASE = (1924, 588, 25, 30, 'tr')  # 鱼上锁
