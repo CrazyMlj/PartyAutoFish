@@ -200,7 +200,7 @@ class ConsoleWindow:
         """打印欢迎信息"""
         welcome_text = """
 ╔══════════════════════════════════════════════════════════╗
-║  🎣 Party_Fish 自动钓鱼助手 v5.2                         ║
+║  🎣 Party_Fish 自动钓鱼助手 v5.3                         ║
 ║  📅 控制台已启动                                          ║
 ║  ⌨️ 快捷键: F2 - 启动/暂停钓鱼 | F3 - 启动/暂停放生     ║
 ╚══════════════════════════════════════════════════════════╝
@@ -927,10 +927,6 @@ def create_gui():
     stats_card.configure(relief="solid", borderwidth=1)
     stats_card.configure(style="Custom.TLabelframe")
 
-    # 计算概率并更新标签
-    def calc_percentage(count):
-        return (count / quality_all_counts['总量'] * 100) if quality_all_counts['总量'] > 0 else 0
-
     # 创建统计标签变量
     standard_var = ttkb.StringVar(value="{} 标准: 0 (0.00%)".format(QUALITY_COLORS['标准']))
     uncommon_var = ttkb.StringVar(value="{} 非凡: 0 (0.00%)".format(QUALITY_COLORS['非凡']))
@@ -1075,32 +1071,27 @@ def create_gui():
             ), tags=(quality_tag,))
 
         total = len(filtered)
-        quality_counts = {
-            "标准": 0,
-            "非凡": 0,
-            "稀有": 0,
-            "史诗": 0,
-            "传奇": 0,
-            "总量": 0
-        }
         if use_session:
             text_count = '本次'
             quality_counts = current_quality_all_counts
-
         else:
             text_count = '统计'
             quality_counts = quality_all_counts
         stats_var.set("{}: {} 条".format(text_count, total))
         standard_var.set(value="{} 标准:{}({:.2f})%".format(QUALITY_COLORS['标准'], quality_counts['标准'],
-                                                            calc_percentage(quality_counts['标准'])))
+                                                            calc_percentage(quality_counts['标准'], total)))
         uncommon_var.set(value="{} 非凡:{}({:.2f})%".format(QUALITY_COLORS['非凡'], quality_counts['非凡'],
-                                                            calc_percentage(quality_counts['非凡'])))
+                                                            calc_percentage(quality_counts['非凡'], total)))
         rare_var.set(value="{} 稀有:{}({:.2f})%".format(QUALITY_COLORS['稀有'], quality_counts['稀有'],
-                                                        calc_percentage(quality_counts['稀有'])))
+                                                        calc_percentage(quality_counts['稀有'], total)))
         epic_var.set(value="{} 史诗:{}({:.2f})%".format(QUALITY_COLORS['史诗'], quality_counts['史诗'],
-                                                        calc_percentage(quality_counts['史诗'])))
+                                                        calc_percentage(quality_counts['史诗'], total)))
         legendary_var.set(value="{} 传奇:{}({:.2f})%".format(QUALITY_COLORS['传奇'], quality_counts['传奇'],
-                                                             calc_percentage(quality_counts['传奇'])))
+                                                             calc_percentage(quality_counts['传奇'], total)))
+
+    # 计算概率并更新标签
+    def calc_percentage(count, total):
+        return count / total if total > 0 else 0
 
     def safe_update_fish_display():
         try:
@@ -1136,7 +1127,7 @@ def create_gui():
 
     ttkb.Label(
         status_frame,
-        text="开发者:Crazy | v5.2 | Party_Fish",
+        text="开发者:Crazy | v5.3 | Party_Fish",
         font=("Segoe UI", 8),
         bootstyle="secondary"
     ).pack(side=RIGHT)
