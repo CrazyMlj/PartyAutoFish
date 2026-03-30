@@ -20,7 +20,7 @@ QUALITY_COLORS = {
     "非凡": "🟢",
     "稀有": "🔵",
     "史诗": "🟣",
-    "传奇": "🟡"
+    "传奇": "🟠"
 }
 
 # 当前会话数据
@@ -28,6 +28,24 @@ current_session_id = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 current_session_fish = []  # 当前会话钓到的鱼
 all_fish_records = []  # 所有钓鱼记录（从文件加载）
 fish_record_lock = threading.Lock()  # 钓鱼记录锁
+
+# 鱼数量统计
+current_quality_all_counts = {
+    "标准": 0,
+    "非凡": 0,
+    "稀有": 0,
+    "史诗": 0,
+    "传奇": 0,
+    "总量": 0
+}
+quality_all_counts = {
+    "标准": 0,
+    "非凡": 0,
+    "稀有": 0,
+    "史诗": 0,
+    "传奇": 0,
+    "总量": 0
+}
 
 FISH_RECORD_FILE = "./fish_records.txt"
 
@@ -217,6 +235,8 @@ def record_caught_fish():
         fish = FishRecord(fish_name, fish_quality, fish_weight)
         current_session_fish.append(fish)
         all_fish_records.append(fish)
+        update_all_quality_counts(fish)
+        update_current_quality_counts(fish)
         save_fish_record(fish)
 
     # 终端输出
@@ -282,7 +302,49 @@ def load_all_fish_records():
                     if line.strip():
                         record = FishRecord.from_line(line)
                         if record:
+                            update_all_quality_counts(record)
                             all_fish_records.append(record)
             print("📊 [信息] 已加载 {} 条历史钓鱼记录".format(len(all_fish_records)))
     except Exception as e:
         print("❌ [错误] 加载钓鱼记录失败: {}".format(e))
+
+
+# 更新概率统计
+def update_all_quality_counts(fish_record):
+    global quality_all_counts
+    quality_all_counts[fish_record.quality] += 1
+    quality_all_counts['总量'] += 1
+
+
+def update_current_quality_counts(fish_record):
+    global current_quality_all_counts
+    current_quality_all_counts[fish_record.quality] += 1
+    current_quality_all_counts['总量'] += 1
+
+
+def clear_current_fish_records():
+    global current_session_fish, current_quality_all_counts
+    for current_quality_all_count in current_quality_all_counts:
+        current_quality_all_counts[current_quality_all_count] = 0
+    current_session_fish.clear()
+
+
+# 清空记录
+def clear_all_fish_records():
+    global all_fish_records, quality_all_counts
+    with fish_record_lock:
+        all_fish_records.clear()
+        for quality_all_count in quality_all_counts:
+            quality_all_counts[quality_all_count] = 0
+        # 清空记录文件
+        try:
+            with open(FISH_RECORD_FILE, "w", encoding="utf-8") as f:
+                f.write("")
+        except Exception as e:
+            print("❌ [错误] 清空记录文件失败: {}".format(e))
+
+    if global_config.gui_fish_update_callback:
+        try:
+            global_config.gui_fish_update_callback()
+        except:
+            pass

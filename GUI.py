@@ -1,4 +1,4 @@
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import tkinter as tk
 import ttkbootstrap as ttkb
 from ttkbootstrap.constants import *
@@ -6,18 +6,11 @@ import sys
 import queue
 from datetime import datetime
 
-from FishRecord import search_fish_records
+from FishRecord import search_fish_records, quality_all_counts, QUALITY_COLORS, QUALITY_LEVELS, \
+    clear_current_fish_records, clear_all_fish_records, current_quality_all_counts
 from GlobalConfig import global_config
 
 ## 创建 Tkinter 窗口（现代化UI设计 - 左右分栏布局）
-QUALITY_LEVELS = ["标准", "非凡", "稀有", "史诗", "传奇"]
-QUALITY_COLORS = {
-    "标准": "⚪",
-    "非凡": "🟢",
-    "稀有": "🔵",
-    "史诗": "🟣",
-    "传奇": "🟡"
-}
 QUALITY_LEVEL_MAP = {
     "标准": 1,
     "非凡": 2,
@@ -66,7 +59,7 @@ class ConsoleRedirector:
             timestamp = datetime.now().strftime("%H:%M:%S")
             # 移除原有的换行，添加新的格式化文本
             text = text.rstrip('\n')
-            formatted_text = f"[{timestamp}] {text}\n"
+            formatted_text = "[{}] {}\n".format(timestamp, text)
 
             # 判断消息类型并设置颜色
             tag = "INFO"
@@ -111,7 +104,7 @@ class ConsoleWindow:
         # 清空按钮
         self.clear_btn = ttkb.Button(
             toolbar,
-            text="🗑️",
+            text="🧹",
             bootstyle="danger-outline",
             width=3,
             command=self.clear_console
@@ -223,7 +216,7 @@ class ConsoleWindow:
 
             # 添加时间戳
             timestamp = datetime.now().strftime("%H:%M:%S")
-            formatted_text = f"[{timestamp}] {text}"
+            formatted_text = "[{}] {}".format(timestamp, text)
 
             # 存储到消息列表
             self.all_messages.append((formatted_text, tag))
@@ -515,7 +508,7 @@ def create_gui():
         global auto_discard_level_var
         selected = discard_level_combo.get()
         auto_discard_level_var = QUALITY_LEVEL_MAP.get(selected, 4)
-        print_to_console(f"自动丢鱼品质阈值已设置为: {selected}", "INFO")
+        print_to_console("自动丢鱼品质阈值已设置为: {}", "INFO".format(selected))
 
     discard_level_frame = ttkb.Frame(discard_card)
     discard_level_frame.pack(fill=X)
@@ -666,7 +659,7 @@ def create_gui():
 
     # 当前分辨率信息标签
     resolution_info_var = ttkb.StringVar(
-        value=f"当前: {global_config.params['custom_width']}×{global_config.params['custom_height']}")
+        value="当前: {}×{}".format(global_config.params['custom_width'], global_config.params['custom_height']))
     info_label = ttkb.Label(
         resolution_card,
         textvariable=resolution_info_var,
@@ -683,7 +676,7 @@ def create_gui():
         elif res == "4K":
             resolution_info_var.set("当前: 3840×2160")
         else:
-            resolution_info_var.set(f"当前: {custom_width_var.get()}×{custom_height_var.get()}")
+            resolution_info_var.set("当前: {}×{}".format(custom_width_var.get(), custom_height_var.get()))
 
     # 当分辨率选择改变时，更新自定义输入框状态
     def on_resolution_change():
@@ -758,18 +751,18 @@ def create_gui():
             )
 
             resolution_info_var.set(
-                f"当前: {global_config.params['custom_width']}×{global_config.params['custom_height']}")
+                "当前: {}×{}".format(global_config.params['custom_width'], global_config.params['custom_height']))
             save_status_label.config(text="✅ 参数已保存", bootstyle="success")
             root.after(2000, lambda: save_status_label.config(text="", bootstyle="light"))
 
             print_to_console("参数配置已保存", "SUCCESS")
             if old_resolution != resolution_var.get():
-                print_to_console(f"分辨率已从 {old_resolution} 更改为 {resolution_var.get()}", "WARNING")
+                print_to_console("分辨率已从 {} 更改为 {}".format(old_resolution, resolution_var.get()), "WARNING")
 
         except ValueError as e:
-            save_status_label.config(text=f"❌ 输入无效: {e}", bootstyle="danger")
+            save_status_label.config(text="❌ 输入无效: {}".format(e), bootstyle="danger")
             root.after(3000, lambda: save_status_label.config(text="", bootstyle="light"))
-            print_to_console(f"参数保存失败: {e}", "ERROR")
+            print_to_console("参数保存失败: {}".format(e), "ERROR")
 
     save_btn = ttkb.Button(
         save_frame,
@@ -798,16 +791,16 @@ def create_gui():
     right_paned.pack(fill=BOTH, expand=YES)
 
     # ==================== 钓鱼记录区域（上半部分） ====================
-    record_card = ttkb.Labelframe(
+    fish_record_card = ttkb.Labelframe(
         right_paned,
         text=" 🐟 钓鱼记录 ",
         padding=12,
         bootstyle="primary"
     )
-    right_paned.add(record_card, weight=2)
+    right_paned.add(fish_record_card, weight=2)
 
     # 工具栏
-    toolbar = ttkb.Frame(record_card)
+    toolbar = ttkb.Frame(fish_record_card)
     toolbar.pack(fill=X, pady=(0, 10))
 
     # 视图切换
@@ -816,7 +809,11 @@ def create_gui():
     def set_view(mode):
         view_mode.set(mode)
         update_fish_display()
-        print_to_console(f"切换到{'本次钓鱼' if mode == 'current' else '历史总览'}视图", "INFO")
+        if mode == 'current':
+            text_fish = '本次钓鱼'
+        else:
+            text_fish = '历史总览'
+        print_to_console("切换到{}视图".format(text_fish), "INFO")
 
     ttkb.Button(
         toolbar,
@@ -843,7 +840,7 @@ def create_gui():
     ).pack(side=RIGHT, padx=2)
 
     # 搜索栏
-    search_frame = ttkb.Frame(record_card)
+    search_frame = ttkb.Frame(fish_record_card)
     search_frame.pack(fill=X, pady=(0, 10))
 
     search_var = ttkb.StringVar()
@@ -885,8 +882,120 @@ def create_gui():
     quality_combo.pack(side=LEFT)
     quality_combo.bind("<<ComboboxSelected>>", lambda e: update_fish_display())
 
+    def clear_fish_records():
+        """清空钓鱼记录"""
+        # 询问确认
+        use_session = view_mode.get() == "current"
+        if use_session:
+            confirm_text = "确定要清空本次钓鱼记录吗？"
+        else:
+            confirm_text = "确定要清空所有历史钓鱼记录吗？此操作不可恢复！"
+
+        result = messagebox.askyesno("确认清空", confirm_text, parent=fish_record_card)
+        if not result:
+            return
+
+        if use_session:
+            # 清空当前会话记录
+            clear_current_fish_records()
+        else:
+            # 清理所有记录
+            clear_all_fish_records()
+
+    # 清空统计信息
+    clear_btn = ttkb.Button(
+        search_frame,
+        text="🗑️",
+        command=lambda: clear_fish_records(),
+        bootstyle="danger-outline",
+        width=3
+    )
+    clear_btn.pack(side=RIGHT)
+
+    # 统计信息卡片
+    # 设置自定义亮色主题，与深色背景搭配
+    style = ttk.Style()
+    style.configure("Custom.TLabelframe", bordercolor="#4F46E5")
+    style.configure(
+        "Custom.TLabelframe.Label", foreground="#E2E8F0", font=("Segoe UI", 10, "bold")
+    )
+
+    stats_card = ttkb.Labelframe(
+        fish_record_card, text=" 📊 钓鱼统计 ", padding=15, bootstyle="primary",
+    )
+    stats_card.pack(fill=X, pady=(0, 12))
+    stats_card.configure(relief="solid", borderwidth=1)
+    stats_card.configure(style="Custom.TLabelframe")
+
+    # 计算概率并更新标签
+    def calc_percentage(count):
+        return (count / quality_all_counts['总量'] * 100) if quality_all_counts['总量'] > 0 else 0
+
+    # 创建统计标签变量
+    standard_var = ttkb.StringVar(value="{} 标准: 0 (0.00%)".format(QUALITY_COLORS['标准']))
+    uncommon_var = ttkb.StringVar(value="{} 非凡: 0 (0.00%)".format(QUALITY_COLORS['非凡']))
+    rare_var = ttkb.StringVar(value="{} 稀有: 0 (0.00%)".format(QUALITY_COLORS['稀有']))
+    epic_var = ttkb.StringVar(value="{} 史诗: 0 (0.00%)".format(QUALITY_COLORS['史诗']))
+    legendary_var = ttkb.StringVar(value="{} 传奇: 0 (0.00%)".format(QUALITY_COLORS['传奇']))
+
+    # 品质统计布局 - 更美观的网格布局
+    stats_grid = ttkb.Frame(stats_card)
+    stats_grid.pack(fill=BOTH, expand=YES, side=LEFT)
+
+    # 品质统计容器
+    quality_stats_frame = ttkb.Frame(stats_grid)
+    quality_stats_frame.pack(side=LEFT, fill=X, expand=YES)
+
+    # 第一行：标准、非凡、稀有
+    row1_frame = ttkb.Frame(quality_stats_frame)
+    row1_frame.pack(fill=X, pady=(0, 5))
+
+    standard_label = ttkb.Label(
+        row1_frame,
+        textvariable=standard_var,
+        foreground="#F5F5DC",
+        font=("Segoe UI", 9, "bold"),
+    )
+    standard_label.pack(side=LEFT, padx=12, pady=3, expand=YES)
+
+    uncommon_label = ttkb.Label(
+        row1_frame,
+        textvariable=uncommon_var,
+        foreground="#34D399",
+        font=("Segoe UI", 9, "bold"),
+    )
+    uncommon_label.pack(side=LEFT, padx=12, pady=3, expand=YES)
+
+    rare_label = ttkb.Label(
+        row1_frame,
+        textvariable=rare_var,
+        foreground="#60A5FA",
+        font=("Segoe UI", 9, "bold"),
+    )
+    rare_label.pack(side=LEFT, padx=12, pady=3, expand=YES)
+
+    # 传奇
+    row2_frame = ttkb.Frame(quality_stats_frame)
+    row2_frame.pack(fill=X, pady=(0, 5))
+
+    epic_label = ttkb.Label(
+        row2_frame,
+        textvariable=epic_var,
+        foreground="#A78BFA",
+        font=("Segoe UI", 9, "bold"),
+    )
+    epic_label.pack(side=LEFT, padx=12, pady=3, expand=YES)
+
+    legendary_label = ttkb.Label(
+        row2_frame,
+        textvariable=legendary_var,
+        foreground="#FBBF24",
+        font=("Segoe UI", 9, "bold"),
+    )
+    legendary_label.pack(side=LEFT, padx=12, pady=3, expand=YES)
+
     # 记录表格
-    tree_frame = ttkb.Frame(record_card)
+    tree_frame = ttkb.Frame(fish_record_card)
     tree_frame.pack(fill=BOTH, expand=YES)
 
     columns = ("时间", "名称", "品质", "重量")
@@ -895,7 +1004,8 @@ def create_gui():
         columns=columns,
         show="headings",
         height=12,
-        bootstyle="info"
+        bootstyle="info",
+        style="CustomTreeview.Treeview",
     )
 
     # 滚动条
@@ -932,7 +1042,7 @@ def create_gui():
     # 统计信息
     stats_var = ttkb.StringVar(value="共 0 条记录")
     stats_label = ttkb.Label(
-        record_card,
+        fish_record_card,
         textvariable=stats_var,
         font=("Segoe UI", 9),
         bootstyle="info"
@@ -965,15 +1075,40 @@ def create_gui():
             ), tags=(quality_tag,))
 
         total = len(filtered)
-        stats_var.set(f"{'本次' if use_session else '总计'}: {total} 条")
+        quality_counts = {
+            "标准": 0,
+            "非凡": 0,
+            "稀有": 0,
+            "史诗": 0,
+            "传奇": 0,
+            "总量": 0
+        }
+        if use_session:
+            text_count = '本次'
+            quality_counts = current_quality_all_counts
 
-    def safe_update():
+        else:
+            text_count = '统计'
+            quality_counts = quality_all_counts
+        stats_var.set("{}: {} 条".format(text_count, total))
+        standard_var.set(value="{} 标准:{}({:.2f})%".format(QUALITY_COLORS['标准'], quality_counts['标准'],
+                                                            calc_percentage(quality_counts['标准'])))
+        uncommon_var.set(value="{} 非凡:{}({:.2f})%".format(QUALITY_COLORS['非凡'], quality_counts['非凡'],
+                                                            calc_percentage(quality_counts['非凡'])))
+        rare_var.set(value="{} 稀有:{}({:.2f})%".format(QUALITY_COLORS['稀有'], quality_counts['稀有'],
+                                                        calc_percentage(quality_counts['稀有'])))
+        epic_var.set(value="{} 史诗:{}({:.2f})%".format(QUALITY_COLORS['史诗'], quality_counts['史诗'],
+                                                        calc_percentage(quality_counts['史诗'])))
+        legendary_var.set(value="{} 传奇:{}({:.2f})%".format(QUALITY_COLORS['传奇'], quality_counts['传奇'],
+                                                             calc_percentage(quality_counts['传奇'])))
+
+    def safe_update_fish_display():
         try:
             root.after(0, update_fish_display)
         except:
             pass
 
-    global_config.gui_fish_update_callback = safe_update
+    global_config.gui_fish_update_callback = safe_update_fish_display
     update_fish_display()
 
     # ==================== 控制台输出区域（下半部分） ====================
