@@ -1136,7 +1136,7 @@ def create_gui():
 
     ttkb.Label(
         status_frame,
-        text="v5.2 | Party_Fish",
+        text="开发者:Crazy | v5.2 | Party_Fish",
         font=("Segoe UI", 8),
         bootstyle="secondary"
     ).pack(side=RIGHT)
