@@ -24,7 +24,7 @@ QUALITY_COLORS = {
 }
 
 # 当前会话数据
-current_session_id = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+current_session_id = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 current_session_fish = []  # 当前会话钓到的鱼
 all_fish_records = []  # 所有钓鱼记录（从文件加载）
 fish_record_lock = threading.Lock()  # 钓鱼记录锁
