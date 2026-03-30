@@ -24,7 +24,7 @@ QUALITY_COLORS = {
 }
 
 # 当前会话数据
-current_session_id = None
+current_session_id = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 current_session_fish = []  # 当前会话钓到的鱼
 all_fish_records = []  # 所有钓鱼记录（从文件加载）
 fish_record_lock = threading.Lock()  # 钓鱼记录锁
@@ -32,11 +32,11 @@ fish_record_lock = threading.Lock()  # 钓鱼记录锁
 FISH_RECORD_FILE = "./fish_records.txt"
 
 
-
 # 单条鱼的记录
 class FishRecord:
 
     def __init__(self, name, quality, weight):
+        global current_session_id
         self.name = name if name else "未知"
         self.quality = quality if quality in QUALITY_LEVELS else "标准"
         self.weight = weight if weight else "0"
@@ -76,25 +76,21 @@ class FishRecord:
 
 # 开始新的钓鱼会话
 def start_new_session():
-    global current_session_id, current_session_fish
-    current_session_id = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    current_session_fish = []
-    print(f"🎣 [会话] 新钓鱼会话开始: {current_session_id}")
+    print("🎣 [会话] 新钓鱼会话开始: {}".format(current_session_id))
 
 
 # 结束当前钓鱼会话
 def end_current_session():
     global current_session_id, current_session_fish
     if current_session_fish:
-        print(f"📊 [会话] 本次钓鱼结束，共钓到 {len(current_session_fish)} 条鱼")
+        print("📊 [会话] 本次钓鱼结束，共钓到 {} 条鱼".format(len(current_session_fish)))
         # 统计品质
         quality_count = {}
         for fish in current_session_fish:
             quality_count[fish.quality] = quality_count.get(fish.quality, 0) + 1
         for q, count in quality_count.items():
             emoji = QUALITY_COLORS.get(q, "⚪")
-            print(f"   {emoji} {q}: {count} 条")
-    current_session_id = None
+            print("   {} {}: {} 条".format(emoji, q, count))
 
 
 # 使用OCR识别鱼的信息
@@ -225,7 +221,7 @@ def record_caught_fish():
 
     # 终端输出
     quality_emoji = QUALITY_COLORS.get(fish.quality, "⚪")
-    print(f"🐟 [钓到] {quality_emoji} {fish.name} | 品质: {fish.quality} | 重量: {fish.weight}")
+    print("🐟 [钓到] {} {} | 品质: {} | 重量: {}".format(quality_emoji, fish_name, fish_quality, fish_weight))
 
     # 通知GUI更新
     if global_config.gui_fish_update_callback:
@@ -272,7 +268,7 @@ def save_fish_record(fish_record):
         with open(FISH_RECORD_FILE, "a", encoding="utf-8") as f:
             f.write(fish_record.to_line())
     except Exception as e:
-        print(f"❌ [错误] 保存钓鱼记录失败: {e}")
+        print("❌ [错误] 保存钓鱼记录失败: {}".format(e))
 
 
 # 加载所有历史钓鱼记录
@@ -287,6 +283,6 @@ def load_all_fish_records():
                         record = FishRecord.from_line(line)
                         if record:
                             all_fish_records.append(record)
-            print(f"📊 [信息] 已加载 {len(all_fish_records)} 条历史钓鱼记录")
+            print("📊 [信息] 已加载 {} 条历史钓鱼记录".format(len(all_fish_records)))
     except Exception as e:
-        print(f"❌ [错误] 加载钓鱼记录失败: {e}")
+        print("❌ [错误] 加载钓鱼记录失败: {}".format(e))
