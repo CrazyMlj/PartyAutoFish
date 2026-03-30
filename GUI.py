@@ -508,7 +508,7 @@ def create_gui():
         global auto_discard_level_var
         selected = discard_level_combo.get()
         auto_discard_level_var = QUALITY_LEVEL_MAP.get(selected, 4)
-        print_to_console("自动丢鱼品质阈值已设置为: {}", "INFO".format(selected))
+        print_to_console("自动丢鱼品质阈值已设置为: 丢弃{}以下".format(selected), "INFO")
 
     discard_level_frame = ttkb.Frame(discard_card)
     discard_level_frame.pack(fill=X)
