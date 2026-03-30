@@ -11,8 +11,8 @@ WAITING_STRIKE_REGION_BASE = (1007, 1324, 30, 30, 'bc')  # 等待上鱼位置
 DRAG_FISH_REGION_BASE = (1007, 1094, 30, 30, 'bc')  # 拉鱼位置
 FISHING_REGION_BASE = (1146, 1316, 18, 22, 'bc')  # 上鱼鼠标右键图标
 
-OVERTIME_REGION_BASE = (1244, 674, 27, 30, 'c')  # 加时界面检测区域 1685 674
-BTN_NO_JIASHI_BASE = (1172, 784, 'c')  # 不加时按钮
+OVERTIME_REGION_BASE = (1244, 674, 27, 30, 'tc')  # 加时界面检测区域 1685 674
+BTN_NO_JIASHI_BASE = (1172, 784, 'c')  # 不加时按钮 1575
 BTN_YES_JIASHI_BASE = (1387, 784, 'c')  # 加时按钮
 
 OPEN_FISH_BUCKET_BIT_BASE = -200  # 打开鱼桶鼠标移动

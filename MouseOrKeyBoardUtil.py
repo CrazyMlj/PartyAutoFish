@@ -6,8 +6,6 @@ import time
 
 from GlobalConfig import global_config
 
-JITTER_RANGE_PERCENTAGE = 40
-
 user32 = ctypes.WinDLL("user32")
 mouse_lock = threading.Lock()
 is_mouse_left_down = False
@@ -98,8 +96,8 @@ class HumanLikeMouse:
 
 # 加上抖动随机数
 def add_jitter(base_time: float):
-    global JITTER_RANGE_PERCENTAGE
-    jitter_factor = random.uniform(1 - JITTER_RANGE_PERCENTAGE / 100, 1 + JITTER_RANGE_PERCENTAGE / 100)
+    jitter_factor = random.uniform(1 - global_config.params['jitter_range_percentage'] / 100,
+                                   1 + global_config.params['jitter_range_percentage'] / 100)
     jittered_time = base_time * jitter_factor
     return max(0.01, round(jittered_time, 3))
 

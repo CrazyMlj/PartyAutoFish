@@ -212,6 +212,7 @@ def match(region_base, template, accuracy=0.8):
         return None
     # 执行模板匹配并检查最大匹配度是否大于 默认0.8
     min_max_loc = cv2.minMaxLoc(cv2.matchTemplate(region_gray, template, cv2.TM_CCOEFF_NORMED))[1]
+    # print(min_max_loc)
     return min_max_loc > accuracy
 
 
@@ -260,7 +261,7 @@ def bucket_full_matched():
 
 # 鱼饵不足 此功能只保证2K分辨率下正常
 def no_bait_matched():
-    return match(location.no_bait_region_base, png_template.no_bait_template, 0.9)
+    return match(location.no_bait_region_base, png_template.no_bait_template)
 
 
 # 桶是否为空
@@ -270,7 +271,7 @@ def bucket_empty_matched():
 
 # 桶是否有48条鱼 此功能只保证2K分辨率下正常
 def bucket_48_matched():
-    return match(location.bucket_left_num_region_base, png_template.bucket_48_template)
+    return match(location.bucket_left_num_region_base, png_template.bucket_48_template, 0.88)
 
 
 # uno跳过按钮

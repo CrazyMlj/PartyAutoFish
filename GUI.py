@@ -532,6 +532,73 @@ def create_gui():
     discard_level_combo.bind("<<ComboboxSelected>>", on_discard_level_select)
     discard_level_combo.pack(side=RIGHT)
 
+    # ==================== 时间抖动卡片 ====================
+    jitter_card = ttkb.Labelframe(
+        left_panel, text=" 🎲 时间抖动 ", padding=8, bootstyle="warning"
+    )
+    jitter_card.pack(fill=X, pady=(0, 8))
+
+    # 时间抖动变量
+    jitter_var = ttkb.IntVar(value=global_config.params['jitter_range_percentage'])
+
+    # 创建水平布局框架
+    jitter_frame = ttkb.Frame(jitter_card)
+    jitter_frame.pack(fill=X)
+
+    # 时间抖动范围标签
+    jitter_label = ttkb.Label(
+        jitter_frame,
+        text="时间抖动范围 (±%):",
+        bootstyle="warning",
+        font=("Segoe UI", 9),
+    )
+    jitter_label.pack(side=LEFT, padx=(0, 4))
+
+    # 时间抖动滑块
+    jitter_slider = ttkb.Scale(
+        jitter_frame,
+        from_=0,
+        to=30,
+        orient="horizontal",
+        variable=jitter_var,
+        bootstyle="warning",
+        length=80,
+        cursor="hand2",
+    )
+    jitter_slider.pack(side=LEFT, padx=4, fill=X, expand=True)
+
+    # 时间抖动数值显示 - 更醒目的样式
+    jitter_value_label = ttkb.Label(
+        jitter_frame,
+        text="{}%".format(jitter_var.get()),
+        bootstyle="warning",
+        font=("Segoe UI", 10, "bold"),
+    )
+    jitter_value_label.pack(side=LEFT, padx=(0, 2))
+
+    # 时间抖动说明文字 - 优化样式
+    jitter_info_label = ttkb.Label(
+        jitter_card,
+        text="随机波动避免检测",
+        bootstyle="info",
+        font=("Segoe UI", 8),
+    )
+    jitter_info_label.pack(pady=(4, 2), padx=2)
+
+    # 时间抖动滑块变化事件处理
+    def on_jitter_change(*args):
+        global_config.update(
+            jitter_range_percentage=jitter_var.get()
+        )
+        jitter_value_label.configure(text="{}%".format(jitter_var.get()))
+
+    # 滑块命令事件
+    jitter_slider.configure(command=on_jitter_change)
+
+    # 变量跟踪事件（确保键盘操作也能更新显示）
+    jitter_var.trace(
+        "w", lambda *args: jitter_value_label.configure(text="{}%".format(jitter_var.get()))
+    )
     # ==================== UNO UI ====================
     # 添加UNO的UI元素
     uno_card = ttkb.Labelframe(
@@ -562,7 +629,6 @@ def create_gui():
         uno_input_frame, textvariable=uno_input_var, width=4, bootstyle="primary"
     )
     uno_input.pack(side=RIGHT, padx=(0, 5))  # 靠右显示，右边间距5
-
 
     # ==================== 分辨率设置卡片 ====================
     resolution_card = ttkb.Labelframe(
