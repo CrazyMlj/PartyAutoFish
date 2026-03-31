@@ -10,12 +10,14 @@ from pynput import keyboard
 from Action import png_template
 from AutoFish import toggle_run_auto_fish, auto_fish
 from AutoFishDiscard import auto_fish_discard, toggle_run_auto_fish_discard
+from AutoWait import toggle_run_auto_await, auto_await
 from FishRecord import load_all_fish_records
 from GUI import create_gui
 from GlobalConfig import global_config
 
 listener_f2 = None  # 监听
 listener_f3 = None  # 监听
+listener_f4 = None  # 监听
 
 
 def on_press_f2(key):
@@ -23,10 +25,12 @@ def on_press_f2(key):
     if key == keyboard.Key.f2:
         if global_config.auto_fish_discard_thread_event is not None:
             if global_config.auto_fish_discard_thread_event.is_set():
-                toggle_run_auto_fish_discard()  # 暂停
+                toggle_run_auto_fish_discard()  # 暂停自动丢鱼
+        if global_config.auto_await_thread_event is not None:
+            if global_config.auto_await_thread_event.is_set():
+                toggle_run_auto_await()  # 暂停自动挂机
         # 暂停或恢复程序
         toggle_run_auto_fish()
-    return
 
 
 def on_press_f3(key):
@@ -34,14 +38,29 @@ def on_press_f3(key):
     if key == keyboard.Key.f3:
         if global_config.auto_fish_thread_event is not None:
             if global_config.auto_fish_thread_event.is_set():
-                toggle_run_auto_fish()  # 暂停
+                toggle_run_auto_fish()  # 暂停自动钓鱼
+        if global_config.auto_await_thread_event is not None:
+            if global_config.auto_await_thread_event.is_set():
+                toggle_run_auto_await()  # 暂停自动挂机
         # 暂停或恢复程序
         toggle_run_auto_fish_discard()
-        return
+
+
+def on_press_f4(key):
+    time.sleep(0.02)
+    if key == keyboard.Key.f4:
+        if global_config.auto_fish_discard_thread_event is not None:
+            if global_config.auto_fish_discard_thread_event.is_set():
+                toggle_run_auto_fish_discard()  # 暂停自动丢鱼
+        if global_config.auto_fish_thread_event is not None:
+            if global_config.auto_fish_thread_event.is_set():
+                toggle_run_auto_fish()  # 暂停自动钓鱼
+        # 暂停或恢复程序
+        toggle_run_auto_await()
 
 
 def start_hotkey_listener():
-    global listener_f2, listener_f3
+    global listener_f2, listener_f3, listener_f4
     if listener_f2 is None or not listener_f2.running:
         listener_f2 = keyboard.Listener(on_press=on_press_f2)
         listener_f2.daemon = True
@@ -51,6 +70,11 @@ def start_hotkey_listener():
         listener_f3 = keyboard.Listener(on_press=on_press_f3)
         listener_f3.daemon = True
         listener_f3.start()
+
+    if listener_f4 is None or not listener_f4.running:
+        listener_f4 = keyboard.Listener(on_press=on_press_f4)
+        listener_f4.daemon = True
+        listener_f4.start()
 
 
 if __name__ == "__main__":
@@ -98,6 +122,9 @@ if __name__ == "__main__":
 
     auto_fish_discard_thread = threading.Thread(target=auto_fish_discard, daemon=True)
     auto_fish_discard_thread.start()
+
+    auto_await_thread = threading.Thread(target=auto_await, daemon=True)
+    auto_await_thread.start()
 
     # GUI必须在主线程运行（Tkinter要求）
     # 这样可以确保GUI正常工作且不会崩溃

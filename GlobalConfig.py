@@ -54,6 +54,7 @@ class GlobalConfig:
         self.bait_count_val = None
         self.auto_fish_thread_event = None
         self.auto_fish_discard_thread_event = None
+        self.auto_await_thread_event = None
         self.mouse = None
         self.new_cards = 0
         self.params = {

@@ -255,9 +255,7 @@ def toggle_run_auto_fish_discard():
         global_config.auto_fish_discard_thread_event = run_event
 
     if run_event.is_set():
-        run_event.clear()  # 暂停
-        ensure_mouse_left_up()
-        ensure_mouse_right_up()
+        stop_discard_fish()
         count_discard_fish()
         print("⏸️  [状态] 放鱼脚本已暂停")
     else:
