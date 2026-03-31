@@ -129,9 +129,6 @@ if __name__ == "__main__":
     print("=" * 63)
     print("  PartyFish 自动钓鱼助手  v5.4")
     print("=" * 63)
-    print("  当前分辨率：{} x {}".format(
-        global_config.params['custom_width'],
-        global_config.params['custom_height']))
     print("  快捷键：F2 启动/暂停钓鱼 | F3 启动/暂停放鱼 | F4 启动/暂停挂机")
     print("=" * 63)
     print()
