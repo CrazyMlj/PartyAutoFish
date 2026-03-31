@@ -15,7 +15,7 @@ QUALITY_COLORS = {
     "非凡": "🟢",
     "稀有": "🔵",
     "史诗": "🟣",
-    "传奇": "🟡"
+    "传奇": "🟠"
 }
 
 is_auto_fish_discard = 0
@@ -155,19 +155,19 @@ def auto_fish_discard():
 
                 if not is_auto_fish_discard:
                     print("🌊🐟️ [放生] 自动放生开关未打开... 若需要使用此功能，请手动开启开关...")
-                    run_event.clear()
+                    stop_discard_fish()
                     continue
 
                 if discard_level == 1:
                     print("🌊🐟️ [放生] 当前保留普通及以上鱼种，无需丢弃...")
-                    run_event.clear()
+                    stop_discard_fish()
                     continue
 
                 # 前置判断
                 # 是否在拉杆阶段
                 if drag_fish_matched():
                     print("🌊🐟️ [放生] 当前正在拉鱼无法自动放生...")
-                    run_event.clear()
+                    stop_discard_fish()
                     continue
 
                 # 是否在等待上鱼阶段
@@ -187,14 +187,14 @@ def auto_fish_discard():
 
                 if bucket_empty_matched():
                     print("🌊🐟️ [放生] 鱼桶中没有鱼...")
-                    run_event.clear()
+                    stop_discard_fish()
                     continue
 
                 while run_event.is_set():
                     if locked_fish_matched():
                         print("🌊🐟️ [放生] 当前没有鱼可以放生...")
                         close_fish_bucket()
-                        run_event.clear()
+                        stop_discard_fish()
                         break
 
                     # 将鼠标移走排除鱼品质判断干扰
@@ -203,7 +203,7 @@ def auto_fish_discard():
                     level = recognize_fish_quality()
                     if level is None:
                         print("🌊🐟️ [放生] 未识别出桶中第一条鱼的质量...")
-                        run_event.clear()
+                        stop_discard_fish()
                         break
 
                     with global_config._params_lock:
@@ -211,7 +211,7 @@ def auto_fish_discard():
 
                     if level < discard_level:
                         discard_fish()
-                        discard_count[level - 1] = discard_count[level - 1] + 1
+                        discard_count[level - 1] += 1
                     else:
                         lock_fish()
                 time.sleep(1)
@@ -264,3 +264,10 @@ def toggle_run_auto_fish_discard():
         discard_count = [0, 0, 0, 0]
         run_event.set()  # 恢复运行
         print("▶️  [状态] 放鱼脚本开始运行")
+
+
+def stop_discard_fish():
+    run_event.clear()  # 暂停
+    ensure_mouse_left_up()
+    ensure_mouse_right_up()
+    print("⏸️  [状态] 放鱼脚本已暂停")
