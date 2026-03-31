@@ -55,6 +55,7 @@ class GlobalConfig:
         self.auto_fish_thread_event = None
         self.auto_fish_discard_thread_event = None
         self.auto_await_thread_event = None
+        self.auto_uno_thread_event = None
         self.mouse = None
         self.new_cards = 0
         self.params = {
@@ -73,6 +74,7 @@ class GlobalConfig:
             'base_width': 2560,
             'base_height': 1440,
             'uno_skip_times': 35,
+            'is_keep_skipping': 0,
             'jitter_range_percentage': 15
         }
 

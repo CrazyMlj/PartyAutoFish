@@ -602,6 +602,32 @@ def create_gui(**kwargs):
     )
     uno_card.pack(fill=X, pady=(0, 8))
 
+    # 是否一直跳过
+    keep_skipping_frame = ttkb.Frame(uno_card)
+    keep_skipping_frame.pack(fill=X)
+
+    ttkb.Label(keep_skipping_frame, text="一直跳过", font=("Segoe UI", 9)).pack(side=LEFT)
+    is_keep_skipping_var = ttkb.IntVar(value=global_config.params['is_keep_skipping'])
+
+    keep_skipping_btn_frame = ttkb.Frame(keep_skipping_frame)
+    keep_skipping_btn_frame.pack(side=RIGHT)
+    ttkb.Radiobutton(
+        keep_skipping_btn_frame,
+        text="开启",
+        variable=is_keep_skipping_var,
+        value=1,
+        bootstyle="success-outline-toolbutton",
+        width=5
+    ).pack(side=LEFT, padx=5)
+    ttkb.Radiobutton(
+        keep_skipping_btn_frame,
+        text="关闭",
+        variable=is_keep_skipping_var,
+        value=0,
+        bootstyle="danger-outline-toolbutton",
+        width=5
+    ).pack(side=LEFT, padx=5)
+
     # UNO输入框设置
     uno_inputs_frame = ttkb.Frame(uno_card)
     uno_inputs_frame.pack(fill=X)
@@ -614,7 +640,7 @@ def create_gui(**kwargs):
         text="抽取牌数(张)",
         font=("Segoe UI", 9),
     )
-    uno_input_label.pack(side=LEFT)
+    uno_input_label.pack(side=LEFT, pady=10)
     uno_input_var = ttkb.IntVar(value=35)
     uno_input_spacer = ttkb.Frame(uno_input_frame)
     uno_input_spacer.pack(side=LEFT, fill=X, expand=YES)
@@ -747,7 +773,8 @@ def create_gui(**kwargs):
                 resolution=resolution_var.get(),
                 custom_width=int(custom_width_var.get()),
                 custom_height=int(custom_height_var.get()),
-                uno_skip_times=uno_input_var.get()
+                uno_skip_times=uno_input_var.get(),
+                is_keep_skipping=is_keep_skipping_var.get()
             )
 
             resolution_info_var.set(
@@ -1120,7 +1147,7 @@ def create_gui(**kwargs):
 
     ttkb.Label(
         status_frame,
-        text="⌨️ 快捷键: F2 - 启动/暂停钓鱼 | F3 - 启动/暂停放生 | F4 - 启动/暂停挂机",
+        text="⌨️ 快捷键: F2 - 启动/暂停钓鱼 | F3 - 启动/暂停放生 | F4 - 启动/暂停挂机 | F5 - 启动/暂停uno自动跳过",
         font=("Segoe UI", 8),
         bootstyle="secondary"
     ).pack(side=LEFT)

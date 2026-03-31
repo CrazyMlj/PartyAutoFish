@@ -8,6 +8,7 @@ from pynput import keyboard as pynput_keyboard
 from Action import png_template
 from AutoFish import toggle_run_auto_fish, auto_fish
 from AutoFishDiscard import auto_fish_discard, toggle_run_auto_fish_discard
+from AutoUNO import toggle_run_auto_uno, auto_uno_skip
 from AutoWait import toggle_run_auto_await, auto_await
 from FishRecord import load_all_fish_records
 from GUI import create_gui
@@ -16,6 +17,7 @@ from GlobalConfig import global_config
 listener_f2 = None  # 监听
 listener_f3 = None  # 监听
 listener_f4 = None  # 监听
+listener_f5 = None  # 监听
 
 # 全局标志
 templates_loaded = False
@@ -32,6 +34,9 @@ def on_press_f2(key):
         if global_config.auto_await_thread_event is not None:
             if global_config.auto_await_thread_event.is_set():
                 toggle_run_auto_await()  # 暂停自动挂机
+        if global_config.auto_uno_thread_event is not None:
+            if global_config.auto_uno_thread_event.is_set():
+                toggle_run_auto_uno()  # 暂停uno自动跳过
         # 暂停或恢复程序
         toggle_run_auto_fish()
 
@@ -45,6 +50,9 @@ def on_press_f3(key):
         if global_config.auto_await_thread_event is not None:
             if global_config.auto_await_thread_event.is_set():
                 toggle_run_auto_await()  # 暂停自动挂机
+        if global_config.auto_uno_thread_event is not None:
+            if global_config.auto_uno_thread_event.is_set():
+                toggle_run_auto_uno()  # 暂停uno自动跳过
         # 暂停或恢复程序
         toggle_run_auto_fish_discard()
 
@@ -58,12 +66,31 @@ def on_press_f4(key):
         if global_config.auto_fish_thread_event is not None:
             if global_config.auto_fish_thread_event.is_set():
                 toggle_run_auto_fish()  # 暂停自动钓鱼
+        if global_config.auto_uno_thread_event is not None:
+            if global_config.auto_uno_thread_event.is_set():
+                toggle_run_auto_uno()  # 暂停uno自动跳过
         # 暂停或恢复程序
         toggle_run_auto_await()
 
 
+def on_press_f5(key):
+    time.sleep(0.02)
+    if key == pynput_keyboard.Key.f4:
+        if global_config.auto_fish_discard_thread_event is not None:
+            if global_config.auto_fish_discard_thread_event.is_set():
+                toggle_run_auto_fish_discard()  # 暂停自动丢鱼
+        if global_config.auto_fish_thread_event is not None:
+            if global_config.auto_fish_thread_event.is_set():
+                toggle_run_auto_fish()  # 暂停自动钓鱼
+        if global_config.auto_await_thread_event is not None:
+            if global_config.auto_await_thread_event.is_set():
+                toggle_run_auto_await()  # 暂停自动挂机
+        # 暂停或恢复程序
+        toggle_run_auto_uno()
+
+
 def start_hotkey_listener():
-    global listener_f2, listener_f3, listener_f4
+    global listener_f2, listener_f3, listener_f4, listener_f5
     if listener_f2 is None or not listener_f2.running:
         listener_f2 = pynput_keyboard.Listener(on_press=on_press_f2)
         listener_f2.daemon = True
@@ -78,6 +105,11 @@ def start_hotkey_listener():
         listener_f4 = pynput_keyboard.Listener(on_press=on_press_f4)
         listener_f4.daemon = True
         listener_f4.start()
+
+    if listener_f5 is None or not listener_f5.running:
+        listener_f5 = pynput_keyboard.Listener(on_press=on_press_f5)
+        listener_f5.daemon = True
+        listener_f5.start()
 
 
 def load_templates_async():
@@ -112,8 +144,10 @@ def init_worker_threads():
     auto_await_thread = threading.Thread(target=auto_await, daemon=True)
     threads.append(auto_await_thread)
 
-    initialization_complete = True
+    auto_uno_skip_thread = threading.Thread(target=auto_uno_skip, daemon=True)
+    threads.append(auto_uno_skip_thread)
 
+    initialization_complete = True
 
 
 def on_gui_ready():
@@ -124,12 +158,14 @@ def on_gui_ready():
         thread.start()
     print("✨ [就绪] 所有工作线程已启动")
 
+
 if __name__ == "__main__":
     print()
     print("=" * 63)
     print("  PartyFish 自动钓鱼助手  v5.4")
     print("=" * 63)
-    print("  快捷键：F2 启动/暂停钓鱼 | F3 启动/暂停放鱼 | F4 启动/暂停挂机")
+    print("  快捷键：F2 启动/暂停钓鱼 | F3 启动/暂停放鱼")
+    print("  快捷键：F4 启动/暂停挂机 | F5 启动/暂停uno自动跳过")
     print("=" * 63)
     print()
 
