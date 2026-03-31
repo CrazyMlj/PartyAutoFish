@@ -39,7 +39,7 @@ def auto_uno_skip():
                     break
 
                 if not is_keep_skipping:
-                    if skip_times > uno_skip_times:
+                    if skip_times >= uno_skip_times:
                         stop_auto_skip()
                         break
 
@@ -47,6 +47,7 @@ def auto_uno_skip():
                     skip_times += 1
                     uno_click_skip_button()
                     time.sleep(1.5)
+            time.sleep(0.2)
         except Exception as e:
             print("⚠️  [警告] uno自动跳过操作失败：{}".format(e))
 

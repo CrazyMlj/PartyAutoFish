@@ -38,6 +38,15 @@ def scale_point_anchored(x, y, screen_location):
         new_x = global_config.params['custom_width'] - offset_x * global_config.scale_uniform
         new_y = y * global_config.scale_y
 
+    elif AnchorType.from_string(screen_location) == AnchorType.BOTTOM_RIGHT:
+        # 计算相对于右下角的偏移
+        offset_x = global_config.params['base_width'] - x
+        offset_y = global_config.params['base_height'] - y
+
+        # 缩放后重新计算位置
+        new_x = global_config.params['custom_width'] - offset_x * global_config.scale_uniform
+        new_y = global_config.params['custom_height'] - offset_y * global_config.scale_uniform
+
     return int(new_x), int(new_y), screen_location
 
 
