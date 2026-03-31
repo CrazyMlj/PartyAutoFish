@@ -21,7 +21,6 @@ def auto_uno_skip():
 
     local_scr = None
 
-
     while True:
         if not run_event.is_set():
             run_event.wait(timeout=1.0)  # 等待 1 秒，避免死锁
@@ -47,6 +46,8 @@ def auto_uno_skip():
                     skip_times += 1
                     uno_click_skip_button()
                     time.sleep(1.5)
+            if not is_keep_skipping :
+                print("🎮 [uno跳过] 当前牌数{}张", skip_times)
             time.sleep(0.2)
         except Exception as e:
             print("⚠️  [警告] uno自动跳过操作失败：{}".format(e))
@@ -63,7 +64,7 @@ def toggle_run_auto_uno():
         run_event.clear()  # 暂停
         stop_auto_skip()
     else:
-        skip_times = 7 # 初始牌为7张
+        skip_times = 7  # 初始牌为7张
         run_event.set()
         print("▶️  [状态] uno跳过脚本开始运行")
 
