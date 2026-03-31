@@ -45,9 +45,9 @@ def auto_uno_skip():
                 if uno_skip_matched():
                     skip_times += 1
                     uno_click_skip_button()
+                    if not is_keep_skipping:
+                        print("🎮 [uno跳过] 当前牌数{}张", skip_times)
                     time.sleep(1.5)
-            if not is_keep_skipping :
-                print("🎮 [uno跳过] 当前牌数{}张", skip_times)
             time.sleep(0.2)
         except Exception as e:
             print("⚠️  [警告] uno自动跳过操作失败：{}".format(e))
