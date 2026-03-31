@@ -181,4 +181,5 @@ def get_mouse():
     global _default_mouse
     if _default_mouse is None:
         _default_mouse = HumanLikeMouse()
+        _default_mouse.set_speed(global_config.get_param('auto_discard_speed'))
     return _default_mouse

@@ -37,11 +37,6 @@ def auto_fish_discard_sync(event):
 
     discard_count = [0, 0, 0, 0]
 
-    # 确保 mouse 对象已初始化
-    if _default_mouse is not None:
-        with global_config._mouse_lock:
-            _default_mouse.set_speed(global_config.get_param('auto_discard_speed'))
-
     # 使用独立的 mss 实例
     local_scr = None
 
@@ -142,11 +137,6 @@ def auto_fish_discard():
                 if local_scr is None:
                     local_scr = mss.mss()
                 global_config.set_scr(local_scr)
-
-                # 确保 mouse 对象已初始化
-                if _default_mouse is not None:
-                    with global_config._mouse_lock:
-                        _default_mouse.set_speed(global_config.get_param('auto_discard_speed'))
 
                 with global_config._params_lock:
                     is_auto_fish_discard = global_config.params['is_auto_fish_discard']

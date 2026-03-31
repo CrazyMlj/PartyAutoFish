@@ -75,7 +75,7 @@ def on_press_f4(key):
 
 def on_press_f5(key):
     time.sleep(0.02)
-    if key == pynput_keyboard.Key.f4:
+    if key == pynput_keyboard.Key.f5:
         if global_config.auto_fish_discard_thread_event is not None:
             if global_config.auto_fish_discard_thread_event.is_set():
                 toggle_run_auto_fish_discard()  # 暂停自动丢鱼

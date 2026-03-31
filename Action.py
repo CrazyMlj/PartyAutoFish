@@ -402,5 +402,5 @@ def mouse_move_safe():
 
 # uno点击跳过按钮
 def uno_click_skip_button():
-    mouse.move(location.mouse_uno_location[0], location.mouse_uno_location[1])
+    mouse.move(location.uno_skip_info_region_base[0], location.uno_skip_info_region_base[1])
     hold_mouse_left_button(0.1)

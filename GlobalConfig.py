@@ -83,7 +83,6 @@ class GlobalConfig:
         self._scr_lock = threading.Lock()  # 专门保护 scr 资源
         self._bait_count_lock = threading.Lock()  # 专门保护 bait_count_val
         self._params_lock = threading.RLock()  # 保护 params 字典
-        self._mouse_lock = threading.Lock()  # 保护鼠标操作
 
         # 线程协调事件
         self._fishing_pause_event = threading.Event()  # 钓鱼暂停事件（丢鱼时）

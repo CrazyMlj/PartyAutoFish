@@ -30,7 +30,7 @@ FISH_DISCARD_LOCATION = (1964, 800, 'tr')  # 丢弃鱼坐标 屏幕位置与FIRS
 FISH_LOCKED_LOCATION = (1964, 860, 'tr')  # 锁定鱼坐标 屏幕位置与FIRST_FISH_LOCATION保持一致
 
 FISH_INFO_REGION_BASE = (915, 75, 725, 150, 'tc')  # 鱼信息识别区域
-UNO_SKIP_INFO_REGION_BASE = (2242, 1314, 284, 100, 'br')  # uno跳过按钮 #todo
+UNO_SKIP_INFO_REGION_BASE = (2249, 1319, 268, 82, 'br')  # uno跳过按钮
 UNO_CLICK_LOCATION = (2318, 1353, 'br')  # uno 点击位置
 
 

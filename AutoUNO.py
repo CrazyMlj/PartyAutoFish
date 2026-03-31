@@ -2,6 +2,8 @@
 import threading
 import time
 
+import mss
+
 from Action import uno_skip_matched, uno_click_skip_button
 from GlobalConfig import global_config
 from MouseOrKeyBoardUtil import ensure_mouse_left_up
@@ -17,12 +19,20 @@ def auto_uno_skip():
     uno_skip_times = global_config.get_param('uno_skip_times')
     is_keep_skipping = global_config.get_param('is_keep_skipping')
 
+    local_scr = None
+
+
     while True:
         if not run_event.is_set():
             run_event.wait(timeout=1.0)  # 等待 1 秒，避免死锁
             continue
 
         try:
+            # 创建独立的 mss 实例
+            if local_scr is None:
+                local_scr = mss.mss()
+            global_config.set_scr(local_scr)
+
             if run_event.is_set():
                 if uno_skip_times <= 0:
                     stop_auto_skip()

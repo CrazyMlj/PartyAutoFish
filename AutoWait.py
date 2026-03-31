@@ -37,7 +37,7 @@ def auto_await():
 
             elif 'key' in action_choice:
                 key_split = action_choice.split('.')
-                key = key_split[1]
+                key = int(key_split[1], 16)
                 key_press(key, 0.1)
                 print("🎮 [挂机] 操作{}".format(key_split[0].split('_')[1]))
         except Exception as e:
@@ -47,7 +47,7 @@ def auto_await():
         # 使用分段休眠，以便快速响应停止信号
         for _ in range(180):  # 180 次 * 1 秒 = 180 秒
             if not run_event.is_set():
-                break
+                continue
             time.sleep(1.0)
 
 
