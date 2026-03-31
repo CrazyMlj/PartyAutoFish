@@ -11,7 +11,6 @@ from GlobalConfig import global_config
 from MouseOrKeyBoardUtil import hold_mouse_left_button, press_and_release_mouse_button, ensure_mouse_left_up
 
 run_event = threading.Event()
-begin_event = threading.Event()
 
 previous_result = None  # 上次识别的结果
 current_result = 0  # 当前识别的数字
@@ -40,7 +39,7 @@ def auto_fish():
     # 每个线程使用独立的 mss 实例
     local_scr = None
 
-    while not begin_event.is_set():
+    while True:
         if run_event.is_set():
             # 检查是否需要暂停（丢鱼进行中）
             if global_config._fishing_pause_event.is_set():

@@ -10,12 +10,12 @@ from PIL import Image
 from GlobalConfig import global_config
 from Location import location
 from MouseOrKeyBoardUtil import hold_mouse_left_button, key_press, POINT, key_release, \
-    hold_mouse_right_button, _default_mouse, ensure_mouse_left_up
+    hold_mouse_right_button, ensure_mouse_left_up, get_mouse
 from ScreenAdapt import scale_template
 
 template_folder_path = os.path.join('.', 'resources')
 user32 = ctypes.WinDLL("user32")
-mouse = _default_mouse
+mouse = get_mouse()
 scr = mss.mss()
 
 QUALITY_COLORS = {

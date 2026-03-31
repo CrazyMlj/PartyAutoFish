@@ -9,16 +9,24 @@ from MouseOrKeyBoardUtil import hold_mouse_left_button, hold_mouse_right_button,
 
 actions = ['mouse_left', 'mouse_right', 'key_w.0x57', 'key_a.0x41', 'key_s.0x53', 'key_d.0x44', 'key_space.0x20']
 
-begin_event = threading.Event()
 run_event = threading.Event()
 
 
 def auto_await():
+    """
+    自动挂机主函数
+    """
     global actions, run_event
 
-    while not begin_event.is_set():
-        while run_event.is_set():
-            action_choice = random.choice(actions)
+    while True:
+        # 等待启动信号（阻塞式等待，不占用 CPU）
+        if not run_event.is_set():
+            run_event.wait(timeout=1.0)  # 等待 1 秒，避免死锁
+            continue
+
+        # 执行一次随机操作
+        action_choice = random.choice(actions)
+        try:
             if 'mouse' in action_choice:
                 if action_choice == 'mouse_left':
                     hold_mouse_left_button(0.1)
@@ -32,10 +40,19 @@ def auto_await():
                 key = key_split[1]
                 key_press(key, 0.1)
                 print("🎮 [挂机] 操作{}".format(key_split[0].split('_')[1]))
-            time.sleep(180)
+        except Exception as e:
+            print("⚠️  [警告] 挂机操作失败：{}".format(e))
+
+        # 长时间休眠（180 秒）
+        # 使用分段休眠，以便快速响应停止信号
+        for _ in range(180):  # 180 次 * 1 秒 = 180 秒
+            if not run_event.is_set():
+                break
+            time.sleep(1.0)
 
 
 def toggle_run_auto_await():
+    """切换自动挂机运行状态（线程安全）"""
     global run_event
 
     # 注册事件对象
@@ -52,6 +69,7 @@ def toggle_run_auto_await():
 
 
 def release_mouse_and_keyboard():
+    """释放所有按下的鼠标和键盘"""
     global actions
     for action in actions:
         if 'mouse' in action:

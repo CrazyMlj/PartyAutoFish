@@ -81,7 +81,7 @@ class HumanLikeMouse:
 
         # 偶尔添加过冲和回调（模拟人类）
         if random.random() < 0.3 and distance > 200:
-            # 过冲5-10像素
+            # 过冲 5-10 像素
             overshoot_x = dest_x + random.uniform(-10, 10)
             overshoot_y = dest_y + random.uniform(-10, 10)
             user32.SetCursorPos(int(overshoot_x), int(overshoot_y))
@@ -172,5 +172,13 @@ def key_release(vk_code):
     user32.keybd_event(vk_code, 0, 0x0002, 0)
 
 
-# 创建全局实例
-_default_mouse = HumanLikeMouse()
+# 懒加载全局实例（只在首次使用时创建）
+_default_mouse = None
+
+
+def get_mouse():
+    """获取鼠标实例（懒加载）"""
+    global _default_mouse
+    if _default_mouse is None:
+        _default_mouse = HumanLikeMouse()
+    return _default_mouse

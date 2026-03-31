@@ -22,7 +22,6 @@ is_auto_fish_discard = 0
 discard_level = 1  # 默认不丢弃
 discard_count = None
 
-begin_event = threading.Event()
 run_event = threading.Event()
 
 
@@ -133,7 +132,7 @@ def auto_fish_discard():
     # 每个线程使用独立的 mss 实例
     local_scr = None
 
-    while not begin_event.is_set():
+    while True:
         if run_event.is_set():
             try:
                 # 暂停自动钓鱼

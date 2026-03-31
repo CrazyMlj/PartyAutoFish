@@ -1,11 +1,9 @@
 # =========================
-# 程序入口
+# 程序入口 - 多线程优化版本
 # =========================
 import threading
 import time
-
-import keyboard
-from pynput import keyboard
+from pynput import keyboard as pynput_keyboard
 
 from Action import png_template
 from AutoFish import toggle_run_auto_fish, auto_fish
@@ -19,10 +17,15 @@ listener_f2 = None  # 监听
 listener_f3 = None  # 监听
 listener_f4 = None  # 监听
 
+# 全局标志
+templates_loaded = False
+initialization_complete = False
+threads = None
+
 
 def on_press_f2(key):
     time.sleep(0.02)
-    if key == keyboard.Key.f2:
+    if key == pynput_keyboard.Key.f2:
         if global_config.auto_fish_discard_thread_event is not None:
             if global_config.auto_fish_discard_thread_event.is_set():
                 toggle_run_auto_fish_discard()  # 暂停自动丢鱼
@@ -35,7 +38,7 @@ def on_press_f2(key):
 
 def on_press_f3(key):
     time.sleep(0.02)
-    if key == keyboard.Key.f3:
+    if key == pynput_keyboard.Key.f3:
         if global_config.auto_fish_thread_event is not None:
             if global_config.auto_fish_thread_event.is_set():
                 toggle_run_auto_fish()  # 暂停自动钓鱼
@@ -48,7 +51,7 @@ def on_press_f3(key):
 
 def on_press_f4(key):
     time.sleep(0.02)
-    if key == keyboard.Key.f4:
+    if key == pynput_keyboard.Key.f4:
         if global_config.auto_fish_discard_thread_event is not None:
             if global_config.auto_fish_discard_thread_event.is_set():
                 toggle_run_auto_fish_discard()  # 暂停自动丢鱼
@@ -62,70 +65,101 @@ def on_press_f4(key):
 def start_hotkey_listener():
     global listener_f2, listener_f3, listener_f4
     if listener_f2 is None or not listener_f2.running:
-        listener_f2 = keyboard.Listener(on_press=on_press_f2)
+        listener_f2 = pynput_keyboard.Listener(on_press=on_press_f2)
         listener_f2.daemon = True
         listener_f2.start()
 
     if listener_f3 is None or not listener_f3.running:
-        listener_f3 = keyboard.Listener(on_press=on_press_f3)
+        listener_f3 = pynput_keyboard.Listener(on_press=on_press_f3)
         listener_f3.daemon = True
         listener_f3.start()
 
     if listener_f4 is None or not listener_f4.running:
-        listener_f4 = keyboard.Listener(on_press=on_press_f4)
+        listener_f4 = pynput_keyboard.Listener(on_press=on_press_f4)
         listener_f4.daemon = True
         listener_f4.start()
 
 
-if __name__ == "__main__":
-    print()
-    print("╔" + "═" * 50 + "╗")
-    print("║" + " " * 50 + "║")
-    print("║     🎣  PartyFish 自动钓鱼助手  v5.3             ║")
-    print("║" + " " * 50 + "║")
-    print("╠" + "═" * 50 + "╣")
-    print(
-        f"║  📺 当前分辨率: {global_config.params['custom_width']} × {global_config.params['custom_height']}".ljust(
-            45) + "║")
-    print("║  ⌨️ 快捷键: F2 启动/暂停钓鱼脚本                 ║")
-    print("║  ⌨️ 快捷键: F3 启动/暂停放鱼脚本                 ║")
-    print("║  🔧 开发者: Crazy                                ║")
-    print("╚" + "═" * 50 + "╝")
-    print()
+def load_templates_async():
+    """异步加载图像模板（在后台线程执行）"""
+    global templates_loaded
+    try:
+        print("🖼️[后台加载] 正在加载图像模板...")
+        png_template.load_templates()
+        templates_loaded = True
+        print("✅[后台加载] 模板加载完成")
+    except Exception as e:
+        print("❌ [错误] 模板加载失败：{}".format(e))
+        templates_loaded = False
 
-    # 加载参数和模板
-    print("📦 [初始化] 正在加载配置...")
-    global_config.load_parameters()
 
-    # 加载历史钓鱼记录
-    print("📊 [初始化] 正在加载钓鱼记录...")
-    load_all_fish_records()
+def init_worker_threads():
+    """延迟启动工作线程（在 GUI 就绪后执行）"""
+    global initialization_complete, threads
 
-    print("🖼️  [初始化] 正在加载图像模板...")
-    png_template.load_templates()
-    print("✅ [初始化] 模板加载完成")
+    # 等待模板加载完成
+    while not templates_loaded:
+        time.sleep(0.1)
 
-    # 启动热键监听
-    print("🎮 [初始化] 正在启动热键监听...")
-    start_hotkey_listener()
-    print("✅ [初始化] 热键监听已启动")
-
-    print()
-    print("┌" + "─" * 63 + "┐")
-    print("│  🚀 程序已就绪，按 F2 开始自动钓鱼! 按 F3 开始自动丢鱼!       │")
-    print("└" + "─" * 63 + "┘")
-    print()
-
-    # 将auto_fish()放在后台线程运行（daemon=True确保主线程退出时自动结束）
+    threads = []
+    # 初始化工作线程
     auto_fish_thread = threading.Thread(target=auto_fish, daemon=True)
-    auto_fish_thread.start()
+    threads.append(auto_fish_thread)
 
     auto_fish_discard_thread = threading.Thread(target=auto_fish_discard, daemon=True)
-    auto_fish_discard_thread.start()
+    threads.append(auto_fish_discard_thread)
 
     auto_await_thread = threading.Thread(target=auto_await, daemon=True)
-    auto_await_thread.start()
+    threads.append(auto_await_thread)
 
-    # GUI必须在主线程运行（Tkinter要求）
-    # 这样可以确保GUI正常工作且不会崩溃
-    create_gui()
+    initialization_complete = True
+
+
+
+def on_gui_ready():
+    """GUI 就绪后的回调函数"""
+    global threads
+    # 在 GUI 主线程中启动工作线程
+    for thread in threads:
+        thread.start()
+    print("✨ [就绪] 所有工作线程已启动")
+
+if __name__ == "__main__":
+    print()
+    print("=" * 63)
+    print("  PartyFish 自动钓鱼助手  v5.4")
+    print("=" * 63)
+    print("  当前分辨率：{} x {}".format(
+        global_config.params['custom_width'],
+        global_config.params['custom_height']))
+    print("  快捷键：F2 启动/暂停钓鱼 | F3 启动/暂停放鱼 | F4 启动/暂停挂机")
+    print("=" * 63)
+    print()
+
+    # 【优化 1】快速加载配置（同步）
+    print("📦 加载配置文件...")
+    start_time = time.time()
+    global_config.load_parameters()
+    print("✅ 配置加载完成 ({:.2f}s)".format(time.time() - start_time))
+
+    # 【优化 2】快速加载钓鱼记录（同步）
+    print("📊 加载钓鱼记录...")
+    start_time = time.time()
+    load_all_fish_records()
+    print("✅ 记录加载完成 ({:.2f}s)".format(time.time() - start_time))
+
+    # 【优化 3】异步加载图像模板（后台线程）
+    print("🖼️ 异步加载图像模板...")
+    template_thread = threading.Thread(target=load_templates_async, daemon=True)
+    template_thread.start()
+
+    # 【优化 4】快速启动热键监听（不等待模板加载）
+    print("🎮 启动热键监听...")
+    start_time = time.time()
+    start_hotkey_listener()
+    print("✅ 热键监听已启动 ({:.2f}s)".format(time.time() - start_time))
+
+    init_worker_threads()
+
+    # 创建 GUI 并注册就绪回调
+    create_gui(on_ready_callback=on_gui_ready)
