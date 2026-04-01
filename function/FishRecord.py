@@ -5,8 +5,8 @@ import threading
 import time
 import warnings
 
-from Action import capture_fish_info_region
-from GlobalConfig import global_config, ocr_engine, OCR_AVAILABLE
+from operate.Action import capture_fish_info_region
+from config.GlobalConfig import global_config, ocr_engine, OCR_AVAILABLE
 
 # 过滤libpng的iCCP警告（图片ICC配置文件问题）
 warnings.filterwarnings("ignore", message=".*iCCP.*")
@@ -47,7 +47,7 @@ quality_all_counts = {
     "总量": 0
 }
 
-FISH_RECORD_FILE = "./fish_records.txt"
+FISH_RECORD_FILE = "../fish_records.txt"
 
 
 # 单条鱼的记录

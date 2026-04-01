@@ -1,6 +1,6 @@
 {
-  "interval": 0.2,
-  "mouse_left_hold_time": 0.8,
+  "interval": 0.3,
+  "mouse_left_hold_time": 0.9,
   "mouse_left_release_time": 0.3,
   "cycle_times": 50.0,
   "casting_time": 1.56,
@@ -9,9 +9,11 @@
   "auto_discard_speed": 0.4,
   "discard_level": 4,
   "resolution": "自定义",
-  "custom_width": 2560,
+  "custom_width": 3440,
   "custom_height": 1440,
   "base_width": 2560,
   "base_height": 1440,
-  "uno_skip_times": 35
+  "uno_skip_times": 35,
+  "is_keep_skipping": 0,
+  "jitter_range_percentage": 15
 }

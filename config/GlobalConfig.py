@@ -1,5 +1,5 @@
-import datetime
 import json
+import os
 import threading
 
 # =========================
@@ -26,7 +26,7 @@ QUALITY_LEVEL_MAP = {
 }
 
 # 参数文件路径
-PARAMETER_FILE = "./parameters.json"
+PARAMETER_FILE = os.getcwd() + "\\config\\parameters.json"
 
 
 class GlobalConfig:
@@ -216,5 +216,5 @@ def screen_adapt():
     location.reload_base_date()
     location.update_location()
 
-    from Action import png_template
+    from operate.Action import png_template
     png_template.load_templates()

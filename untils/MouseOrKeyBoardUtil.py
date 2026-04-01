@@ -4,7 +4,7 @@ import random
 import threading
 import time
 
-from GlobalConfig import global_config
+from config.GlobalConfig import global_config
 
 user32 = ctypes.WinDLL("user32")
 mouse_lock = threading.Lock()

@@ -5,14 +5,14 @@ import threading
 import time
 from pynput import keyboard as pynput_keyboard
 
-from Action import png_template
-from AutoFish import toggle_run_auto_fish, auto_fish
-from AutoFishDiscard import auto_fish_discard, toggle_run_auto_fish_discard
-from AutoUNO import toggle_run_auto_uno, auto_uno_skip
-from AutoWait import toggle_run_auto_await, auto_await
-from FishRecord import load_all_fish_records
-from GUI import create_gui
-from GlobalConfig import global_config
+from operate.Action import png_template
+from function.AutoFish import toggle_run_auto_fish, auto_fish
+from function.AutoFishDiscard import auto_fish_discard, toggle_run_auto_fish_discard
+from function.AutoUNO import toggle_run_auto_uno, auto_uno_skip
+from function.AutoWait import toggle_run_auto_await, auto_await
+from function.FishRecord import load_all_fish_records
+from ui.GUI import create_gui
+from config.GlobalConfig import global_config
 
 listener_f2 = None  # 监听
 listener_f3 = None  # 监听

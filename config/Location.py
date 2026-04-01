@@ -1,5 +1,4 @@
-from AnchorType import AnchorType
-from ScreenAdapt import scale_point_anchored, scale_corner_anchored, scale_cords_by_percentage, scale_cords_x
+from untils.ScreenAdapt import scale_point_anchored, scale_corner_anchored, scale_cords_x
 
 # 位置信息(基准"2k")
 BAIT_REGION_BASE = (2318, 1296, 30, 22, 'br')  # 鱼饵数量区域  3440*1440(3198, 1296) 右下角锚定 1k(1739,972)

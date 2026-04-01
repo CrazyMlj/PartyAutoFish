@@ -3,12 +3,12 @@ import time
 
 import mss
 
-from Action import f1_matched, f2_matched, fishing_matched, overtime_matched, overtime_y, bait_match_val, overtime_n, \
+from operate.Action import f1_matched, f2_matched, fishing_matched, overtime_matched, overtime_y, bait_match_val, overtime_n, \
     fished_matched, bucket_full_matched, no_bait_matched
-from AutoFishDiscard import auto_fish_discard_sync
-from FishRecord import record_caught_fish, end_current_session, start_new_session
-from GlobalConfig import global_config
-from MouseOrKeyBoardUtil import hold_mouse_left_button, press_and_release_mouse_button, ensure_mouse_left_up
+from function.AutoFishDiscard import auto_fish_discard_sync
+from function.FishRecord import record_caught_fish, end_current_session, start_new_session
+from config.GlobalConfig import global_config
+from untils.MouseOrKeyBoardUtil import hold_mouse_left_button, press_and_release_mouse_button, ensure_mouse_left_up
 
 run_event = threading.Event()
 

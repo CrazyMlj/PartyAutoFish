@@ -1,7 +1,7 @@
 import cv2
 
-from AnchorType import AnchorType
-from GlobalConfig import global_config
+from untils.AnchorType import AnchorType
+from config.GlobalConfig import global_config
 
 
 # 根据分辨率缩放坐标（保持比例）
