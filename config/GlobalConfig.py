@@ -26,7 +26,7 @@ QUALITY_LEVEL_MAP = {
 }
 
 # 参数文件路径
-PARAMETER_FILE = os.getcwd() + "\\config\\parameters.json"
+PARAMETER_FILE = os.path.join(os.getcwd() , 'config\\parameters.json')
 
 
 class GlobalConfig:
@@ -207,12 +207,12 @@ global_config = GlobalConfig()
 
 
 def screen_init_adapt():
-    from Location import location
+    from config.Location import location
     location.update_location()
 
 
 def screen_adapt():
-    from Location import location
+    from config.Location import location
     location.reload_base_date()
     location.update_location()
 

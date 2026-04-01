@@ -13,7 +13,7 @@ from untils.MouseOrKeyBoardUtil import hold_mouse_left_button, key_press, POINT,
     hold_mouse_right_button, ensure_mouse_left_up, get_mouse
 from untils.ScreenAdapt import scale_template
 
-template_folder_path = os.path.join(os.getcwd(), 'resources')
+template_folder_path = os.path.join(os.getcwd(), 'resources\\templates')
 user32 = ctypes.WinDLL("user32")
 mouse = get_mouse()
 scr = mss.mss()
