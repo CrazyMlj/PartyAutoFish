@@ -1119,7 +1119,7 @@ def create_gui(**kwargs):
 
     # 计算概率并更新标签
     def calc_percentage(count, total):
-        return count / total if total > 0 else 0
+        return (count / total) * 100 if total > 0 else 0
 
     def safe_update_fish_display():
         try:
