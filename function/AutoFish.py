@@ -53,7 +53,7 @@ def auto_fish():
                 global_config.set_scr(local_scr)
                 # 检测 F1/F2 抛竿
                 if f1_matched() or f2_matched():
-                    hold_mouse_left_button(global_config.get_param('casting_time'))
+                    hold_mouse_left_button(global_config.get_fish_config_param('casting_time'))
                     if bucket_full_matched():
                         ensure_mouse_left_up()
                         print("🌊🐟️ [自动放生] 桶已钓满...")
@@ -88,7 +88,7 @@ def auto_fish():
                     previous_result = current_result  # 更新上次识别的结果
 
                     # 线程安全地读取最大拉杆次数
-                    current_times = global_config.get_param('cycle_times')
+                    current_times = global_config.get_fish_config_param('cycle_times')
 
                     while not fished_matched() and run_event.is_set():
                         # 检查是否应该暂停（丢鱼进行中）

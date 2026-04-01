@@ -1,6 +1,7 @@
 from tkinter import ttk, messagebox
 import tkinter as tk
 import ttkbootstrap as ttkb
+from sympy.plotting.intervalmath import interval
 from ttkbootstrap.constants import *
 import sys
 import queue
@@ -9,6 +10,7 @@ from datetime import datetime
 from function.FishRecord import search_fish_records, quality_all_counts, QUALITY_COLORS, QUALITY_LEVELS, \
     clear_current_fish_records, clear_all_fish_records, current_quality_all_counts
 from config.GlobalConfig import global_config
+from untils.FishRodType import FishRodType, get_all_fish_rod_type_name
 
 ## 创建 Tkinter 窗口（现代化UI设计 - 左右分栏布局）
 QUALITY_LEVEL_MAP = {
@@ -19,6 +21,7 @@ QUALITY_LEVEL_MAP = {
     "传奇": 5
 }
 auto_discard_level_var = 4
+fish_rod_type_choose = 'ul'
 
 
 class ConsoleRedirector:
@@ -288,7 +291,7 @@ def print_to_console(message, level="INFO"):
 
 
 def create_gui(**kwargs):
-    global console_instance
+    global console_instance, fish_rod_type_choose
 
     # 创建现代化主题窗口
     root = ttkb.Window(themename="darkly")
@@ -407,20 +410,54 @@ def create_gui(**kwargs):
     )
     params_card.pack(fill=X, pady=(0, 10))
 
+    param_vars = {}
+
+    # 鱼杆类型下拉框
+    def on_fish_rod_type_select(event):
+        global fish_rod_type_choose
+        selected = fish_rod_type_combo.get()
+        fish_rod_type_choose = FishRodType.from_string(selected).value[1]
+        # 参数配置
+        param_vars['interval'].set(global_config.params['fish_config'].get(fish_rod_type_choose)['interval'])
+        param_vars['mouse_left_hold_time'].set(
+            global_config.params['fish_config'].get(fish_rod_type_choose)['mouse_left_hold_time'])
+        param_vars['mouse_left_release_time'].set(
+            global_config.params['fish_config'].get(fish_rod_type_choose)['mouse_left_release_time'])
+        param_vars['cycle_times'].set(global_config.params['fish_config'].get(fish_rod_type_choose)['cycle_times'])
+        param_vars['casting_time'].set(global_config.params['fish_config'].get(fish_rod_type_choose)['casting_time'])
+        print_to_console("鱼杆类型:已设置为: {}".format(selected), "INFO")
+        print_to_console("等待用户保存...","WARNING")
+
+    fish_rod_type_frame = ttkb.Frame(params_card)
+    fish_rod_type_frame.pack(fill=X)
+
+    ttkb.Label(fish_rod_type_frame, text="鱼杆类型:", font=("Segoe UI", 9)).pack(side=LEFT)
+
+    fish_rod_type_combo = ttk.Combobox(
+        fish_rod_type_frame,
+        values=get_all_fish_rod_type_name(),
+        state="readonly",
+        width=9
+    )
+    fish_rod_type_combo.set(FishRodType.from_string(global_config.params['fish_rod_type']).value[0])
+    fish_rod_type_combo.bind("<<ComboboxSelected>>", on_fish_rod_type_select)
+    fish_rod_type_combo.pack(side=RIGHT)
     # 参数网格布局
     params_grid = ttkb.Frame(params_card)
     params_grid.pack(fill=X)
 
     # 参数配置
     params_config = [
-        ("循环间隔 (秒)", "interval", global_config.params['interval']),
-        ("收线时间 (秒)", "mouse_left_hold_time", global_config.params['mouse_left_hold_time']),
-        ("放线时间 (秒)", "mouse_left_release_time", global_config.params['mouse_left_release_time']),
-        ("最大拉杆次数", "cycle_times", global_config.params['cycle_times']),
-        ("抛竿时间 (秒)", "casting_time", global_config.params["casting_time"]),
+        ("循环间隔 (秒)", "interval", global_config.params['fish_config'].get(fish_rod_type_choose)['interval']),
+        ("收线时间 (秒)", "mouse_left_hold_time",
+         global_config.params['fish_config'].get(fish_rod_type_choose)['mouse_left_hold_time']),
+        ("放线时间 (秒)", "mouse_left_release_time",
+         global_config.params['fish_config'].get(fish_rod_type_choose)['mouse_left_release_time']),
+        ("最大拉杆次数", "cycle_times", global_config.params['fish_config'].get(fish_rod_type_choose)['cycle_times']),
+        ("抛竿时间 (秒)", "casting_time",
+         global_config.params['fish_config'].get(fish_rod_type_choose)["casting_time"]),
     ]
 
-    param_vars = {}
     for i, (label_text, key, default) in enumerate(params_config):
         ttkb.Label(params_grid, text=label_text, font=("Segoe UI", 9)).grid(
             row=i, column=0, sticky=W, pady=6, padx=(0, 10)
@@ -510,6 +547,7 @@ def create_gui(**kwargs):
         selected = discard_level_combo.get()
         auto_discard_level_var = QUALITY_LEVEL_MAP.get(selected, 4)
         print_to_console("自动丢鱼品质阈值已设置为: 丢弃{}以下".format(selected), "INFO")
+        print_to_console("等待用户保存...", "WARNING")
 
     discard_level_frame = ttkb.Frame(discard_card)
     discard_level_frame.pack(fill=X)
@@ -763,6 +801,7 @@ def create_gui(**kwargs):
             old_resolution = global_config.params['resolution']
 
             global_config.update(
+                fish_rod_type=fish_rod_type_choose,
                 interval=float(param_vars['interval'].get()),
                 mouse_left_hold_time=float(param_vars['mouse_left_hold_time'].get()),
                 mouse_left_release_time=float(param_vars['mouse_left_release_time'].get()),
@@ -775,7 +814,7 @@ def create_gui(**kwargs):
                 custom_width=int(custom_width_var.get()),
                 custom_height=int(custom_height_var.get()),
                 uno_skip_times=uno_input_var.get(),
-                is_keep_skipping=is_keep_skipping_var.get()
+                is_keep_skipping=is_keep_skipping_var.get(),
             )
 
             resolution_info_var.set(

@@ -1,15 +1,55 @@
 {
-  "interval": 0.3,
-  "mouse_left_hold_time": 0.9,
-  "mouse_left_release_time": 0.3,
-  "cycle_times": 50.0,
-  "casting_time": 1.56,
+  "fish_rod_type": "hl",
+  "fish_config": {
+    "ul": {
+      "interval": 0.3,
+      "mouse_left_hold_time": 0.9,
+      "mouse_left_release_time": 0.3,
+      "cycle_times": 50.0,
+      "casting_time": 1.65
+    },
+    "hl": {
+      "interval": 0.3,
+      "mouse_left_hold_time": 0.9,
+      "mouse_left_release_time": 0.3,
+      "cycle_times": 50.0,
+      "casting_time": 1.65
+    },
+    "ui": {
+      "interval": 0.1,
+      "mouse_left_hold_time": 1.7,
+      "mouse_left_release_time": 0.5,
+      "cycle_times": 30.0,
+      "casting_time": 0.1
+    },
+    "hi": {
+      "interval": 0.1,
+      "mouse_left_hold_time": 1.7,
+      "mouse_left_release_time": 0.5,
+      "cycle_times": 30.0,
+      "casting_time": 0.1
+    },
+    "us": {
+      "interval": 0.1,
+      "mouse_left_hold_time": 1.7,
+      "mouse_left_release_time": 0.5,
+      "cycle_times": 30.0,
+      "casting_time": 0.1
+    },
+    "hs": {
+      "interval": 0.1,
+      "mouse_left_hold_time": 1.7,
+      "mouse_left_release_time": 0.5,
+      "cycle_times": 30.0,
+      "casting_time": 0.1
+    }
+  },
   "is_overtime": 1,
   "is_auto_fish_discard": 1,
   "auto_discard_speed": 0.4,
   "discard_level": 4,
-  "resolution": "自定义",
-  "custom_width": 3440,
+  "resolution": "2K",
+  "custom_width": 2560,
   "custom_height": 1440,
   "base_width": 2560,
   "base_height": 1440,

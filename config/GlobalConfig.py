@@ -2,6 +2,8 @@ import json
 import os
 import threading
 
+from untils.FishRodType import FishRodType
+
 # =========================
 # OCR引擎初始化（使用rapidocr，速度快）
 # =========================
@@ -26,7 +28,7 @@ QUALITY_LEVEL_MAP = {
 }
 
 # 参数文件路径
-PARAMETER_FILE = os.path.join(os.getcwd() , 'config\\parameters.json')
+PARAMETER_FILE = os.path.join(os.getcwd(), 'config\\parameters.json')
 
 
 class GlobalConfig:
@@ -59,11 +61,51 @@ class GlobalConfig:
         self.mouse = None
         self.new_cards = 0
         self.params = {
-            'interval': 0.4,
-            'mouse_left_hold_time': 1.8,
-            'mouse_left_release_time': 0.7,
-            'cycle_times': 20.0,
-            'casting_time': 1.65,
+            'fish_rod_type': 'ul',
+            'fish_config': {
+                'ul': {
+                    'interval': 0.3,
+                    'mouse_left_hold_time': 0.9,
+                    'mouse_left_release_time': 0.3,
+                    'cycle_times': 50.0,
+                    'casting_time': 1.65
+                },
+                'hl': {
+                    'interval': 0.3,
+                    'mouse_left_hold_time': 0.9,
+                    'mouse_left_release_time': 0.3,
+                    'cycle_times': 50.0,
+                    'casting_time': 1.65
+                },
+                'ui': {
+                    'interval': 0.1,
+                    'mouse_left_hold_time': 1.7,
+                    'mouse_left_release_time': 0.5,
+                    'cycle_times': 30.0,
+                    'casting_time': 0.1
+                },
+                'hi': {
+                    'interval': 0.1,
+                    'mouse_left_hold_time': 1.7,
+                    'mouse_left_release_time': 0.5,
+                    'cycle_times': 30.0,
+                    'casting_time': 0.1
+                },
+                'us': {
+                    'interval': 0.1,
+                    'mouse_left_hold_time': 1.7,
+                    'mouse_left_release_time': 0.5,
+                    'cycle_times': 30.0,
+                    'casting_time': 0.1
+                },
+                'hs': {
+                    'interval': 0.1,
+                    'mouse_left_hold_time': 1.7,
+                    'mouse_left_release_time': 0.5,
+                    'cycle_times': 30.0,
+                    'casting_time': 0.1
+                }
+            },
             'is_overtime': 1,
             'is_auto_fish_discard': 0,
             'auto_discard_speed': 0.4,
@@ -94,12 +136,19 @@ class GlobalConfig:
             for key, value in kwargs.items():
                 if key in self.params:
                     self.params[key] = value
+                else:
+                    self.params.get('fish_config').get(self.params.get('fish_rod_type'))[key] = value
         self.save_parameters()
 
     def get_param(self, key):
         """线程安全地获取参数"""
         with self._params_lock:
             return self.params.get(key)
+
+    def get_fish_config_param(self, key):
+        """线程安全地获取钓鱼参数"""
+        with self._params_lock:
+            return self.params.get('fish_config').get(self.params.get('fish_rod_type'))[key]
 
     def update_param(self, key, value):
         """线程安全地更新单个参数"""
@@ -140,11 +189,14 @@ class GlobalConfig:
             print("│                    ⚙️  参数更新成功                        │")
             print("├" + "─" * 60 + "┤")
 
-            interval_str = "{:.1f}".format(data.get('interval'))
-            hold_time_str = "{:.1f}".format(data.get('mouse_left_hold_time'))
-            release_time_str = "{:.1f}".format(data.get('mouse_left_release_time'))
-            casting_time_str = "{:.1f}".format(data.get('casting_time'))
-            cycle_times_val = int(data.get('cycle_times'))
+            fish_rod_type_var = FishRodType.from_string(data.get('fish_rod_type')).value[0]
+            interval_str = "{:.1f}".format(data.get('fish_config').get(data.get('fish_rod_type'))['interval'])
+            hold_time_str = "{:.1f}".format(
+                data.get('fish_config').get(data.get('fish_rod_type'))['mouse_left_hold_time'])
+            release_time_str = "{:.1f}".format(
+                data.get('fish_config').get(data.get('fish_rod_type'))['mouse_left_release_time'])
+            casting_time_str = "{:.1f}".format(data.get('fish_config').get(data.get('fish_rod_type'))['casting_time'])
+            cycle_times_val = int(data.get('fish_config').get(data.get('fish_rod_type'))['cycle_times'])
             is_overtime_val = data.get('is_overtime')
             is_auto_discard_val = data.get('is_auto_fish_discard')
             discard_level_val = data.get('discard_level')
@@ -160,9 +212,10 @@ class GlobalConfig:
             discard_text = "是" if is_auto_discard_val else "否"
             quality_name = QUALITY_LEVEL[discard_level_val - 1]
 
-            print("│  ⏱️  循环间隔: {}s    📍 收线：{}s    📍 放线：{}s".format(
+            print("│  🎣 鱼杆类型: {}".format(fish_rod_type_var) + " " * 37 + "│")
+            print("│  ⏱️ 循环间隔: {}s     📍 收线：{}s    📍 放线：{}s".format(
                 interval_str, hold_time_str, release_time_str) + "       │")
-            print("│  🎣 最大拉杆：{}次     ⏳ 抛竿：{}s    {} 加时：{}".format(
+            print("│  🪝 最大拉杆：{}次     ⏳ 抛竿：{}s    {} 加时：{}".format(
                 cycle_times_val, casting_time_str, overtime_status, overtime_text) + "        │")
             print("│  {} 丢鱼：{}    🐟️ 丢鱼品质：{}以下品质全丢 ({}保留)".format(
                 discard_status, discard_text, quality_name, quality_name) + "  │")

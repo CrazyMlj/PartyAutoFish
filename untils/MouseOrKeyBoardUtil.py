@@ -136,9 +136,9 @@ def ensure_mouse_right_up():
 
 def press_and_release_mouse_button():
     user32.mouse_event(0x02, 0, 0, 0, 0)
-    time.sleep(add_jitter(global_config.params['mouse_left_hold_time']))
+    time.sleep(add_jitter(global_config.get_fish_config_param('mouse_left_hold_time')))
     user32.mouse_event(0x04, 0, 0, 0, 0)
-    time.sleep(add_jitter(global_config.params['mouse_left_release_time']))
+    time.sleep(add_jitter(global_config.get_fish_config_param('mouse_left_release_time')))
 
 
 def hold_mouse_left_button(duration):
