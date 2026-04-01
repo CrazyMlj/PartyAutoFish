@@ -47,7 +47,7 @@ quality_all_counts = {
     "总量": 0
 }
 
-FISH_RECORD_FILE = "../fish_records.txt"
+FISH_RECORD_FILE = os.path.join(os.getcwd(), 'data\\fish_records.txt')
 
 
 # 单条鱼的记录
