@@ -1,4 +1,4 @@
-# -*- mode: python ; coding: utf-8 -*-
+﻿# -*- mode: python ; coding: utf-8 -*-
 
 import sys
 import platform
@@ -81,7 +81,6 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,  # 如果安装了 UPX 会启用压缩
-    upx_dir='G:/PyChamProject/AutoFish/upx-5.1.1-win64',
     console=False,  # False = --windowed, True = 显示控制台
     disable_windowed_traceback=False,
     argv_emulation=False,
