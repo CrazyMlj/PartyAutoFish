@@ -271,10 +271,9 @@ def screen_init_adapt():
     from config.Location import location
     location.update_location()
 
-
+# todo 待优化 只有分辨率变化时才需要重新加载
 def screen_adapt():
     from config.Location import location
-    location.reload_base_date()
     location.update_location()
 
     from operate.Action import png_template

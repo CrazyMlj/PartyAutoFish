@@ -103,34 +103,5 @@ class Location:
         self.uno_skip_info_region_base = scale_corner_anchored(*UNO_SKIP_INFO_REGION_BASE)
         self.uno_click_location = scale_point_anchored(*UNO_CLICK_LOCATION)
 
-    # 重新加载
-    def reload_base_date(self):
-        self.bait_region_base = BAIT_REGION_BASE
-        self.fish_star_region_base = FISH_STAR_REGION_BASE
-        self.f_1_region_base = F_1_REGION_BASE
-        self.f_2_region_base = F_2_REGION_BASE
-        self.fishing_region_base = FISHING_REGION_BASE
-        self.overtime_region_base = OVERTIME_REGION_BASE
-        self.btn_no_jiashi_base = BTN_NO_JIASHI_BASE
-        self.btn_yes_jiashi_base = BTN_YES_JIASHI_BASE
-        self.open_fish_bucket_bit_base = OPEN_FISH_BUCKET_BIT_BASE
-        self.bucket_opened_region_base = BUCKET_OPENED_REGION_BASE
-        self.bucket_full_region_base = BUCKET_FULL_REGION_BASE
-        self.no_bait_region_base = scale_corner_anchored(*NO_BAIT_REGION_BASE)
-        self.bucket_left_num_region_base = BUCKET_LEFT_NUM_REGION_BASE
-        self.bucket_empty_region_base = BUCKET_EMPTY_REGION_BASE
-        self.fish_color_info_location = FISH_COLOR_INFO_LOCATION
-        self.fish_is_locked_region_base = FISH_IS_LOCKED_REGION_BASE
-        self.first_fish_location = FIRST_FISH_LOCATION
-        self.close_button_location = CLOSE_BUTTON_LOCATION
-        self.fish_discard_location = FISH_DISCARD_LOCATION
-        self.fish_locked_location = FISH_LOCKED_LOCATION
-        self.fish_info_region_base = FISH_INFO_REGION_BASE
-        self.mouse_safe_bit_base = scale_cords_x(MOUSE_SAFE_BIT_BASE)
-        self.waiting_strike_region_base = scale_corner_anchored(*WAITING_STRIKE_REGION_BASE)
-        self.drag_fish_region_base = scale_corner_anchored(*DRAG_FISH_REGION_BASE)
-        self.uno_skip_info_region_base = scale_corner_anchored(*UNO_SKIP_INFO_REGION_BASE)
-        self.uno_click_location = scale_point_anchored(*UNO_CLICK_LOCATION)
-
 
 location = Location()
