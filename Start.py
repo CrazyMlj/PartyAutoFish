@@ -162,7 +162,7 @@ def on_gui_ready():
 if __name__ == "__main__":
     print()
     print("=" * 63)
-    print("  PartyFish 自动钓鱼助手  v5.5")
+    print("  PartyFish 自动钓鱼助手  v5.6")
     print("=" * 63)
     print("  快捷键：F2 启动/暂停钓鱼 | F3 启动/暂停放鱼")
     print("  快捷键：F4 启动/暂停挂机 | F5 启动/暂停uno自动跳过")

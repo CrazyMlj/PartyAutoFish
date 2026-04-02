@@ -203,7 +203,7 @@ class ConsoleWindow:
         """打印欢迎信息"""
         welcome_text = """
 ╔══════════════════════════════════════════════════════════╗
-║  🎣 Party_Fish 自动钓鱼助手 v5.5                         ║
+║  🎣 Party_Fish 自动钓鱼助手 v5.6                         ║
 ║  📅 控制台已启动                                          ║
 ║  ⌨️ 快捷键: F2 - 启动/暂停钓鱼 | F3 - 启动/暂停放生       ║
 ║  ⌨️ 快捷键: F4 - 启动/暂停挂机 | F5 - 启动/暂停uno跳过    ║
@@ -1194,7 +1194,7 @@ def create_gui(**kwargs):
 
     ttkb.Label(
         status_frame,
-        text="开发者:Crazy | v5.5 | Party_Fish",
+        text="开发者:Crazy | v5.6 | Party_Fish",
         font=("Segoe UI", 8),
         bootstyle="secondary"
     ).pack(side=RIGHT)
