@@ -9,9 +9,9 @@ from PIL import Image
 
 from config.GlobalConfig import global_config
 from config.Location import location
-from untils.MouseOrKeyBoardUtil import hold_mouse_left_button, key_press, POINT, key_release, \
+from utils.MouseOrKeyBoardUtil import hold_mouse_left_button, key_press, POINT, key_release, \
     hold_mouse_right_button, ensure_mouse_left_up, get_mouse
-from untils.ScreenAdapt import scale_template
+from utils.ScreenAdapt import scale_template
 
 template_folder_path = os.path.join(os.getcwd(), 'resources\\templates')
 user32 = ctypes.WinDLL("user32")

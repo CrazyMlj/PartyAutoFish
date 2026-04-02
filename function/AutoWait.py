@@ -4,7 +4,7 @@ import threading
 import time
 
 from config.GlobalConfig import global_config
-from untils.MouseOrKeyBoardUtil import hold_mouse_left_button, hold_mouse_right_button, key_press, ensure_mouse_left_up, \
+from utils.MouseOrKeyBoardUtil import hold_mouse_left_button, hold_mouse_right_button, key_press, ensure_mouse_left_up, \
     ensure_mouse_right_up, key_release
 
 actions = ['mouse_left', 'mouse_right', 'key_w.0x57', 'key_a.0x41', 'key_s.0x53', 'key_d.0x44', 'key_space.0x20']

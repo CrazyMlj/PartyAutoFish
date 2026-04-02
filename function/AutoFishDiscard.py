@@ -7,7 +7,7 @@ from operate.Action import open_fish_bucket, locked_fish_matched, close_fish_buc
     recognize_fish_quality, lock_fish, discard_fish, bucket_empty_matched, bucket_opened_matched, mouse_move_safe, \
     waiting_strike_matched, retrieve_the_rod, drag_fish_matched, bucket_48_matched, fished_matched
 from config.GlobalConfig import global_config
-from untils.MouseOrKeyBoardUtil import ensure_mouse_left_up, ensure_mouse_right_up, hold_mouse_left_button
+from utils.MouseOrKeyBoardUtil import ensure_mouse_left_up, ensure_mouse_right_up, hold_mouse_left_button
 
 QUALITY_LEVELS = ["标准", "非凡", "稀有", "史诗", "传奇"]
 QUALITY_COLORS = {

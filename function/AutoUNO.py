@@ -6,7 +6,7 @@ import mss
 
 from operate.Action import uno_skip_matched, uno_click_skip_button
 from config.GlobalConfig import global_config
-from untils.MouseOrKeyBoardUtil import ensure_mouse_left_up
+from utils.MouseOrKeyBoardUtil import ensure_mouse_left_up
 
 skip_times = 0
 run_event = threading.Event()

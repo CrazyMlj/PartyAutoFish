@@ -3,7 +3,7 @@ import json
 import os
 import threading
 
-from untils.FishRodType import FishRodType
+from utils.FishRodType import FishRodType
 
 # =========================
 # OCR引擎初始化（使用rapidocr，速度快）

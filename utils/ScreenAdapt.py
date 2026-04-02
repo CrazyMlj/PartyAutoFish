@@ -1,6 +1,6 @@
 import cv2
 
-from untils.AnchorType import AnchorType
+from utils.AnchorType import AnchorType
 from config.GlobalConfig import global_config
 
 

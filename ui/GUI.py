@@ -9,7 +9,7 @@ from datetime import datetime
 from function.FishRecord import search_fish_records, quality_all_counts, QUALITY_COLORS, QUALITY_LEVELS, \
     clear_current_fish_records, clear_all_fish_records, current_quality_all_counts
 from config.GlobalConfig import global_config
-from untils.FishRodType import FishRodType, get_all_fish_rod_type_name
+from utils.FishRodType import FishRodType, get_all_fish_rod_type_name
 
 ## 创建 Tkinter 窗口（现代化UI设计 - 左右分栏布局）
 QUALITY_LEVEL_MAP = {
