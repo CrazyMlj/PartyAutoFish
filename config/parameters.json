@@ -1,5 +1,5 @@
 {
-  "fish_rod_type": "hl",
+  "fish_rod_type": "ul",
   "fish_config": {
     "ul": {
       "interval": 0.3,
@@ -49,8 +49,6 @@
   "auto_discard_speed": 0.4,
   "discard_level": 4,
   "resolution": "2K",
-  "custom_width": 2560,
-  "custom_height": 1440,
   "base_width": 2560,
   "base_height": 1440,
   "uno_skip_times": 35,

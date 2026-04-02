@@ -1,3 +1,4 @@
+import ctypes
 import json
 import os
 import threading
@@ -29,6 +30,7 @@ QUALITY_LEVEL_MAP = {
 
 # 参数文件路径
 PARAMETER_FILE = os.path.join(os.getcwd(), 'config\\parameters.json')
+user32 = ctypes.windll.user32
 
 
 class GlobalConfig:
@@ -64,7 +66,7 @@ class GlobalConfig:
             'fish_rod_type': 'ul',
             'fish_config': {
                 'ul': {
-                    'interval': 0.3,
+                    'interval': 0.3,  # todo 未使用
                     'mouse_left_hold_time': 0.9,
                     'mouse_left_release_time': 0.3,
                     'cycle_times': 50.0,
@@ -240,11 +242,17 @@ class GlobalConfig:
                     # 更新分辨率
                     if 'custom_width' in data:
                         self.params['custom_width'] = data['custom_width']
-                        self.scale_x = self.params['custom_width'] / self.params['base_width']
+                    else:
+                        self.params['resolution'] = '自动读取'
+                        self.params['custom_width'] = user32.GetSystemMetrics(0)  # 自动读取屏幕分辨率
+                    self.scale_x = self.params['custom_width'] / self.params['base_width']
                     if 'custom_height' in data:
                         self.params['custom_height'] = data['custom_height']
-                        self.scale_y = self.params['custom_height'] / self.params['base_height']
+                    else:
+                        self.params['custom_height'] = user32.GetSystemMetrics(1)  # 自动读取屏幕分辨率
+                    self.scale_y = self.params['custom_height'] / self.params['base_height']
                     self.scale_uniform = min(self.scale_x, self.scale_y)
+
                 screen_init_adapt()
             return True
         except FileNotFoundError:
