@@ -1,4 +1,6 @@
+
 # 🎣 PartyFish - 猛兽派对自动钓鱼助手
+<div align="center">
 
 ![Version](https://img.shields.io/badge/Version-v5.5-orange.svg)
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-lightgrey.svg)
@@ -7,8 +9,9 @@
 
 **🎮 专为《猛兽派对 (Party Animals)》钓鱼玩法设计的自动化辅助工具**
 
-PartyFish 是一款基于图像识别的自动钓鱼工具，支持多分辨率适配、钓鱼记录统计和现代化 GUI 界面，让你在猛兽派对中轻松享受钓鱼乐趣！
-
+PartyFish 是一款基于图像识别的自动钓鱼工具，支持多分辨率适配、钓鱼记录统计和现代化 GUI 界面，让你在猛兽派对中轻松享受钓鱼乐趣！\
+[📥 立即下载](#-快速开始) | [📖 使用说明](#-使用方法) | [❓ 常见问题](#️-故障排除)
+</div>
 ---
 
 ## 🎮 关于本工具
