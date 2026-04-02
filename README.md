@@ -271,7 +271,7 @@ AutoFish/
 
 ## 👤 开发者
 
-**Crazy** - [GitHub](https://github.com/CrazyMlj) \
+**CrazyEA** - [GitHub](https://github.com/CrazyEA) \
 **FadedTUMI** - [GitHub](https://github.com/FADEDTUMI)
 
 - 本项目在`FadedTUMI`第一版代码上进行重构
@@ -280,6 +280,6 @@ AutoFish/
 
 ⭐ 如果这个项目对你有帮助，请给一个 Star！
 
-**[📥 下载 PartyFish](https://github.com/CrazyMlj/PartyAutoFish/tree/AutoFishv5.6_release)**
+**[📥 下载 PartyFish](https://github.com/CrazyEA/PartyAutoFish/tree/AutoFishv5.6_release)**
 
 </div>
