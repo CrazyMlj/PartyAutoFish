@@ -1,7 +1,6 @@
 from tkinter import ttk, messagebox
 import tkinter as tk
 import ttkbootstrap as ttkb
-from sympy.plotting.intervalmath import interval
 from ttkbootstrap.constants import *
 import sys
 import queue
