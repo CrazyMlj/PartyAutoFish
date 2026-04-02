@@ -274,7 +274,7 @@ AutoFish/
 **CrazyEA** - [GitHub](https://github.com/CrazyEA) \
 **FadedTUMI** - [GitHub](https://github.com/FADEDTUMI)
 
-- 本项目在`FadedTUMI`第一版代码上进行重构
+- 本项目在`FadedTUMI`第一版代码上进行重构，后续加入新功能
 
 <div align="center">
 
